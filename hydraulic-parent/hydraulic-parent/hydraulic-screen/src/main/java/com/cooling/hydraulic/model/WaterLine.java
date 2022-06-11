@@ -2,9 +2,9 @@ package com.cooling.hydraulic.model;
 
 
 public class WaterLine {
-    public  Double insideVal=0.01;
-    public  Double outsideVal=0.01;
-    public  Double foreVal=0.01;
+    public  Double insideVal;
+    public  Double outsideVal;
+    public  Double foreVal;
 
     public Double getInsideVal() {
         return insideVal;
