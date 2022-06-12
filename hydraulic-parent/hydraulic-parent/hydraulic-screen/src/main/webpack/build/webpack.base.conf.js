@@ -127,8 +127,8 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       {
-        from: pathResolve.src('resources'),
-        to: pathResolve.dist('resources'),
+        from: pathResolve.src('common'),
+        to: pathResolve.dist('common'),
         ignore: ['README.md']
       }
     ]),

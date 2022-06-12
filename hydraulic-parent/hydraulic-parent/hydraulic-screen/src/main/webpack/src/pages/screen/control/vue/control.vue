@@ -9,13 +9,13 @@
 </template>
 
 <script>
-  import $ from '../../../../resources/lib/axios.js'
-  import Date from '../../../../resources/lib/date.js'
+  import $ from '../../../../common/lib/axios.js'
+  import Date from '../../../../common/lib/date.js'
 
   import Qs from 'qs'
 
   export default {
-    name: 'video',
+    name: 'control',
     data: function () {
       return {
         insideVal: 0.01,
@@ -32,7 +32,7 @@
         },10000)
       },
       getWaterLine :function(){
-        $.ajax.post('/index/getWaterLine')
+        $.ajax.post('/control/getWaterLine')
           .then(data => {
             let code = data.code;
            if("200"!==code){

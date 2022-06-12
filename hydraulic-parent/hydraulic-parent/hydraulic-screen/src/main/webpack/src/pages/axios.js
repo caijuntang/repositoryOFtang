@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const AjaxUtil = {
-  ROOT: '/newcommonlog'
+  ROOT: '/screen'
 }
 
 AjaxUtil.ajax = axios.create({

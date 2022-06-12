@@ -7,7 +7,7 @@ function jsPathResolve(path) {
   return pathResolve.src('pages', path)
 }
 function htmlPathResolve(path) {
-  return pathResolve.dist('WEB-INF/html', path)
+  return pathResolve.dist('templates/html', path)
 }
 
 const jsEntryMap = [

@@ -4,14 +4,14 @@ import VueBus from 'vue-bus'
 import 'iview/dist/styles/iview.css'
 
 /** 自定义全局样式 **/
-import '../../../resources/css/common.css'
+import '../../../common/css/common.css'
 
-import video from './vue/control'
+import controlComponent from './vue/control'
 
 Vue.use(iView)
 Vue.use(VueBus)
 
 new Vue({
   el: '#control',
-  components: {'layout-component': video}
+  components: {'control-component': controlComponent}
 })
