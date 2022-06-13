@@ -11,7 +11,8 @@ public class WaterLineTest {
 
     @Test
     public void reportWaterLine() {
-        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
+//        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
+        String url = "http://47.102.142.109:8090/screen/openApi/reportWaterLine";
         WaterLine waterLine = new WaterLine();
         waterLine.setForeVal(3.28);
         waterLine.setInsideVal(3.44);
