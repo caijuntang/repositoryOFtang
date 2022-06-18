@@ -1,3 +1,5 @@
+package com.cooling.hydraulic.waterLine;
+
 import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.utils.HttpClientUtils;
@@ -11,8 +13,8 @@ public class WaterLineTest {
 
     @Test
     public void reportWaterLine() {
-//        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
-        String url = "http://47.102.142.109:8090/screen/openApi/reportWaterLine";
+        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
+//        String url = "http://47.102.142.109:8090/screen/openApi/reportWaterLine";
         WaterLine waterLine = new WaterLine();
         waterLine.setForeVal(3.28);
         waterLine.setInsideVal(3.44);
@@ -22,7 +24,7 @@ public class WaterLineTest {
 //        String reqStr="{\"indsideVal\":3.28,\"outsideVal\":5.58,\"fpreVal\":3.33}";
         try {
 //            String response = HttpClientUtils.postMethod(url, param);
-            String response=HttpClientUtils.getMethod(url+"?insideVal=3.28&outsideVal=5.33&foreVal=3.13");
+            String response=HttpClientUtils.getMethod(url+"?insideVal=3.28&outsideVal=5.33&foreVal=3.13",10000,10000);
             System.out.println("=======================================");
             System.out.printf(response);
         } catch (IOException e) {
