@@ -1,10 +1,18 @@
 <template>
   <!--search-->
   <div style="margin:10px">
-      内河水位：<Input v-model="insideVal"  style="width: 100px" disabled />
-      前池水位：<Input v-model="foreVal" style="width: 100px" disabled />
-      外河水位：<Input v-model="outsideVal"  style="width: 100px" disabled />
-
+    <card class="card-content">
+      外河水位：<Input v-model="outsideVal" style="width: 100px;" readonly/>
+    </card>
+    <card class="card-building">
+        泵站机房
+    </card>
+    <card class="card-content">
+      前池水位：<Input v-model="foreVal" style="width: 100px;" readonly/>
+    </card>
+    <card class="card-content">
+      内河水位：<Input v-model="insideVal" style="width: 100px;" readonly/>
+    </card>
   </div>
 </template>
 
@@ -20,8 +28,8 @@
       return {
         insideVal: 0.01,
         foreVal: 0.01,
-        outsideVal:0.01,
-        timer:''
+        outsideVal: 0.01,
+        timer: ''
       }
     },
     methods: {
@@ -29,18 +37,18 @@
         this.getWaterLine()
         this.timer = setInterval(() => {
           this.getWaterLine()
-        },10000)
+        }, 10000)
       },
-      getWaterLine :function(){
+      getWaterLine: function () {
         $.ajax.post('/control/getWaterLine')
           .then(data => {
             let code = data.code;
-           if("200"!==code){
-             return
-           }
-           this.insideVal=data.insideVal
-           this.outsideVal=data.outsideVal
-           this.foreVal=data.foreVal
+            if ("200" !== code) {
+              return
+            }
+            this.insideVal = data.insideVal
+            this.outsideVal = data.outsideVal
+            this.foreVal = data.foreVal
           }).catch(function (reason) {
           console.log(reason)
         })
@@ -61,6 +69,21 @@
     margin-top: 10px;
   }
 
+  .card-content {
+    margin:10px;
+    height: 30%;
+    text-align: center;
+    align-content: center;
+    background: #57a3f3;
+  }
+   .card-building{
+     margin:10px;
+     background:coral;
+     height:50%;
+     text-align:center;
+     align-content:center;
+     font-size:100px
+   }
   .warnfont {
     color: #FF0000;
   }
