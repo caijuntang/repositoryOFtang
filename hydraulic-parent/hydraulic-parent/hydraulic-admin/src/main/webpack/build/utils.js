@@ -15,7 +15,7 @@ const pathResolve = {
     return rootPathResolve.apply(rootPathResolve, ['src'].concat(Array.prototype.slice.call(arguments)))
   },
   dist: function () {
-    return rootPathResolve.apply(rootPathResolve, ['../webapp'].concat(Array.prototype.slice.call(arguments)))
+    return rootPathResolve.apply(rootPathResolve, ['../resources'].concat(Array.prototype.slice.call(arguments)))
   }
 }
 
@@ -118,7 +118,7 @@ exports.getJspMapPath = function () {
     let srcFilePath = path.normalize(files[i])
     list.push({
       src: srcFilePath,
-      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('WEB-INF/jsp'))
+      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('templates/jsp'))
     })
   }
   return list
@@ -131,7 +131,7 @@ exports.getHtmlAndJspMapPath = function () {
     let srcFilePath = path.normalize(files[i])
     list.push({
       src: srcFilePath,
-      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('WEB-INF/html'))
+      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('templates/html'))
     })
   }
   var files2 = glob.sync(pathResolve.src('pages/**/*.jsp'))
@@ -139,7 +139,7 @@ exports.getHtmlAndJspMapPath = function () {
     let srcFilePath = path.normalize(files2[j])
     list.push({
       src: srcFilePath,
-      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('WEB-INF/jsp'))
+      dist: srcFilePath.replace(pathResolve.src('pages'), pathResolve.dist('templates/jsp'))
     })
   }
   return list

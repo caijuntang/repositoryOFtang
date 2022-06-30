@@ -7,11 +7,11 @@ const path = require('path')
 module.exports = {
   dev: {
     // Paths
-    assetsSubDirectory: 'resources/static',
-    assetsPublicPath: '/admin/',
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/screen/',
     // proxyTable: {
-    //   '/admin': {
-    //     target : "http://localhost:8080",
+    //   '/screen': {
+    //     target : "http://localhost:8090",
     //     changeOrigin: false
     //   }
     // },
@@ -53,9 +53,9 @@ module.exports = {
 
   build: {
     // Paths
-    assetsRoot: path.resolve(__dirname, '../../webapp'),
-    assetsSubDirectory: 'resources/static',
-    assetsPublicPath: '/admin/',
+    assetsRoot: path.resolve(__dirname, '../../resources'),
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/screen/',
 
     /**
      * Source Maps

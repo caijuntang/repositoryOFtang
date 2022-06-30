@@ -1,17 +1,20 @@
 <template>
   <!--search-->
   <div style="margin:10px">
-    <card class="card-content">
-      外河水位：<Input v-model="outsideVal" style="width: 100px;" readonly/>
-    </card>
-    <card class="card-building">
+    <card :bordered="false" dis-hover>
+      <p slot="title" style="text-align: center">宣城市宣州区敬亭圩排涝站水位监测</p>
+      <card class="card-content">
+        外河水位：<Input v-model="outsideVal" style="width: 70px;" readonly/>米
+      </card>
+      <card class="card-building">
         泵站机房
-    </card>
-    <card class="card-content">
-      前池水位：<Input v-model="foreVal" style="width: 100px;" readonly/>
-    </card>
-    <card class="card-content">
-      内河水位：<Input v-model="insideVal" style="width: 100px;" readonly/>
+      </card>
+      <card class="card-content">
+        前池水位：<Input v-model="foreVal" style="width: 70px;" readonly/>米
+      </card>
+      <card class="card-content">
+        内河水位：<Input v-model="insideVal" style="width: 70px;" readonly/>米
+      </card>
     </card>
   </div>
 </template>
@@ -70,20 +73,22 @@
   }
 
   .card-content {
-    margin:10px;
+    margin: 10px;
     height: 30%;
     text-align: center;
     align-content: center;
     background: #57a3f3;
   }
-   .card-building{
-     margin:10px;
-     background:coral;
-     height:50%;
-     text-align:center;
-     align-content:center;
-     font-size:100px
-   }
+
+  .card-building {
+    margin: 10px;
+    background: coral;
+    height: 50%;
+    text-align: center;
+    align-content: center;
+    font-size: 100px
+  }
+
   .warnfont {
     color: #FF0000;
   }

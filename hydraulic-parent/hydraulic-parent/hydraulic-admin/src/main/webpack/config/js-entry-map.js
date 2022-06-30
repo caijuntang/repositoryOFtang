@@ -7,13 +7,11 @@ function jsPathResolve(path) {
   return pathResolve.src('pages', path)
 }
 function htmlPathResolve(path) {
-  return pathResolve.dist('WEB-INF/html', path)
+  return pathResolve.dist('templates/html', path)
 }
 
 const jsEntryMap = [
-  { name: 'channel', jsPath: jsPathResolve('admin/channel/channel.js'), entryPath: htmlPathResolve('admin/channel/channel.html')},
-  { name: 'control', jsPath: jsPathResolve('admin/control/control.js'), entryPath: htmlPathResolve('admin/control/control.html')},
-  { name: 'video', jsPath: jsPathResolve('admin/video/video.js'), entryPath: htmlPathResolve('admin/video/video.html')}
+  { name: 'control', jsPath: jsPathResolve('screen/control/control.js'), entryPath: htmlPathResolve('screen/control/control.html')}
 ]
 
 module.exports = jsEntryMap
