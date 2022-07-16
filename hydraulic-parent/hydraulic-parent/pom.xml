@@ -10,6 +10,7 @@
     <modules>
         <module>hydraulic-screen</module>
         <module>hydraulic-admin</module>
+        <module>admin-web</module>
     </modules>
     <packaging>pom</packaging>
 
