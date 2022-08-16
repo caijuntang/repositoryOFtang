@@ -29,4 +29,12 @@ public class WaterLine {
     public void setForeVal(Double foreVal) {
         this.foreVal = foreVal;
     }
+
+
+
+    public WaterLine(Double insideVal, Double outsideVal, Double foreVal) {
+        this.insideVal = insideVal;
+        this.outsideVal = outsideVal;
+        this.foreVal = foreVal;
+    }
 }

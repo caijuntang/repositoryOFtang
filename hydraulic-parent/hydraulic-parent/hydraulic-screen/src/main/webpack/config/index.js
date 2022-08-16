@@ -9,12 +9,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/screen/',
-    // proxyTable: {
-    //   '/screen': {
-    //     target : "http://localhost:8090",
-    //     changeOrigin: false
-    //   }
-    // },
+    proxyTable: {
+      '/screen': {
+        target : "http://localhost:8090",
+        changeOrigin: false
+      }
+    },
     // Various Dev Server settings
     host: 'localhost', // 'localhost' can be overwritten by process.env.HOST ‘0.0.0.0’binds to all hosts and use disableHostCheck: true,
     port: 8081, // can be overwritten by process.env.HOST, if port is in use, a free one will be determined

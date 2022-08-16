@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping(path="/control")
+@RequestMapping(path="/api/control")
 public class ControlController {
 
     @Autowired
     private WaterLineService waterLineService;
 
-    @RequestMapping("/index")
-    public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
-        return "index";
-    }
+//    @RequestMapping("/index")
+//    public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
+//        return "index";
+//    }
 
     @RequestMapping("/getWaterLine")
     @ResponseBody

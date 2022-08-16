@@ -9,10 +9,15 @@ import com.cooling.hydraulic.model.role.RoleDto;
 import com.cooling.hydraulic.model.role.RoleSmallDto;
 import com.cooling.hydraulic.model.user.UserDto;
 import com.cooling.hydraulic.model.user.UserLoginDto;
+import com.cooling.hydraulic.model.user.UserQueryCriteria;
 import com.cooling.hydraulic.service.RoleService;
+import com.cooling.hydraulic.utils.PageUtil;
+import com.cooling.hydraulic.utils.QueryHelp;
 import com.cooling.hydraulic.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +41,17 @@ public class UserService {
 
     private  BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+    public Object queryAll(UserQueryCriteria criteria, Pageable pageable) {
+        Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+        return PageUtil.toPage(page.map(this::toDto));
+    }
+
+    public List<UserDto> queryAll(UserQueryCriteria criteria) {
+        List<User> users = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder));
+        return users.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+
 
     @Cacheable(key = "'id:' + #p0")
     @Transactional(rollbackFor = Exception.class)
@@ -50,9 +66,6 @@ public class UserService {
         if (userRepository.findByUsername(resources.getUsername()) != null) {
             throw new EntityExistException(User.class, "username", resources.getUsername());
         }
-//        if (userRepository.findByEmail(resources.getEmail()) != null) {
-//            throw new EntityExistException(User.class, "email", resources.getEmail());
-//        }
         if (userRepository.findByPhone(resources.getPhone()) != null) {
             throw new EntityExistException(User.class, "phone", resources.getPhone());
         }

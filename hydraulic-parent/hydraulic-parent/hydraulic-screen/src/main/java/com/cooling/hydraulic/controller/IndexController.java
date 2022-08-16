@@ -1,6 +1,8 @@
 package com.cooling.hydraulic.controller;
 
 
+import com.cooling.hydraulic.model.AlarmConfigModel;
+import com.cooling.hydraulic.service.AlarmService;
 import com.cooling.hydraulic.service.WaterLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,16 +20,39 @@ public class IndexController {
 
     @Autowired
     private WaterLineService waterLineService;
+    @Autowired
+    private AlarmService alarmService;
 
     @RequestMapping("/index")
     public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
-//        return "index";
         return "screen/control/control";
     }
 
     @RequestMapping("/getWaterLine")
     @ResponseBody
-    public Object getWaterLine() {
-        return waterLineService.getWaterLine();
+    public Object getWaterLine(Integer stationId) {
+        return waterLineService.getWaterLine(stationId);
+    }
+
+
+    @RequestMapping("/getAlarmConfig")
+    @ResponseBody
+    public Object getAlarmConfig(Integer stationId) {
+        return alarmService.getAlarmConfig(stationId);
+    }
+
+    @RequestMapping("/alarmConfigSave")
+    @ResponseBody
+    public Object alarmConfigSave(AlarmConfigModel configModel) {
+        return alarmService.saveAlarmConfig(configModel);
+    }
+
+    @RequestMapping("/updateAlarmStatus")
+    @ResponseBody
+    public Object updateAlarmStatus(Integer id) {
+        if(null==id){
+            return false;
+        }
+        return alarmService.updateAlarmStatus(id);
     }
 }

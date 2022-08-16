@@ -1,10 +1,3 @@
-/* eslint-disable */
-
-/**
- * Date对象的补充函数，包括类似Python中的strftime()
- * 阿债 https://gitee.com/azhai/datetime.js
- */
-
 Date.prototype.toMidnight = function() {
   this.setHours(0)
   this.setMinutes(0)

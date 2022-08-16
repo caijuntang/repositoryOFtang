@@ -9,12 +9,16 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
+@EnableAsync
 @SpringBootApplication
 @EnableTransactionManagement
-public class AdminInitializer extends SpringBootServletInitializer {
+public class AdminInitializer {
     public static void main(String... args) {
         SpringApplication.run(AdminInitializer.class, args);
         System.out.println("==============服务启动完成============");

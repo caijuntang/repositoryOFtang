@@ -30,27 +30,24 @@ public class MenuController {
     @Resource
     private MenuService menuService;
 
-    @GetMapping(value = "/download")
-    @PreAuthorize("@el.check('menu:list')")
+    @RequestMapping(value = "/download")
     public void exportMenu(HttpServletResponse response, MenuQueryCriteria criteria) throws Exception {
         menuService.download(menuService.queryAll(criteria, false), response);
     }
 
-    @GetMapping(value = "/build")
+    @RequestMapping(value = "/build")
     public ResponseEntity<Object> buildMenus(){
         List<MenuDto> menuDtoList = menuService.findByUser(SecurityUtils.getCurrentUserId());
         List<MenuDto> menuDtos = menuService.buildTree(menuDtoList);
         return new ResponseEntity<>(menuService.buildMenus(menuDtos), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/lazy")
-    @PreAuthorize("@el.check('menu:list','roles:list')")
+    @RequestMapping(value = "/lazy")
     public ResponseEntity<Object> queryAllMenu(@RequestParam Long pid){
         return new ResponseEntity<>(menuService.getMenus(pid), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/child")
-    @PreAuthorize("@el.check('menu:list','roles:list')")
+    @RequestMapping(value = "/child")
     public ResponseEntity<Object> childMenu(@RequestParam Long id){
         Set<Menu> menuSet = new HashSet<>();
         List<MenuDto> menuDtoList = menuService.getMenus(id);
@@ -61,14 +58,13 @@ public class MenuController {
         return new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
-    @PreAuthorize("@el.check('menu:list')")
+    @RequestMapping(value = "/pageQuery")
     public ResponseEntity<Object> queryMenu(MenuQueryCriteria criteria) throws Exception {
         List<MenuDto> menuDtoList = menuService.queryAll(criteria, true);
         return new ResponseEntity<>(PageUtil.toPage(menuDtoList, menuDtoList.size()), HttpStatus.OK);
     }
 
-    @PostMapping("/superior")
-    @PreAuthorize("@el.check('menu:list')")
+    @RequestMapping("/superior")
     public ResponseEntity<Object> getMenuSuperior(@RequestBody List<Long> ids) {
         Set<MenuDto> menuDtos = new LinkedHashSet<>();
         if(CollectionUtil.isNotEmpty(ids)){
@@ -81,8 +77,7 @@ public class MenuController {
         return new ResponseEntity<>(menuService.getMenus(null), HttpStatus.OK);
     }
 
-    @PostMapping
-    @PreAuthorize("@el.check('menu:add')")
+    @RequestMapping("/add")
     public ResponseEntity<Object> createMenu(@Validated @RequestBody Menu resources){
         if (resources.getId() != null) {
             throw new BadRequestException("A new "+ ENTITY_NAME +" cannot already have an ID");
@@ -91,15 +86,13 @@ public class MenuController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    @PreAuthorize("@el.check('menu:edit')")
+    @RequestMapping("/edit")
     public ResponseEntity<Object> updateMenu(@Validated(Menu.Update.class) @RequestBody Menu resources){
         menuService.update(resources);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
-    @PreAuthorize("@el.check('menu:del')")
+    @RequestMapping("/del")
     public ResponseEntity<Object> deleteMenu(@RequestBody Set<Long> ids){
         Set<Menu> menuSet = new HashSet<>();
         for (Long id : ids) {

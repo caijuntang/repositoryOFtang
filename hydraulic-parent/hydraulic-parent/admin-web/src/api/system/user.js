@@ -45,17 +45,6 @@ export function updatePass(user) {
   })
 }
 
-export function updateEmail(form) {
-  const data = {
-    password: encrypt(form.pass),
-    email: form.email
-  }
-  return request({
-    url: 'api/users/updateEmail/' + form.code,
-    method: 'post',
-    data
-  })
-}
 
 export default { add, edit, del }
 

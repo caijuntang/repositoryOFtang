@@ -22,7 +22,7 @@ public class OpenApi {
 
     @RequestMapping(name = "水位上报 ", value = "/reportWaterLine")
     @ResponseBody
-    public Object reportWaterLine(Double insideVal,Double outsideVal,Double foreVal) {
-        return waterLineService.reportWaterLine(insideVal, outsideVal, foreVal);
+    public Object reportWaterLine(Double insideVal,Double outsideVal,Double foreVal,Integer stationId) {
+        return waterLineService.reportWaterLine(insideVal, outsideVal, foreVal,stationId);
     }
 }
