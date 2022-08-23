@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.List;
 
 public class AlarmConfigModel {
 
@@ -17,7 +18,7 @@ public class AlarmConfigModel {
 
     private double alarmLine;
 
-    private String  receivers;
+    private List<String> receivers;
 
     private Integer status;
 
@@ -53,11 +54,11 @@ public class AlarmConfigModel {
         this.alarmLine = alarmLine;
     }
 
-    public String getReceivers() {
+    public List<String> getReceivers() {
         return receivers;
     }
 
-    public void setReceivers(String receivers) {
+    public void setReceivers(List<String> receivers) {
         this.receivers = receivers;
     }
 

@@ -3,12 +3,12 @@ package com.cooling.hydraulic.controller;
 
 import com.cooling.hydraulic.model.AlarmConfigModel;
 import com.cooling.hydraulic.service.AlarmService;
+import com.cooling.hydraulic.service.WXService;
 import com.cooling.hydraulic.service.WaterLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +22,8 @@ public class IndexController {
     private WaterLineService waterLineService;
     @Autowired
     private AlarmService alarmService;
+    @Autowired
+    private WXService wxUserService;
 
     @RequestMapping("/index")
     public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
@@ -54,5 +56,12 @@ public class IndexController {
             return false;
         }
         return alarmService.updateAlarmStatus(id);
+    }
+
+
+    @RequestMapping("/getWXReceivers")
+    @ResponseBody
+    public Object getWXUsers() {
+        return wxUserService.getWXUserList();
     }
 }

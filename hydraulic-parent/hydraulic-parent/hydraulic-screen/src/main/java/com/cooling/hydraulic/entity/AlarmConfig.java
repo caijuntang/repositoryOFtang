@@ -19,7 +19,7 @@ public class AlarmConfig {
     private Station station;
 
     @Column(name="alarm_line")
-    private double alarmLine;
+    private Double alarmLine;
 
     private String  receivers;
 
@@ -52,11 +52,11 @@ public class AlarmConfig {
         this.station = station;
     }
 
-    public double getAlarmLine() {
+    public Double getAlarmLine() {
         return alarmLine;
     }
 
-    public void setAlarmLine(double alarmLine) {
+    public void setAlarmLine(Double alarmLine) {
         this.alarmLine = alarmLine;
     }
 

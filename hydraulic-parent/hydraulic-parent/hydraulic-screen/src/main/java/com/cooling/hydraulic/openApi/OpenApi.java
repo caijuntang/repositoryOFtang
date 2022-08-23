@@ -25,4 +25,10 @@ public class OpenApi {
     public Object reportWaterLine(Double insideVal,Double outsideVal,Double foreVal,Integer stationId) {
         return waterLineService.reportWaterLine(insideVal, outsideVal, foreVal,stationId);
     }
+
+    @RequestMapping(name = "水位获取 ", value = "/getWaterLine")
+    @ResponseBody
+    public Object getWaterLine(Integer stationId) {
+        return waterLineService.getWaterLineContent(stationId);
+    }
 }

@@ -7,27 +7,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("wccp")
+@ConfigurationProperties(prefix = "wccp")
 public class WCCPConfig {
 
     //企业ID
-    public static Integer agentId=1000002;
+    @Value("${agent_id:1000002}")
+    public static Integer agentId;
     //部门Id
-    public static String corpId="wwa1d74de552322ccc";
+    @Value("${corp_id:wwa1d74de552322ccc}")
+    public static String corpId;
     //应用密钥
-    public static String agentSecret="y3Xn3XE1C6dZuOj3e4G-UoRdzfi6S3FV558iz3lIsh4";
+    @Value("${agent_secret:y3Xn3XE1C6dZuOj3e4G-UoRdzfi6S3FV558iz3lIsh4}")
+    public static String agentSecret;
 
-    @Value("1000002")
-    public static void setAgentId(Integer agentId) {
+    public void setAgentId(Integer agentId) {
         WCCPConfig.agentId = agentId;
     }
 
-    @Value("wwa1d74de552322ccc")
     public void setCorpId(String corpId) {
         this.corpId = corpId;
     }
 
-    @Value("y3Xn3XE1C6dZuOj3e4G-UoRdzfi6S3FV558iz3lIsh4")
     public void setAgentSecret(String agentSecret) {
         this.agentSecret = agentSecret;
     }

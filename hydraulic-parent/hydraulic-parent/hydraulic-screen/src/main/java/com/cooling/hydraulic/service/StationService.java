@@ -17,4 +17,8 @@ public class StationService {
      public  List<Station> findAllStation(){
         return stationRepository.findAll();
     }
+
+    public Station getOne(Integer stationId) {
+         return stationRepository.getOne(stationId);
+    }
 }

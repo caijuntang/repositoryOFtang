@@ -18,13 +18,13 @@
 
       </card>
     </card>
-    <Modal title="水位报警配置" v-bind:closable='false' width="60" v-model='alarmDialogModal.modal' closable
+    <Modal title="水位报警配置" v-bind:closable='false' width="45" v-model='alarmDialogModal.modal' closable
            @on-cancel="alarmDialogCancel"
            :mask-closable="alarmDialogModal.closable">
 
       <Form :model="alarmForm" ref="alarmForm" :label-width="90">
         <FormItem label="报警名称:" prop="alarmName">
-          <Input v-model="alarmForm.alarmName" placeholder="请输入报警名称" style="width:200px"
+          <Input v-model="alarmForm.alarmName" placeholder="请输入报警名称" style="width:400px"
                  :maxlength="64"/>
         </FormItem>
         <FormItem label="报警水位:" prop="alarmLine">
@@ -41,8 +41,9 @@
           </Switch>
         </FormItem>
         <FormItem label="通知人:" prop="receivers">
-          <Input type="textarea" v-model="alarmForm.receivers" :autosize='true' placeholder="请输入通知人，多个通知人用“,”分隔"
-                 style="width:300px"/>
+          <Select v-model="alarmForm.receivers" multiple filterable style="width: 400px;" placeholder="请选择通知人">
+            <Option v-for="item in receiverList" :value="item.openid" :key="item.id">{{item.nickName}}</Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot='footer'>
@@ -66,6 +67,7 @@
         foreVal: 0.01,
         outsideVal: 0.01,
         timer: '',
+        receiverList:[],
         alarmDialogModal: {
           modal: false,
           closable: false,
@@ -76,7 +78,7 @@
           stationId: 1,
           alarmName: "",
           alarmLine: 0.00,
-          receivers: "",
+          receivers: [],
           status: 0
         }
       }
@@ -87,6 +89,16 @@
         this.timer = setInterval(() => {
           this.getWaterLine()
         }, 10000)
+      },
+      getWXReceivers:function(){
+        $.ajax.post('/control/getWXReceivers')
+          .then(data => {
+            if(null!=data){;
+              this.receiverList=data
+            }
+          }).catch(function (reason) {
+          console.log(reason)
+        })
       },
       getWaterLine: function () {
         $.ajax.post('/control/getWaterLine?stationId=1')
@@ -133,7 +145,7 @@
           this.confirmAlert('报警水位不能为空')
           return false
         }
-        if (this.alarmForm.receivers == '') {
+        if (this.alarmForm.receivers.length==0) {
           this.confirmAlert('通知人不能为空')
           return false
         }
@@ -149,25 +161,24 @@
       alarmMessage: function (alarmLine) {
         this.$Message.error({
           background: true,
-          content: '当前内河水位已超' + alarmLine + '米的警戒水位！',
+          content: '当前内河水位已超' + alarmLine + '米的警戒水位，请及时处置！',
           top: 50,
           duration: 3
         })
       },
+      receiversChange:function(){
+
+      },
       switchChange: function (flag) {
         this.alarmForm.status = flag ? 1 : 0
-        // $.ajax.post('/control/updateAlarmStatus?id=' + this.alarmForm.id)
-        //   .then(() => {
-        //   }).catch(function (reason) {
-        //   console.log(reason)
-        // })
       },
       initAlarmDialog: function () {
+        this.getWXReceivers()
         $.ajax.post('/control/getAlarmConfig?stationId='+this.alarmForm.stationId)
           .then((form) => {
             if (form) {
               this.alarmForm.id = form.id
-              this.alarmForm.alarmName = form.name
+              this.alarmForm.alarmName = form.alarmName
               this.alarmForm.alarmLine = form.alarmLine
               this.alarmForm.receivers = form.receivers
               this.alarmForm.status = form.status
@@ -185,7 +196,7 @@
         this.alarmForm.status = 0
         this.alarmForm.alarmName = ""
         this.alarmForm.alarmLine = 0.00
-        this.alarmForm.receivers=""
+        this.alarmForm.receivers=[]
       }
     },
     created() {

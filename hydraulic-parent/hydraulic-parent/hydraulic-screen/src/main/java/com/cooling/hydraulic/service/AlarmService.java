@@ -1,12 +1,15 @@
 package com.cooling.hydraulic.service;
 
+import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.dao.AlarmConfigRepository;
 import com.cooling.hydraulic.dao.StationRepository;
 import com.cooling.hydraulic.entity.AlarmConfig;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.model.AlarmConfigModel;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -23,16 +26,28 @@ public class AlarmService {
     @Resource
     private StationRepository stationRepository;
 
+
+    @PostConstruct
+    void init(){
+        List<AlarmConfig> all = alarmConfigRepository.findByStatus(1);
+        for(AlarmConfig config :all){
+            alarmLineMap.put(config.getStation().getId(),config.getAlarmLine());
+        }
+    }
+
     public  AlarmConfig findAlarmConfigsByStation(Station station){
        return alarmConfigRepository.findAlarmConfigByStation(station);
     }
 
     public boolean saveAlarmConfig(AlarmConfigModel config){
         Integer id = config.getId();
+        List<String> receivers = config.getReceivers();
+        String reveiversStr = JSON.toJSONString(receivers);
         if(null!=id){
             AlarmConfig old = alarmConfigRepository.getOne(id);
-            old.setReceivers(config.getReceivers());
+            old.setReceivers(reveiversStr);
             old.setAlarmLine(config.getAlarmLine());
+            old.setName(config.getAlarmName());
             alarmConfigRepository.save(old);
         }else {
             Station station = stationRepository.getOne(config.getStationId());
@@ -40,7 +55,7 @@ public class AlarmService {
             alarmConfig.setName(config.getAlarmName());
             alarmConfig.setAlarmLine(config.getAlarmLine());
             alarmConfig.setStatus(config.getStatus());
-            alarmConfig.setReceivers(config.getReceivers());
+            alarmConfig.setReceivers(reveiversStr);
             alarmConfig.setStation(station);
             alarmConfig.setCreateTime(new Date());
             alarmConfigRepository.save(alarmConfig);
@@ -67,11 +82,14 @@ public class AlarmService {
         return alarmLine;
     }
 
-    public AlarmConfig getAlarmConfig(Integer stationId) {
+    public AlarmConfigModel getAlarmConfig(Integer stationId) {
         Station station = new Station();
         station.setId(stationId);
-        return alarmConfigRepository.findAlarmConfigByStation(station);
+        AlarmConfig config = alarmConfigRepository.findAlarmConfigByStation(station);
+       AlarmConfigModel model = this.convertToModel(config);
+       return model;
     }
+
 
     public boolean updateAlarmStatus(Integer id) {
         AlarmConfig config = alarmConfigRepository.getOne(id);
@@ -87,5 +105,18 @@ public class AlarmService {
             }
         }
         return true;
+    }
+
+    private AlarmConfigModel convertToModel(AlarmConfig config) {
+        AlarmConfigModel model = new AlarmConfigModel();
+        model.setId(config.getId());
+        model.setAlarmLine(config.getAlarmLine());
+        model.setStatus(config.getStatus());
+        model.setAlarmName(config.getName());
+        model.setStationId(config.getStation().getId());
+        String receivers = config.getReceivers();
+        List<String> receiverList = JSON.parseObject(receivers, List.class);
+        model.setReceivers(receiverList);
+        return model;
     }
 }
