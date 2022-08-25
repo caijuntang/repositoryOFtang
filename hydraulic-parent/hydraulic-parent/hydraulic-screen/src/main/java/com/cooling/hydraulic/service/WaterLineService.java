@@ -42,13 +42,13 @@ public class WaterLineService {
     public Map<String, String> reportWaterLine(Double insideLine, Double outsideLine, Double foreLine, Integer stationId) {
         log.info("站点Id为：" + stationId + "的泵站水位上报，内河水位：" + insideLine + "，前池水位：" + foreLine + "，外河水位：" + outsideLine);
         Map<String, String> result = new HashMap<>();
-        if (null == insideLine || null == outsideLine || null == foreLine) {
+        if (null == insideLine && null == outsideLine && null == foreLine) {
             result.put("code", "999");
             result.put("msg", "data is empty!");
             return result;
         }
-        if (null == stationId) {
-            stationId = 1;
+        if (null==insideLine){
+            insideLine=foreLine+0.02;
         }
         WaterLine waterLine = new WaterLine(insideLine, outsideLine, foreLine);
         waterLineMap.put(stationId, waterLine);
