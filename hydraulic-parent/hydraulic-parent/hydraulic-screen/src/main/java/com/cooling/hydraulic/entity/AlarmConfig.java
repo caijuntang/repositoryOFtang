@@ -23,7 +23,12 @@ public class AlarmConfig {
 
     private String  receivers;
 
+    private Integer frequency;
+
     private Integer status;
+
+    @Column(name="template_id")
+    private String templateId;
 
     @Column(name="create_time")
     private Date createTime;
@@ -54,6 +59,22 @@ public class AlarmConfig {
 
     public Double getAlarmLine() {
         return alarmLine;
+    }
+
+    public Integer getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
     }
 
     public void setAlarmLine(Double alarmLine) {

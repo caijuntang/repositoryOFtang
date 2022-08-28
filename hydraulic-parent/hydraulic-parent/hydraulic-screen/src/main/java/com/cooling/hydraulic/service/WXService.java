@@ -7,7 +7,7 @@ import com.cooling.hydraulic.entity.WXUser;
 import com.cooling.hydraulic.request.MessageRequest;
 import com.cooling.hydraulic.request.Text;
 import com.cooling.hydraulic.response.AccessToken;
-import com.cooling.hydraulic.utils.HttpClientUtils;
+import com.cooling.hydraulic.utils.HttpClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class WXService {
 
     //公众号
     private static final String WCSENDMSG_URL="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={token}";
+    private static final String WCSENDTEMPLATEMSG_URL="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={token}";
     private static final String WCTOKEN_URL="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
 
     private static  Map<String, String> tokenMap=new ConcurrentHashMap<>();
@@ -72,18 +73,34 @@ public class WXService {
         messageRequest.setText(text);
         String requestStr = JSON.toJSONString(messageRequest);
         try {
-            String resp = HttpClientUtils.postMethod(WCSENDMSG_URL.replace("{token}",wcToKen), requestStr);
+            String resp = HttpClientUtil.postMethod(WCSENDMSG_URL.replace("{token}",wcToKen), requestStr);
             log.info(resp);
         } catch (IOException e) {
             log.error("公众号消息发送出错",e);
         }
     }
 
+    public String sendWCTemlateMsg(String content){
+        String wcToKen = tokenMap.get(WCConfig.appId);
+        String resp="";
+        if(null==wcToKen){
+            log.info("未获取到token");
+            return resp;
+        }
+        try {
+             resp = HttpClientUtil.postMethod(WCSENDTEMPLATEMSG_URL.replace("{token}",wcToKen), content);
+            log.info(resp);
+        } catch (IOException e) {
+            log.error("公众号消息发送出错",e);
+        }
+        return resp;
+    }
+
     public String getWCToKen() {
         String toKenBody=null;
         try {
             String url = WCTOKEN_URL.replace("{appid}", WCConfig.appId).replace("{secret}", WCConfig.appSecret);
-            toKenBody = HttpClientUtils.getMethod(url);
+            toKenBody = HttpClientUtil.getMethod(url);
         } catch (Exception e) {
             log.error("获取token出错",e);
         }
