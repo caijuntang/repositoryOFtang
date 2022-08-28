@@ -22,6 +22,8 @@ public class AlarmConfigModel {
 
     private Integer status;
 
+    private String frequency;
+
     public Integer getId() {
         return id;
     }
@@ -68,5 +70,13 @@ public class AlarmConfigModel {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 }

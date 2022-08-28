@@ -2,9 +2,7 @@ package com.cooling.hydraulic.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.config.WCCPConfig;
-import com.cooling.hydraulic.config.WCConfig;
 import com.cooling.hydraulic.request.Text;
-import com.cooling.hydraulic.request.MessageRequest;
 import com.cooling.hydraulic.request.qyRequest.QYMsgRequest;
 import com.cooling.hydraulic.response.AccessToken;
 import org.slf4j.Logger;
@@ -37,7 +35,7 @@ public class WeChatSendUtil {
         messageRequest.setSafe(0);
         String requestStr = JSON.toJSONString(messageRequest);
         try {
-            String resp = HttpClientUtils.postMethod(WCCPSENDMESSAGE_URL + token, requestStr);
+            String resp = HttpClientUtil.postMethod(WCCPSENDMESSAGE_URL + token, requestStr);
             log.info(resp);
         } catch (IOException e) {
             log.error("企业微信消息发送错误",e);
@@ -48,7 +46,7 @@ public class WeChatSendUtil {
     public static String getWCCPToKen(String corpid, String corpsecret) {
         String toKenBody=null;
         try {
-             toKenBody = HttpClientUtils.getMethod(WCCPGETTOKEN_URL+"?corpid=" + corpid + "&corpsecret=" + corpsecret);
+             toKenBody = HttpClientUtil.getMethod(WCCPGETTOKEN_URL+"?corpid=" + corpid + "&corpsecret=" + corpsecret);
         } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
         }
