@@ -5,6 +5,7 @@ public class WaterLine {
     private  Double insideVal;
     private  Double outsideVal;
     private  Double foreVal;
+    private  Boolean isAlarm;
 
     public Double getInsideVal() {
         return insideVal;
@@ -30,11 +31,19 @@ public class WaterLine {
         this.foreVal = foreVal;
     }
 
+    public Boolean getAlarm() {
+        return isAlarm;
+    }
+
+    public void setAlarm(Boolean alarm) {
+        isAlarm = alarm;
+    }
 
 
-    public WaterLine(Double insideVal, Double outsideVal, Double foreVal) {
+    public WaterLine(Double insideVal, Double outsideVal, Double foreVal, Boolean isAlarm) {
         this.insideVal = insideVal;
         this.outsideVal = outsideVal;
         this.foreVal = foreVal;
+        this.isAlarm = isAlarm;
     }
 }

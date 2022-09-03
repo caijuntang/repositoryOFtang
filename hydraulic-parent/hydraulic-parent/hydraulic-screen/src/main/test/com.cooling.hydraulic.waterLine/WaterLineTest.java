@@ -14,15 +14,15 @@ public class WaterLineTest {
 
     @Test
     public void reportWaterLine() {
-        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
-//        String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
+//        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
+        String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
         WaterLine waterLine = new WaterLine(6.41,6.79,6.41);
         String param = JSON.toJSONString(waterLine);
         System.out.println(param);
 //        String reqStr="{\"indsideVal\":3.28,\"outsideVal\":5.58,\"fpreVal\":3.33}";
         try {
 //            String response = HttpClientUtils.postMethod(url, param);
-            String response= HttpClientUtil.getMethod(url+"?insideVal=8.41&outsideVal=6.79&foreVal=6.42&stationId=1",10000,10000);
+            String response= HttpClientUtil.getMethod(url+"?insideVal=6.41&outsideVal=6.79&foreVal=6.42&stationId=1",10000,10000);
             System.out.println("=======================================");
             System.out.printf(response);
         } catch (IOException e) {

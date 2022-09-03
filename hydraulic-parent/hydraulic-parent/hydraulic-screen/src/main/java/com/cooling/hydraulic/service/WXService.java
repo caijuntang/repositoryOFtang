@@ -1,6 +1,9 @@
 package com.cooling.hydraulic.service;
 
 import com.alibaba.fastjson.JSON;
+import com.cooling.hydraulic.component.NullHandler;
+import com.cooling.hydraulic.component.MenuActionHandler;
+import com.cooling.hydraulic.component.TextMsgHandler;
 import com.cooling.hydraulic.config.WCConfig;
 import com.cooling.hydraulic.dao.WXUserRepository;
 import com.cooling.hydraulic.entity.WXUser;
@@ -8,8 +11,16 @@ import com.cooling.hydraulic.request.MessageRequest;
 import com.cooling.hydraulic.request.Text;
 import com.cooling.hydraulic.response.AccessToken;
 import com.cooling.hydraulic.utils.HttpClientUtil;
+import com.google.common.collect.Maps;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.WxMpConfigStorage;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +33,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.TEXT;
+
+
 @Service
 public class WXService {
 
@@ -33,6 +48,13 @@ public class WXService {
     private static final String WCTOKEN_URL="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
 
     private static  Map<String, String> tokenMap=new ConcurrentHashMap<>();
+
+    @Resource
+    private NullHandler nullHandler;
+    @Resource
+    private MenuActionHandler menuActionHandler;
+    @Resource
+    private TextMsgHandler textMsgHandler;
     @Resource
     private WXUserRepository wxUserRepository;
 
@@ -51,8 +73,8 @@ public class WXService {
         };
         // 计时器
         Timer timer = new Timer();
-        // 添加执行任务（延迟 1s 执行，每 3s 执行一次）
-        timer.schedule(timerTask, 5000, 6000000);
+        // 添加执行任务（延迟 10s 执行，每 3s 执行一次）
+        timer.schedule(timerTask, 10000, 900000);
     }
 
     public List<WXUser> getWXUserList() {
@@ -109,6 +131,34 @@ public class WXService {
         }
         AccessToken token = JSON.parseObject(toKenBody, AccessToken.class);
         return token.getAccessToken();
+    }
+
+    @Bean("WXMpService")
+    public WxMpService wxMpService() {
+        WxMpDefaultConfigImpl wxMpDefaultConfig = new WxMpDefaultConfigImpl();
+        wxMpDefaultConfig.setAppId(WCConfig.appId);
+        wxMpDefaultConfig.setSecret(WCConfig.appSecret);
+        wxMpDefaultConfig.setToken(WCConfig.token);
+        wxMpDefaultConfig.setAesKey(WCConfig.aesKey);
+        Map<String, WxMpConfigStorage> configMap = Maps.newHashMap();
+        configMap.put(WCConfig.appId,wxMpDefaultConfig);
+        WxMpService service = new WxMpServiceImpl();
+        service.setMultiConfigStorages(configMap);
+        return service;
+    }
+
+    @Bean
+    public WxMpMessageRouter messageRouter(WxMpService wxMpService) {
+        final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);
+
+        // 点击菜单连接事件
+        newRouter.rule().async(false).msgType(EVENT).event(WxConsts.EventType.CLICK).handler(menuActionHandler).end();
+        newRouter.rule().async(false).msgType(TEXT).handler(textMsgHandler).end();
+
+        // 默认
+        newRouter.rule().async(false).handler(nullHandler).end();
+
+        return newRouter;
     }
 
 }

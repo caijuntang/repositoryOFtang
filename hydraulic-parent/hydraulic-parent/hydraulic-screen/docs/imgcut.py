@@ -4,7 +4,7 @@ import time
 import logging
  
  
-def Psc():
+#def Psc():
     # 自增序号，但若程序重启，会覆盖之前的文件
     while True:
         time_start=time.time()
@@ -22,5 +22,5 @@ def Psc():
         logging.info('time cost:',time_c,'s')
         print('time cost:',time_c,'s')
         break
-if __name__ == '__main__':
-    Psc()
+#if __name__ == '__main__':
+#   Psc()

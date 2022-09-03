@@ -12,7 +12,7 @@ module.exports = {
     proxyTable: {
       '/screen': {
         target : "http://localhost:8090",
-        changeOrigin: false
+        changeOrigin: true
       }
     },
     // Various Dev Server settings

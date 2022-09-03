@@ -14,6 +14,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,7 +24,7 @@ public class HttpClientUtil {
 	private static Integer default_readTimeout = 3000;
 
 	public static String getMethod(String url) throws ClientProtocolException, IOException {
-		return getMethod(url, null, null);
+		return getMethod(url,null, null);
 	}
 
 	public static String postMethod(String url, List<NameValuePair> param) throws ClientProtocolException, IOException {
@@ -31,7 +32,11 @@ public class HttpClientUtil {
 	}
 
 	public static String postMethod(String url, String param) throws ClientProtocolException, IOException {
-		return postMethod(url, param, null, null);
+		return postMethod(url, param,null, null, null);
+	}
+
+	public static String postMethod(String url, String param,String contentType) throws ClientProtocolException, IOException {
+		return postMethod(url, param,contentType, null, null);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -126,7 +131,7 @@ public class HttpClientUtil {
 		return result;
 	}
 
-	public static String postMethod(String url, String param, Integer connTimeout, Integer readTimeout)
+	public static String postMethod(String url, String param, String contentType,Integer connTimeout, Integer readTimeout)
 			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		String result = null;
@@ -139,9 +144,14 @@ public class HttpClientUtil {
 		try {
 			HttpPost httpPost = new HttpPost(url);
 			StringEntity ent = new StringEntity(param, "utf-8");
-			ent.setContentType("application/json");
-			// 设置类型
-			ent.setContentType("application/x-www-form-urlencoded");
+			if(StringUtils.isEmpty(contentType)){
+				ent.setContentType("application/xml");
+				// 设置类型
+				ent.setContentType("application/x-www-form-urlencoded");
+			}else{
+				ent.setContentType(contentType);
+			}
+
 			httpPost.setEntity(ent);
 			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(default_connTimeout)
 					.setConnectTimeout(default_readTimeout).build();// 设置请求和传输超时时间

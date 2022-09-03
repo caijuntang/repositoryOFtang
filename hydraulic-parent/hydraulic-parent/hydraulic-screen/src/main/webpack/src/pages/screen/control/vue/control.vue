@@ -13,8 +13,8 @@
       <card class="card-content">
         前池水位：<Input v-model="foreVal" style="width: 70px;" readonly/>&nbsp;米
       </card>
-      <card class="card-content">
-        内河水位：<Input v-model="insideVal" :class="isAlarm ? 'warnFont' :'normalFont' " readonly/>&nbsp;米
+      <card class="card-content"  :class="isAlarm ? 'warnFont' : '' ">
+        内河水位：<Input v-model="insideVal" style="width: 70px;"  readonly/>&nbsp;米
       </card>
     </card>
     <Modal title="水位告警配置" v-bind:closable='false' width="45" v-model='alarmDialogModal.modal' closable
@@ -238,12 +238,7 @@
     align-content: center;
     font-size: 100px
   }
-
-  .normalFont{
-    width: 70px
-  }
   .warnFont {
-    width: 70px;
     -webkit-text-fill-color:red;
   }
 

@@ -36,6 +36,12 @@ public class IndexController {
         return waterLineService.getWaterLine(stationId);
     }
 
+    @RequestMapping("/getPumpData")
+    @ResponseBody
+    public Object getPumpData(Integer stationId) {
+        return waterLineService.getPumpData(stationId,null);
+    }
+
 
     @RequestMapping("/getAlarmConfig")
     @ResponseBody
@@ -57,7 +63,6 @@ public class IndexController {
         }
         return alarmService.updateAlarmStatus(id);
     }
-
 
     @RequestMapping("/getWXReceivers")
     @ResponseBody

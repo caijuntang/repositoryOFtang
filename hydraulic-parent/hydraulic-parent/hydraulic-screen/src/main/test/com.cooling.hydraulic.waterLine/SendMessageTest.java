@@ -6,6 +6,9 @@ import com.cooling.hydraulic.response.AccessToken;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.WeChatSendUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -72,11 +75,51 @@ public class SendMessageTest {
     }
 
     @Test
+    public void sengWXEvent() {
+        String url = "http://localhost:8090/screen/wx/handleWxEvent";
+//        String actionRequest = "<xml><ToUserName><![CDATA[gh_a26585648753]]></ToUserName>" +
+//                "<FromUserName><![CDATA[odynm5qCoBRwqNRkZRv2EJeDn_JE]]></FromUserName>" +
+//                "<CreateTime>1661741520</CreateTime>" +
+//                "<MsgType><![CDATA[event]]></MsgType>" +
+//                "<Event><![CDATA[CLICK]]></Event>" +
+//                "<EventKey><![CDATA[1]]></EventKey>" +
+//                "</xml>";
+        String request = "<xml><ToUserName><![CDATA[gh_a26585648753]]></ToUserName>" +
+                "<FromUserName><![CDATA[odynm5qCoBRwqNRkZRv2EJeDn_JE]]></FromUserName>" +
+                "<CreateTime>1661741520</CreateTime>" +
+                "<MsgType><![CDATA[text]]></MsgType>" +
+                "<Content><![CDATA[敬亭圩]]></Content>" +
+                "<MsgId>23790484195379929</MsgId>" +
+                "</xml>";
+        try {
+            String resp = HttpClientUtil.postMethod(url, request, "application/xml; charset=UTF-8");
+            System.out.printf(resp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void getUserList() {
         String token = "60_LNyEhkdqV63BBKG_E-P6XsxdQzLci7UI1r5gaYYH-ONE5A4rzDEA6fB9i0UpQl4ZiTn6PDFxQoDzRUBfTkNw62CZW63RMFHNFbf1_alxE28wvt6nbVTVQbP5cTFJCiKcs1BNYjU_kCFGMzHmESWhACAYMQ";
         String url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=" + token;
         try {
             String resp = HttpClientUtil.getMethod(url);
+            System.out.println(resp);
+            //{"total":2,"count":2,"data":{"openid":["odynm5qCoBRwqNRkZRv2EJeDn_JE","odynm5sGxHh5-DA3JJorKzTez9P0"]},"next_openid":"odynm5sGxHh5-DA3JJorKzTez9P0"}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void setMenu() {
+        String token = getWXToken();
+        String url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token;
+        try {
+            String param = "{ \"button\":[{ \"type\":\"click\",\"name\":\"敬亭圩泵站水位详情\", \"key\":\"1\" }]}";
+            String resp = HttpClientUtil.postMethod(url, param);
             System.out.println(resp);
             //{"total":2,"count":2,"data":{"openid":["odynm5qCoBRwqNRkZRv2EJeDn_JE","odynm5sGxHh5-DA3JJorKzTez9P0"]},"next_openid":"odynm5sGxHh5-DA3JJorKzTez9P0"}
         } catch (IOException e) {
