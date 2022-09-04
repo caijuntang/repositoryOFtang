@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,21 @@ public class WaterLineService {
     private StationService stationService;
     @Resource
     private WXService wxService;
+
+    @PostConstruct
+    void init() {
+        List<Station> allStation = stationService.findAllStation();
+        for(Station s:allStation){
+            Integer pumpCount = s.getPumpCount();
+            HashMap<Integer, PumpDataModel> map = new HashMap<>();
+            for(int i=1;i<=pumpCount;i++){
+                PumpDataModel model = new PumpDataModel();
+                model.setPumpNo(i);
+                map.put(i,model);
+            }
+            stationPumpDataMap.put(s.getId(), map);
+        }
+    }
 
     public Map<String, String> reportWaterLine(Double insideLine, Double outsideLine, Double foreLine, Integer stationId) {
         log.info("站点Id为：" + stationId + "的泵站水位上报，内河水位：" + insideLine + "，前池水位：" + foreLine + "，外河水位：" + outsideLine);
@@ -235,11 +251,12 @@ public class WaterLineService {
 
     }
 
-    public Object getPumpData(Integer stationId, Integer pumpNo) {
+    public Map<Integer, PumpDataModel> getPumpDataMap(Integer stationId) {
+     return stationPumpDataMap.get(stationId);
+    }
+
+    public PumpDataModel getPumpData(Integer stationId, Integer pumpNo) {
         Map<Integer, PumpDataModel> pumpDataModelMap = stationPumpDataMap.get(stationId);
-        if(null==pumpNo){
-            return pumpDataModelMap;
-        }
         PumpDataModel pumpDataModel = pumpDataModelMap.get(pumpNo);
         return pumpDataModel;
     }

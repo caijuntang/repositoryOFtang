@@ -4,18 +4,28 @@
     <Button type="primary" @click="initAlarmDialog" style="margin-left: 22px">水位报警设置</Button>
     <card dis-hover class="card-top">
       <p slot="title" style="text-align: center">宣城市宣州区敬亭圩排涝站水位监测</p>
-      <card class="card-content">
-        外河水位：<Input v-model="outsideVal" style="width: 70px;" readonly/>&nbsp;米
-      </card>
-      <card class="card-building">
-        泵站机房
-      </card>
-      <card class="card-content">
-        前池水位：<Input v-model="foreVal" style="width: 70px;" readonly/>&nbsp;米
-      </card>
-      <card class="card-content"  :class="isAlarm ? 'warnFont' : '' ">
-        内河水位：<Input v-model="insideVal" style="width: 70px;"  readonly/>&nbsp;米
-      </card>
+      <div>
+        <card dis-hover class="card-content">
+          <p slot="title" style="font-size: xx-small">外河水位</p>
+          {{outsideVal}}&nbsp;米
+        </card>
+        <card dis-hover class="card-content">
+          <p slot="title" style="font-size: xx-small">前池水位</p>
+          {{foreVal}}&nbsp;米
+        </card>
+        <card dis-hover class="card-content" :class="isAlarm ? 'warnFont' : '' ">
+          <p slot="title" style="font-size: xx-small">内河水位</p>
+          {{insideVal}}&nbsp;米
+        </card>
+        <div style="display: inline-block;" v-for="count in pumpCount" :value="count" :key="count">
+          <card dis-hover class="card-building">
+            <p slot="title" style="font-size: xx-small">{{count}}#机组</p>
+              <p>A相电压:{{pumpData[count-1].va}}V&nbsp;&nbsp;A相电流:{{pumpData[count-1].aa}}A</p>
+              <p>B相电压:{{pumpData[count-1].vb}}V&nbsp;&nbsp;B相电流:{{pumpData[count-1].ab}}A</p>
+              <p>C相电压:{{pumpData[count-1].vc}}V&nbsp;&nbsp;C相电流:{{pumpData[count-1].ac}}A</p>
+          </card>
+        </div>
+      </div>
     </card>
     <Modal title="水位告警配置" v-bind:closable='false' width="45" v-model='alarmDialogModal.modal' closable
            @on-cancel="alarmDialogCancel"
@@ -40,7 +50,7 @@
           </Switch>
         </FormItem>
         <FormItem label="告警频率:" prop="frequency">
-          <Select v-model="alarmForm.frequency"  style="width: 100px;" >
+          <Select v-model="alarmForm.frequency" style="width: 100px;">
             <Option v-for="(f,index) in frequencyList" :value="f" :key="index">{{f}}分钟/次</Option>
           </Select>
         </FormItem>
@@ -67,13 +77,15 @@
     name: 'control',
     data: function () {
       return {
-        isAlarm:false,
+        isAlarm: false,
         insideVal: 0.01,
         foreVal: 0.01,
         outsideVal: 0.01,
         timer: '',
-        receiverList:[],
-        frequencyList:["5","10","15","30","45","60"],
+        receiverList: [],
+        pumpData:[],
+        pumpCount:4,
+        frequencyList: ["5", "10", "15", "30", "45", "60"],
         alarmDialogModal: {
           modal: false,
           closable: false,
@@ -84,7 +96,7 @@
           stationId: 1,
           alarmName: "",
           alarmLine: 0.00,
-          frequency:5,
+          frequency: 5,
           receivers: [],
           status: 0
         }
@@ -93,15 +105,41 @@
     methods: {
       init: function () {
         this.getWaterLine()
+        this.getPumpCount()
         this.timer = setInterval(() => {
-          this.getWaterLine()
-        }, 10000)
+          this.initData()
+         }, 10000)
       },
-      getWXReceivers:function(){
+      initData:function(){
+        this.getWaterLine()
+        this.getPumpData()
+      },
+      getPumpCount:function(){
+        $.ajax.post('/control/getPumpCount?stationId=1')
+          .then(data => {
+            if (null != data) {
+              this.pumpCount = data
+            }
+          }).catch(function (reason) {
+          console.log(reason)
+        })
+      },
+      getWXReceivers: function () {
         $.ajax.post('/control/getWXReceivers')
           .then(data => {
-            if(null!=data){;
-              this.receiverList=data
+            if (null != data) {
+              this.receiverList = data
+            }
+          }).catch(function (reason) {
+          console.log(reason)
+        })
+      },
+      getPumpData:function(){
+        this.pumpData=[]
+        $.ajax.post('/control/getPumpData?stationId=1')
+          .then(data => {
+            if (null != data) {
+              this.pumpData=data
             }
           }).catch(function (reason) {
           console.log(reason)
@@ -118,10 +156,10 @@
             this.insideVal = data.insideVal
             this.outsideVal = data.outsideVal
             this.foreVal = data.foreVal
-            if (alarmLine!==0&&this.insideVal >= alarmLine) {
-              this.isAlarm=true
-            }else{
-              this.isAlarm=false
+            if (alarmLine !== 0 && this.insideVal >= alarmLine) {
+              this.isAlarm = true
+            } else {
+              this.isAlarm = false
             }
           }).catch(function (reason) {
           console.log(reason)
@@ -154,7 +192,7 @@
           this.confirmAlert('报警水位不能为空')
           return false
         }
-        if (this.alarmForm.receivers.length==0) {
+        if (this.alarmForm.receivers.length == 0) {
           this.confirmAlert('通知人不能为空')
           return false
         }
@@ -180,14 +218,14 @@
       },
       initAlarmDialog: function () {
         this.getWXReceivers()
-        $.ajax.post('/control/getAlarmConfig?stationId='+this.alarmForm.stationId)
+        $.ajax.post('/control/getAlarmConfig?stationId=' + this.alarmForm.stationId)
           .then((form) => {
             if (form) {
               this.alarmForm.id = form.id
               this.alarmForm.alarmName = form.alarmName
               this.alarmForm.alarmLine = form.alarmLine
               this.alarmForm.receivers = form.receivers
-              this.alarmForm.frequency=form.frequency
+              this.alarmForm.frequency = form.frequency
               this.alarmForm.status = form.status
             }
             this.alarmDialogModal.modal = true
@@ -201,10 +239,10 @@
         this.alarmDialogModal.loading = false
         this.alarmForm.id = null
         this.alarmForm.status = 0
-        this.alarmForm.frequency=5
+        this.alarmForm.frequency = 5
         this.alarmForm.alarmName = ""
         this.alarmForm.alarmLine = 0.00
-        this.alarmForm.receivers=[]
+        this.alarmForm.receivers = []
       }
     },
     created() {
@@ -224,22 +262,23 @@
 
   .card-content {
     margin: 10px;
-    height: 30%;
-    text-align: center;
-    align-content: center;
-    background: #57a3f3;
+    height: 105px;
+    width: 85px;
+    display: inline-block;
+    background: #a5def3;
   }
 
   .card-building {
     margin: 10px;
-    background: coral;
-    height: 50%;
-    text-align: center;
-    align-content: center;
-    font-size: 100px
+    background: #fffff9;
+    height:150px;
+    width:220px
+    /*text-align: center;*/
+    /*align-content: center;*/
   }
+
   .warnFont {
-    -webkit-text-fill-color:red;
+    -webkit-text-fill-color: red;
   }
 
 </style>

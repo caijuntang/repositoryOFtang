@@ -6,9 +6,14 @@ import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
 import org.junit.Test;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class WaterLineTest {
 
@@ -16,7 +21,7 @@ public class WaterLineTest {
     public void reportWaterLine() {
 //        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
         String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
-        WaterLine waterLine = new WaterLine(6.41,6.79,6.41);
+        WaterLine waterLine = new WaterLine(6.41,6.79,6.41,false);
         String param = JSON.toJSONString(waterLine);
         System.out.println(param);
 //        String reqStr="{\"indsideVal\":3.28,\"outsideVal\":5.58,\"fpreVal\":3.33}";
@@ -40,9 +45,17 @@ public class WaterLineTest {
 
     @Test
     public void test(){
-        String localTime = DateTimeUtil.getNowDateTimeString();
-
-        System.out.printf(localTime);
+        Map<Integer, String> map = new HashMap<>();
+        map.put(2,"b");
+        map.put(3,"c");
+        map.put(4,"d");
+        map.put(1,"a");
+        Set<Map.Entry<Integer, String>> entries = map.entrySet();
+        for (Map.Entry<Integer,String> e:entries){
+            System.out.println(e.getKey()+"================"+e.getValue());
+        }
+        Collection<String> values = map.values();
+        System.out.printf(values.toString());
     }
 
 }

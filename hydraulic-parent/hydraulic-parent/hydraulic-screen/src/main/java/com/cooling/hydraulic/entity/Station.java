@@ -4,6 +4,7 @@ package com.cooling.hydraulic.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
@@ -26,6 +27,9 @@ public class Station {
     private String province;
 
     private String city;
+
+    @Column(name="pump_count")
+    private Integer pumpCount;
 
     @Column(name="create_time")
     private Date createTime;
@@ -84,5 +88,13 @@ public class Station {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getPumpCount() {
+        return pumpCount;
+    }
+
+    public void setPumpCount(Integer pumpCount) {
+        this.pumpCount = pumpCount;
     }
 }

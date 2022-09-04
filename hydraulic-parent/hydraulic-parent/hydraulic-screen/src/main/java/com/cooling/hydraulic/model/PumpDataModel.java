@@ -2,12 +2,12 @@ package com.cooling.hydraulic.model;
 
 public class PumpDataModel {
     private Integer pumpNo;
-    private Double va;
-    private Double vb;
-    private Double vc;
-    private Double aa;
-    private Double ab;
-    private Double ac;
+    private Double va=0.00;
+    private Double vb=0.00;
+    private Double vc=0.00;
+    private Double aa=0.00;
+    private Double ab=0.00;
+    private Double ac=0.00;
 
     public Integer getPumpNo() {
         return pumpNo;
