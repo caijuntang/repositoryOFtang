@@ -2,6 +2,7 @@ package com.cooling.hydraulic.openApi;
 
 import com.cooling.hydraulic.model.PumpDataModel;
 import com.cooling.hydraulic.model.WaterLine;
+import com.cooling.hydraulic.request.qyRequest.PumpDataRequest;
 import com.cooling.hydraulic.service.WaterLineService;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -28,10 +29,11 @@ public class OpenApi {
         return waterLineService.reportWaterLine(insideVal, outsideVal, foreVal,stationId);
     }
 
-    @RequestMapping(name = "水泵信息上报 ", value = "/reportPumpData")
+    @RequestMapping(name = "水位获取 ", value = "/getWaterLine")
     @ResponseBody
-    public Object reportPumpData(Integer stationId, PumpDataModel model) {
-        return waterLineService.reportPumpData(stationId,model);
+    public Object getWaterLine(Integer stationId) {
+        return waterLineService.getWaterLineObject(stationId);
+
     }
 
     @RequestMapping(name = "水泵信息获取 ", value = "/getPumpData")
@@ -40,10 +42,10 @@ public class OpenApi {
         return waterLineService.getPumpData(stationId,pumpNo);
     }
 
-    @RequestMapping(name = "水位获取 ", value = "/getWaterLine")
-    @ResponseBody
-    public Object getWaterLine(Integer stationId) {
-        return waterLineService.getWaterLineObject(stationId);
 
+    @RequestMapping("/reportPumpData")
+    @ResponseBody
+    public Object reportPumpData(HttpServletRequest req, HttpServletResponse resp,@RequestBody PumpDataRequest request) {
+        return waterLineService.reportPumpData(request.getStationId(),request.getPumpData());
     }
 }

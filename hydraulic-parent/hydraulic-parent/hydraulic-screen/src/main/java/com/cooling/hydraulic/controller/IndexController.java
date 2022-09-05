@@ -2,11 +2,14 @@ package com.cooling.hydraulic.controller;
 
 
 import com.cooling.hydraulic.model.AlarmConfigModel;
+import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.request.qyRequest.PumpDataRequest;
 import com.cooling.hydraulic.service.AlarmService;
 import com.cooling.hydraulic.service.WXService;
 import com.cooling.hydraulic.service.WaterLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
