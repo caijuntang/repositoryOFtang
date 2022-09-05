@@ -1,8 +1,10 @@
 <template>
   <!--search-->
-  <div style="margin:10px">
-    <Button type="primary" @click="initAlarmDialog" style="margin-left: 22px">水位报警设置</Button>
-    <card dis-hover class="card-top">
+  <div style="margin:10px" @click="drawerMove">
+    <Drawer title="泵站设置" v-model="setDrawer" placement="left" :closable="false">
+      <Button type="primary" @click="initAlarmDialog" style="margin-top: 60px;margin-left: 22px">水位报警设置</Button>
+    </Drawer>
+    <card dis-hover class="card-top" >
       <p slot="title" style="text-align: center">宣城市宣州区敬亭圩排涝站水位监测</p>
       <div>
         <card dis-hover class="card-content">
@@ -20,9 +22,9 @@
         <div style="display: inline-block;" v-for="count in pumpCount" :value="count" :key="count">
           <card dis-hover class="card-building">
             <p slot="title" style="font-size: xx-small">{{count}}#机组</p>
-              <p>A相电压:{{pumpData[count-1].va}}V&nbsp;&nbsp;A相电流:{{pumpData[count-1].aa}}A</p>
-              <p>B相电压:{{pumpData[count-1].vb}}V&nbsp;&nbsp;B相电流:{{pumpData[count-1].ab}}A</p>
-              <p>C相电压:{{pumpData[count-1].vc}}V&nbsp;&nbsp;C相电流:{{pumpData[count-1].ac}}A</p>
+              <p>A相电压:{{pumpData[count-1].va}}V；A相电流:{{pumpData[count-1].aa}}A</p>
+              <p>B相电压:{{pumpData[count-1].vb}}V；B相电流:{{pumpData[count-1].ab}}A</p>
+              <p>C相电压:{{pumpData[count-1].vc}}V；C相电流:{{pumpData[count-1].ac}}A</p>
           </card>
         </div>
       </div>
@@ -77,6 +79,7 @@
     name: 'control',
     data: function () {
       return {
+        setDrawer:false,
         isAlarm: false,
         insideVal: 0.01,
         foreVal: 0.01,
@@ -105,7 +108,8 @@
     methods: {
       init: function () {
         this.getWaterLine()
-        this.getPumpCount()
+        this.getPumpData()
+        // this.getPumpCount()
         this.timer = setInterval(() => {
           this.initData()
          }, 10000)
@@ -124,6 +128,9 @@
           console.log(reason)
         })
       },
+      drawerMove:function(){
+        this.setDrawer=true
+      },
       getWXReceivers: function () {
         $.ajax.post('/control/getWXReceivers')
           .then(data => {
@@ -139,6 +146,7 @@
         $.ajax.post('/control/getPumpData?stationId=1')
           .then(data => {
             if (null != data) {
+              this.pumpCount=data.length
               this.pumpData=data
             }
           }).catch(function (reason) {
@@ -261,7 +269,7 @@
   }
 
   .card-content {
-    margin: 10px;
+    margin: 2px;
     height: 105px;
     width: 85px;
     display: inline-block;
@@ -269,10 +277,10 @@
   }
 
   .card-building {
-    margin: 10px;
+    margin: 2px;
     background: #fffff9;
     height:150px;
-    width:220px
+    width:270px
     /*text-align: center;*/
     /*align-content: center;*/
   }

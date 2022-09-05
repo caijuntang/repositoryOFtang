@@ -1,13 +1,16 @@
 package com.cooling.hydraulic.model;
 
+import org.springframework.util.StringUtils;
+
 public class PumpDataModel {
     private Integer pumpNo;
-    private Double va=0.00;
-    private Double vb=0.00;
-    private Double vc=0.00;
-    private Double aa=0.00;
-    private Double ab=0.00;
-    private Double ac=0.00;
+    private String va="0.00";
+    private String vb="0.00";
+    private String vc="0.00";
+    private String aa="0.00";
+    private String ab="0.00";
+    private String ac="0.00";
+
 
     public Integer getPumpNo() {
         return pumpNo;
@@ -17,54 +20,52 @@ public class PumpDataModel {
         this.pumpNo = pumpNo;
     }
 
-    public Double getVa() {
+    public String getVa() {
         return va;
     }
 
-    public void setVa(Double va) {
-        this.va = null == va ? 0.00 : va;
+    public void setVa(String va) {
+        this.va = va;
     }
 
-    public Double getVb() {
+    public String getVb() {
         return vb;
     }
 
-    public void setVb(Double vb) {
-        this.vb = null == vb ? 0.00 : vb;
+    public void setVb(String vb) {
+        this.vb = StringUtils.hasText(vb)?vb : va;
     }
 
-    public Double getVc() {
+    public String getVc() {
         return vc;
     }
 
-    public void setVc(Double vc) {
-        this.vc = null == vc ? 0.00 : vc;
+    public void setVc(String vc) {
+        this.vc = StringUtils.hasText(vc)?vc : va;
     }
 
-    public Double getAa() {
+    public String getAa() {
         return aa;
     }
 
-    public void setAa(Double aa) {
-        this.aa = null == aa ? 0.00 : aa;
-        ;
+    public void setAa(String aa) {
+        this.aa = aa;
     }
 
-    public Double getAb() {
+    public String getAb() {
         return ab;
     }
 
-    public void setAb(Double ab) {
-        this.ab = null == ab ? 0.00 : ab;
-        ;
+    public void setAb(String ab) {
+        this.ab = ab;
     }
 
-    public Double getAc() {
+    public String getAc() {
         return ac;
     }
 
-    public void setAc(Double ac) {
-        this.ac = null == ac ? 0.00 : ac;
+    public void setAc(String ac) {
+        this.ac = ac;
     }
 
     @Override

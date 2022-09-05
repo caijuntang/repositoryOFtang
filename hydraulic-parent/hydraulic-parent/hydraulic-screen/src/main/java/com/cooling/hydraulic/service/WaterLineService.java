@@ -78,6 +78,7 @@ public class WaterLineService {
             isAlarm = true;
         }
         WaterLine waterLine = new WaterLine(insideLine, outsideLine, foreLine, isAlarm);
+        waterLineMap.put(stationId,waterLine);
         result.put("code", "200");
         result.put("msg", "report success!");
         return result;
@@ -231,14 +232,14 @@ public class WaterLineService {
     }
 
     public Object reportPumpData(Integer stationId, PumpDataModel request) {
-        log.info("站点Id为：" + stationId + "的泵机数据：" + request.toString());
         Map<String, String> result = new HashMap<>();
-        Integer pumpNo = request.getPumpNo();
-        if (null == pumpNo || null == stationId) {
+        if (null == request || null == stationId) {
             result.put("code", "999");
             result.put("msg", "data is empty!");
             return result;
         }
+        Integer pumpNo = request.getPumpNo();
+        log.info("站点Id为：" + stationId + "的泵机数据：" + request.toString());
         Map<Integer, PumpDataModel> pumpDataMap = stationPumpDataMap.get(stationId);
         if(null==pumpDataMap){
             pumpDataMap=new ConcurrentHashMap<>();
