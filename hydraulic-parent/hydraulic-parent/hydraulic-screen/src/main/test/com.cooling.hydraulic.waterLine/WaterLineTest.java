@@ -21,8 +21,8 @@ public class WaterLineTest {
 
     @Test
     public void reportWaterLine() {
-        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
-//        String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
+//        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
+        String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
         WaterLine waterLine = new WaterLine(6.41,6.79,6.41,false);
         String param = JSON.toJSONString(waterLine);
         System.out.println(param);

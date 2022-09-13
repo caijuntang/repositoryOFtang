@@ -1,6 +1,6 @@
 <template>
   <!--search-->
-  <div style="margin:10px" @click="drawerMove">
+  <div style="margin:10px" @click="drawerMove" >
     <Drawer title="泵站设置" v-model="setDrawer" placement="left" :closable="false">
       <Button type="primary" @click="initAlarmDialog" style="margin-top: 60px;margin-left: 22px">水位报警设置</Button>
     </Drawer>

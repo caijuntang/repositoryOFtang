@@ -171,7 +171,7 @@
             <artifactId>weixin-java-mp</artifactId>
             <version>3.6.0</version>
         </dependency>
-<!-- devtools -->
+        <!-- devtools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

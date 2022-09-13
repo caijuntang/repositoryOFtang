@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,10 @@ public class WaterLineService {
                 model.setPumpNo(i);
                 map.put(i,model);
             }
-            stationPumpDataMap.put(s.getId(), map);
+            Integer stationId = s.getId();
+            stationPumpDataMap.put(stationId, map);
+            WaterLine waterLine = new WaterLine();
+            waterLineMap.put(stationId,waterLine);
         }
     }
 
@@ -68,8 +72,10 @@ public class WaterLineService {
             result.put("msg", "data is empty!");
             return result;
         }
-        if (null == insideLine) {
-            insideLine = foreLine + 0.02;
+        if (null == insideLine&&null!=foreLine) {
+            BigDecimal foreBigDecimal = BigDecimal.valueOf(foreLine + 0.02);
+            foreBigDecimal.add(BigDecimal.valueOf(0.02));
+            insideLine = foreBigDecimal.doubleValue();
         }
 
         boolean isAlarm = false;
@@ -77,7 +83,20 @@ public class WaterLineService {
         if (insideLine >= alarmLine) {
             isAlarm = true;
         }
-        WaterLine waterLine = new WaterLine(insideLine, outsideLine, foreLine, isAlarm);
+        WaterLine waterLine = waterLineMap.get(stationId);
+        if(null==waterLine){
+            waterLine = new WaterLine(insideLine, outsideLine, foreLine, isAlarm);
+        }else {
+            if(null!=insideLine){
+                waterLine.setInsideVal(insideLine);
+            }
+            if(null!=foreLine){
+                waterLine.setForeVal(foreLine);
+            }
+            if(null!=outsideLine){
+                waterLine.setOutsideVal(outsideLine);
+            }
+        }
         waterLineMap.put(stationId,waterLine);
         result.put("code", "200");
         result.put("msg", "report success!");
@@ -167,7 +186,8 @@ public class WaterLineService {
         }
     }
 
-    @Scheduled(cron = "0 0 8,13 * * ? ")
+//    @Scheduled(cron = "0 0 8,13 * * ? ")
+    @Scheduled(cron = "0 * * * * ? ")
     public void reportWaterDetail() {
         log.info("================上下午水位工作预报查询启动==================");
         List<AlarmConfig> alarmConfigs = alarmService.findByStatus(1);

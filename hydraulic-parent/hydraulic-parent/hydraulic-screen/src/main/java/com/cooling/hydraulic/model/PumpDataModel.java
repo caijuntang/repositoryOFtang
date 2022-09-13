@@ -33,7 +33,7 @@ public class PumpDataModel {
     }
 
     public void setVb(String vb) {
-        this.vb = StringUtils.hasText(vb)?vb : va;
+        this.vb = !StringUtils.hasText(vb)||"0.00".equals(vb) ? va : vb;
     }
 
     public String getVc() {
