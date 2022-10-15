@@ -11,7 +11,6 @@ public class PumpDataModel {
     private String ab="0.00";
     private String ac="0.00";
 
-
     public Integer getPumpNo() {
         return pumpNo;
     }
@@ -33,7 +32,7 @@ public class PumpDataModel {
     }
 
     public void setVb(String vb) {
-        this.vb = !StringUtils.hasText(vb)||"0.00".equals(vb) ? va : vb;
+        this.vb = StringUtils.isEmpty(vb)||"0.00".equals(vb) ? va:vb;
     }
 
     public String getVc() {
@@ -41,7 +40,14 @@ public class PumpDataModel {
     }
 
     public void setVc(String vc) {
-        this.vc = StringUtils.hasText(vc)?vc : va;
+        if(StringUtils.isEmpty(vc)||"0.00".equals(vc)){
+            if(StringUtils.isEmpty(va)||"0.00".equals(va)){
+                vc=vb;
+            }else{
+                vc=va;
+            }
+        }
+        this.vc = vc;
     }
 
     public String getAa() {

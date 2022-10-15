@@ -50,18 +50,20 @@ public class AlarmService {
         if (StringUtils.isNotEmpty(frequency)) {
             frequencyInt = Integer.parseInt(frequency);
         }
+        Integer stationId = config.getStationId();
+        double alarmLine = config.getAlarmLine();
         if (null != id) {
             AlarmConfig old = alarmConfigRepository.getOne(id);
             old.setReceivers(reveiversStr);
-            old.setAlarmLine(config.getAlarmLine());
+            old.setAlarmLine(alarmLine);
             old.setName(config.getAlarmName());
             old.setFrequency(frequencyInt);
             alarmConfigRepository.save(old);
         } else {
-            Station station = stationRepository.getOne(config.getStationId());
+            Station station = stationRepository.getOne(stationId);
             AlarmConfig alarmConfig = new AlarmConfig();
             alarmConfig.setName(config.getAlarmName());
-            alarmConfig.setAlarmLine(config.getAlarmLine());
+            alarmConfig.setAlarmLine(alarmLine);
             alarmConfig.setStatus(config.getStatus());
             alarmConfig.setReceivers(reveiversStr);
             alarmConfig.setStation(station);
@@ -70,7 +72,9 @@ public class AlarmService {
             alarmConfigRepository.save(alarmConfig);
         }
         if (config.getStatus() == 1) {
-            alarmLineMap.put(1, config.getAlarmLine());
+            alarmLineMap.put(stationId, alarmLine);
+        }else{
+            alarmLineMap.remove(stationId);
         }
         return true;
     }

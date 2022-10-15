@@ -28,11 +28,20 @@ public class Station {
 
     private String city;
 
+    private Float longitude;
+
+    private Float attitude;
+
     @Column(name="pump_count")
     private Integer pumpCount;
 
     @Column(name="create_time")
     private Date createTime;
+
+    private String nameKey;
+
+    @Column(name="is_default")
+    private int isDefault;
 
     public Integer getId() {
         return id;
@@ -96,5 +105,37 @@ public class Station {
 
     public void setPumpCount(Integer pumpCount) {
         this.pumpCount = pumpCount;
+    }
+
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getAttitude() {
+        return attitude;
+    }
+
+    public void setAttitude(Float attitude) {
+        this.attitude = attitude;
+    }
+
+    public String getNameKey() {
+        return nameKey;
+    }
+
+    public void setNameKey(String nameKey) {
+        this.nameKey = nameKey;
+    }
+
+    public int getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
     }
 }

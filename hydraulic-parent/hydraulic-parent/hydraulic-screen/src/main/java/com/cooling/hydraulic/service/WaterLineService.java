@@ -73,9 +73,9 @@ public class WaterLineService {
             return result;
         }
         if (null == insideLine&&null!=foreLine) {
-            BigDecimal foreBigDecimal = BigDecimal.valueOf(foreLine + 0.02);
-            foreBigDecimal.add(BigDecimal.valueOf(0.02));
-            insideLine = foreBigDecimal.doubleValue();
+            BigDecimal foreBigDecimal = BigDecimal.valueOf(foreLine);
+            foreBigDecimal=foreBigDecimal.add(BigDecimal.valueOf(0.02));
+            insideLine = foreBigDecimal.setScale(2).doubleValue();
         }
 
         boolean isAlarm = false;
@@ -96,6 +96,7 @@ public class WaterLineService {
             if(null!=outsideLine){
                 waterLine.setOutsideVal(outsideLine);
             }
+            waterLine.setAlarm(isAlarm);
         }
         waterLineMap.put(stationId,waterLine);
         result.put("code", "200");
@@ -186,8 +187,7 @@ public class WaterLineService {
         }
     }
 
-//    @Scheduled(cron = "0 0 8,13 * * ? ")
-    @Scheduled(cron = "0 * * * * ? ")
+    @Scheduled(cron = "0 0 8,13 * * ? ")
     public void reportWaterDetail() {
         log.info("================上下午水位工作预报查询启动==================");
         List<AlarmConfig> alarmConfigs = alarmService.findByStatus(1);
@@ -263,6 +263,28 @@ public class WaterLineService {
         Map<Integer, PumpDataModel> pumpDataMap = stationPumpDataMap.get(stationId);
         if(null==pumpDataMap){
             pumpDataMap=new ConcurrentHashMap<>();
+        }else{
+            String va = request.getVa();
+            String vb = request.getVb();
+            String vc = request.getVc();
+            PumpDataModel pumpDataModel = pumpDataMap.get(pumpNo);
+            if(StringUtils.isEmpty(va)||"0.00".equals(va)){
+                if(StringUtils.isEmpty(vb)||"0.00".equals(vb)){
+                    request.setVa(vc);
+                    request.setVb(vc);
+                    va=vc;
+                    vb=vc;
+                }else{
+                   request.setVa(vb);
+                   va=vb;
+                }
+            }
+            if(StringUtils.isEmpty(va)||"0.00".equals(va)){
+                request.setVa(pumpDataModel.getVa());
+            }
+            if(StringUtils.isEmpty(vb)||"0.00".equals(vb)){
+                request.setVb(pumpDataModel.getVb());
+            }
         }
         pumpDataMap.put(pumpNo,request);
         stationPumpDataMap.put(stationId,pumpDataMap);

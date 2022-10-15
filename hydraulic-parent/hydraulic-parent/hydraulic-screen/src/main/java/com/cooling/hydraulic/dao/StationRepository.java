@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface StationRepository extends JpaRepository<Station, Integer>, JpaSpecificationExecutor<Station> {
 
 
+    Station findStationByIsDefault(int defaultFlag);
+
 }

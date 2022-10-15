@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
@@ -23,13 +25,13 @@ public class WaterLineTest {
     public void reportWaterLine() {
 //        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
         String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
-        WaterLine waterLine = new WaterLine(6.41,6.79,6.41,false);
+        WaterLine waterLine = new WaterLine(6.41,7.98,6.35,false);
         String param = JSON.toJSONString(waterLine);
         System.out.println(param);
 //        String reqStr="{\"indsideVal\":3.28,\"outsideVal\":5.58,\"fpreVal\":3.33}";
         try {
 //            String response = HttpClientUtils.postMethod(url, param);
-            String response= HttpClientUtil.getMethod(url+"?insideVal=6.41&outsideVal=6.79&foreVal=6.42&stationId=1",10000,10000);
+            String response= HttpClientUtil.getMethod(url+"?insideVal=7.08&outsideVal=7.38&foreVal=7.08&stationId=2",10000,10000);
             System.out.println("=======================================");
             System.out.printf(response);
         } catch (IOException e) {
@@ -46,7 +48,7 @@ public class WaterLineTest {
     }
 
     @Test
-    public void test(){
+    public void test1(){
         Map<Integer, String> map = new HashMap<>();
         map.put(2,"b");
         map.put(3,"c");
@@ -60,22 +62,53 @@ public class WaterLineTest {
         System.out.printf(values.toString());
     }
 
+    @Test
+    public void test2(){
+        Double foreLine=6.42;
+        Double insideLine=null;
+        BigDecimal foreBigDecimal = BigDecimal.valueOf(foreLine);
+        foreBigDecimal= foreBigDecimal.add(BigDecimal.valueOf(0.02));
+//        insideLine = foreBigDecimal.setScale(2, RoundingMode.UP).doubleValue();
+        insideLine = foreBigDecimal.doubleValue();
+        System.out.printf("=========insideLine:"+insideLine);
+    }
+
 
     @Test
     public void sendPumpData(){
+        String url = "http://localhost:8090/screen/openApi/reportPumpData";
+//        String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
         PumpDataRequest pumpDataRequest = new PumpDataRequest();
-        pumpDataRequest.setStationId(1);
+        pumpDataRequest.setStationId(2);
         PumpDataModel m = new PumpDataModel();
-        m.setPumpNo(1);
-        m.setVa("4567.8");
-        m.setVb("4321.6");
+//        m.setPumpNo(1);
+//        m.setVa("0.00");
+//        m.setVb("5847.4");
+//        m.setVc("0.00");
+
+        m.setPumpNo(2);
+        m.setVa("0.00");
+        m.setVb("0.00");
+        m.setVc("5841.5");
+
+//        m.setPumpNo(3);
+//        m.setVa("5885.7");
+//        m.setVb("5893.7");
+//        m.setVc("0.00");
+
+//        m.setPumpNo(4);
+//        m.setVa("5489.3");
+//        m.setVb("0.00");
+//        m.setVc("0.00");
+
         m.setAa("0.00");
-        m.setAb("4563.0");
+        m.setAb("0.00");
+        m.setAc("0.00");
         pumpDataRequest.setPumpData(m);
         String requestStr = JSON.toJSONString(pumpDataRequest);
         System.out.printf(requestStr);
         try {
-            String response= HttpClientUtil.postMethod("http://192.168.2.8:8090/screen/control/reportPumpData",requestStr);
+            String response= HttpClientUtil.postMethod(url,requestStr,"application/json");
             System.out.printf(response);
         } catch (IOException e) {
             e.printStackTrace();

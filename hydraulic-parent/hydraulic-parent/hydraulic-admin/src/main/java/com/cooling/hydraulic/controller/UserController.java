@@ -43,13 +43,13 @@ public class UserController {
 //    }
 
     @GetMapping
-    @PreAuthorize("@el.check('user:list')")
+//    @PreAuthorize("@el.check('user:list')")
     public ResponseEntity<Object> queryUser(UserQueryCriteria criteria, Pageable pageable){
         return new ResponseEntity<>(userService.queryAll(criteria,pageable), HttpStatus.OK);
     }
 
     @PostMapping
-    @PreAuthorize("@el.check('user:add')")
+//    @PreAuthorize("@el.check('user:add')")
     public ResponseEntity<Object> createUser(@Validated @RequestBody User resources){
         checkLevel(resources);
         // 默认密码 123456
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping
-    @PreAuthorize("@el.check('user:edit')")
+//    @PreAuthorize("@el.check('user:edit')")
     public ResponseEntity<Object> updateUser(@Validated(User.Update.class) @RequestBody User resources) throws Exception {
         checkLevel(resources);
         userService.update(resources);
@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    @PreAuthorize("@el.check('user:del')")
+//    @PreAuthorize("@el.check('user:del')")
     public ResponseEntity<Object> deleteUser(@RequestBody Set<Long> ids){
         for (Long id : ids) {
             Integer currentLevel =  Collections.min(roleService.findByUsersId(SecurityUtils.getCurrentUserId()).stream().map(RoleSmallDto::getLevel).collect(Collectors.toList()));

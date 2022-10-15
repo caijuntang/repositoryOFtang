@@ -1,0 +1,19 @@
+{
+  "button": [
+    {
+      "name": "泵站水位详情",
+      "sub_button": [
+        {
+          "type": "click",
+          "name": "敬亭圩泵站",
+          "key": "1"
+        },
+        {
+          "type": "click",
+          "name": "龙窝湖泵站",
+          "key": "2"
+        }
+      ]
+    }
+  ]
+}

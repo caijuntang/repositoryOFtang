@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "base")
 public class BaseConfig {
-    private final static Logger log = LoggerFactory.getLogger(WaterLineService.class);
+    private final static Logger log = LoggerFactory.getLogger(BaseConfig.class);
 
     @Value("${station_name_key:敬亭圩}")
     public static String stationNameKey;

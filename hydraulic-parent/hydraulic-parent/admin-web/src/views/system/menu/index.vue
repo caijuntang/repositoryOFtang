@@ -25,8 +25,7 @@
             placement="bottom-start"
             width="450"
             trigger="click"
-            @show="$refs['iconSelect'].reset()"
-          >
+            @show="$refs['iconSelect'].reset()">
             <IconSelect ref="iconSelect" @selected="selected" />
             <el-input slot="reference" v-model="form.icon" style="width: 450px;" placeholder="点击选择图标" readonly>
               <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
@@ -79,8 +78,7 @@
             :options="menus"
             :load-options="loadMenus"
             style="width: 450px;"
-            placeholder="选择上级类目"
-          />
+            placeholder="选择上级类目"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,7 +148,7 @@
 <script>
 import crudMenu from '@/api/system/menu'
 import IconSelect from '@/components/IconSelect'
-// import Treeselect from '@riophae/vue-treeselect'
+import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
@@ -163,9 +161,9 @@ import DateRangePicker from '@/components/DateRangePicker'
 const defaultForm = { id: null, title: null, menuSort: 999, path: null, component: null, componentName: null, iFrame: false, roles: [], pid: 0, icon: null, cache: false, hidden: false, type: 0, permission: null }
 export default {
   name: 'Menu',
-  components: { IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker },
+  components: { IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker ,Treeselect},
   cruds() {
-    return CRUD({ title: '菜单', url: 'api/menus', crudMethod: { ...crudMenu }})
+    return CRUD({ title: '菜单', url: 'api/menus/', crudMethod: { ...crudMenu }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   data() {

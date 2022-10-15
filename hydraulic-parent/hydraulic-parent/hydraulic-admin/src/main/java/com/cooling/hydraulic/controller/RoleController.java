@@ -13,11 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,32 +33,37 @@ public class RoleController {
 
     private static final String ENTITY_NAME = "role";
 
-    @RequestMapping(value = "/get")
+    @GetMapping(value = "/{id}")
+//    @PreAuthorize("@el.check('roles:list')")
     public ResponseEntity<Object> findRoleById(@PathVariable Long id){
         return new ResponseEntity<>(roleService.findById(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/download")
+    @GetMapping(value = "/download")
     public void exportRole(HttpServletResponse response, RoleQueryCriteria criteria) throws IOException {
         roleService.download(roleService.queryAll(criteria), response);
     }
 
-    @RequestMapping(value = "/all")
+    @GetMapping(value = "/all")
+//    @PreAuthorize("@el.check('roles:list','user:add','user:edit')")
     public ResponseEntity<Object> queryAllRole(){
         return new ResponseEntity<>(roleService.queryAll(), HttpStatus.OK);
     }
 
-    @RequestMapping("/pageQuery")
+    @GetMapping
+//    @PreAuthorize("@el.check('roles:list')")
     public ResponseEntity<Object> queryRole(RoleQueryCriteria criteria, Pageable pageable){
         return new ResponseEntity<>(roleService.queryAll(criteria,pageable), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/level")
+    @GetMapping(value = "/level")
     public ResponseEntity<Object> getRoleLevel(){
         return new ResponseEntity<>(Dict.create().set("level", getLevels(null)), HttpStatus.OK);
     }
 
-    @RequestMapping("/add")
+
+    @PostMapping
+//    @PreAuthorize("@el.check('roles:add')")
     public ResponseEntity<Object> createRole(@Validated @RequestBody Role resources){
         if (resources.getId() != null) {
             throw new BadRequestException("A new "+ ENTITY_NAME +" cannot already have an ID");
@@ -70,14 +73,16 @@ public class RoleController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping("/edit")
+    @PutMapping
+//    @PreAuthorize("@el.check('roles:edit')")
     public ResponseEntity<Object> updateRole(@Validated(Role.Update.class) @RequestBody Role resources){
         getLevels(resources.getLevel());
         roleService.update(resources);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/menu")
+    @PutMapping(value = "/menu")
+//    @PreAuthorize("@el.check('roles:edit')")
     public ResponseEntity<Object> updateRoleMenu(@RequestBody Role resources){
         RoleDto role = roleService.findById(resources.getId());
         getLevels(role.getLevel());
@@ -85,7 +90,8 @@ public class RoleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping("/del")
+    @DeleteMapping
+//    @PreAuthorize("@el.check('roles:del')")
     public ResponseEntity<Object> deleteRole(@RequestBody Set<Long> ids){
         for (Long id : ids) {
             RoleDto role = roleService.findById(id);

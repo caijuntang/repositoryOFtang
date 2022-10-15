@@ -26,7 +26,8 @@
     "vue": "^2.5.2",
     "vue-bus": "^1.1.0",
     "vue-router": "^3.0.1",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.3",
+    "vue-amap":"^0.5.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

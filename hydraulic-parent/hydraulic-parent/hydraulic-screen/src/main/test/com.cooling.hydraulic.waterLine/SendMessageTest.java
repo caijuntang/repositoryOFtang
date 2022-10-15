@@ -57,7 +57,7 @@ public class SendMessageTest {
 //        params.put("first", this.item("", "#000000"));
         params.put("keyword1", this.item("敬亭圩泵站水位告警", "#000000"));
         params.put("keyword2", this.item(DateTimeUtil.getNowDateTimeString(), "#000000"));
-        params.put("keyword3", this.item("该站内河水位现到达8米，已超警戒水位（6米）！", "#000000"));
+        params.put("keyword3", this.item("该站内河水位现到达6.44米，已超警戒水位（6米）！", "#000000"));
         params.put("remark", this.item("请及时处置并持续观察！", "#000000"));
         WXTemplateMsg msg = new WXTemplateMsg();
         msg.setTemplate_id("LSvU_UPK6_JdWIi7dAlMU5BF6ALiP2Gh94UWG5muGgA");
@@ -118,7 +118,7 @@ public class SendMessageTest {
         String token = getWXToken();
         String url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token;
         try {
-            String param = "{ \"button\":[{ \"type\":\"click\",\"name\":\"敬亭圩泵站水位详情\", \"key\":\"1\" }]}";
+            String param = "{ \"button\":[{\"name\":\"水位详情\",\"sub_button\":[{ \"type\":\"click\",\"name\":\"敬亭圩泵站\", \"key\":\"1\" },{ \"type\":\"click\",\"name\":\"龙窝湖泵站\", \"key\":\"2\" }]}]}";
             String resp = HttpClientUtil.postMethod(url, param);
             System.out.println(resp);
             //{"total":2,"count":2,"data":{"openid":["odynm5qCoBRwqNRkZRv2EJeDn_JE","odynm5sGxHh5-DA3JJorKzTez9P0"]},"next_openid":"odynm5sGxHh5-DA3JJorKzTez9P0"}

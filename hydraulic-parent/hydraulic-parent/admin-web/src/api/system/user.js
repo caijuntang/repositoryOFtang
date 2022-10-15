@@ -45,6 +45,5 @@ export function updatePass(user) {
   })
 }
 
-
 export default { add, edit, del }
 

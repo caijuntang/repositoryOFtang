@@ -2,9 +2,10 @@ package com.cooling.hydraulic.model;
 
 
 public class WaterLine {
-    public  Double insideVal;
-    public  Double outsideVal;
-    public  Double foreVal;
+    private  Double insideVal=0.00;
+    private  Double outsideVal=0.00;
+    private  Double foreVal=0.00;
+    private  Boolean isAlarm=false;
 
     public Double getInsideVal() {
         return insideVal;
@@ -28,5 +29,23 @@ public class WaterLine {
 
     public void setForeVal(Double foreVal) {
         this.foreVal = foreVal;
+    }
+
+    public Boolean getAlarm() {
+        return isAlarm;
+    }
+
+    public void setAlarm(Boolean alarm) {
+        isAlarm = alarm;
+    }
+
+    public WaterLine() {
+    }
+
+    public WaterLine(Double insideVal, Double outsideVal, Double foreVal, Boolean isAlarm) {
+        this.insideVal = insideVal;
+        this.outsideVal = outsideVal;
+        this.foreVal = foreVal;
+        this.isAlarm = isAlarm;
     }
 }

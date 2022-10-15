@@ -30,4 +30,9 @@ public class StationService {
     public Station getOne(Integer stationId) {
          return stationRepository.getOne(stationId);
     }
+
+    public Station getDefaultStation(){
+        return stationRepository.findStationByIsDefault(1);
+    }
+
 }

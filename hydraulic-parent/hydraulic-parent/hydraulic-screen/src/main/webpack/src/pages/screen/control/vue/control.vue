@@ -2,10 +2,13 @@
   <!--search-->
   <div style="margin:10px" @click="drawerMove" >
     <Drawer title="泵站设置" v-model="setDrawer" placement="left" :closable="false">
-      <Button type="primary" @click="initAlarmDialog" style="margin-top: 60px;margin-left: 22px">水位报警设置</Button>
+      <Select style="margin-top: 60px;width: 200px;margin-left: 15px" v-model="selectStationId" :label-in-value="true" @on-change="stationChange">
+        <Option v-for="station in stationList" :value="station.id" :key="station.id">{{station.name}}</Option>
+      </Select>
+      <Button type="primary" @click="initAlarmDialog" style="margin-top: 60px;margin-left: 15px ;width:200px">水位报警设置</Button>
     </Drawer>
     <card dis-hover class="card-top" >
-      <p slot="title" style="text-align: center">宣城市宣州区敬亭圩排涝站水位监测</p>
+      <p slot="title" style="text-align: center">{{selectStationName}}</p>
       <div>
         <card dis-hover class="card-content">
           <p slot="title" style="font-size: xx-small">外河水位</p>
@@ -19,7 +22,7 @@
           <p slot="title" style="font-size: xx-small">内河水位</p>
           {{insideVal}}&nbsp;米
         </card>
-        <div style="display: inline-block;" v-for="count in pumpCount" :value="count" :key="count">
+        <div style="display: inline-block;" v-for="count of pumpCount" :value="count" :key="count">
           <card dis-hover class="card-building">
             <p slot="title" style="font-size: xx-small">{{count}}#机组</p>
               <p>A相电压:{{pumpData[count-1].va}}V；A相电流:{{pumpData[count-1].aa}}A</p>
@@ -79,6 +82,8 @@
     name: 'control',
     data: function () {
       return {
+        selectStationId:1,
+        selectStationName:'',
         setDrawer:false,
         isAlarm: false,
         insideVal: 0.01,
@@ -86,6 +91,7 @@
         outsideVal: 0.01,
         timer: '',
         receiverList: [],
+        stationList:[],
         pumpData:[],
         pumpCount:4,
         frequencyList: ["5", "10", "15", "30", "45", "60"],
@@ -107,9 +113,9 @@
     },
     methods: {
       init: function () {
+        this.getStationList()
         this.getWaterLine()
         this.getPumpData()
-        // this.getPumpCount()
         this.timer = setInterval(() => {
           this.initData()
          }, 10000)
@@ -119,7 +125,7 @@
         this.getPumpData()
       },
       getPumpCount:function(){
-        $.ajax.post('/control/getPumpCount?stationId=1')
+        $.ajax.post('/control/getPumpCount?stationId='+this.selectStationId)
           .then(data => {
             if (null != data) {
               this.pumpCount = data
@@ -127,6 +133,24 @@
           }).catch(function (reason) {
           console.log(reason)
         })
+      },
+      getStationList:function(){
+        $.ajax.post('/station/getStationData')
+          .then(data => {
+            if (null != data) {
+              this.stationList = data.stationList
+              this.selectStationId=data.defaultStation.id
+              this.selectStationName=data.defaultStation.name
+            }
+          }).catch(function (reason) {
+          console.log(reason)
+        })
+      },
+      stationChange:function(stationVal){
+        this.selectStationId=stationVal.value
+        this.selectStationName=stationVal.label
+        this.alarmForm.stationId=stationVal.value
+        this.initData()
       },
       drawerMove:function(){
         this.setDrawer=true
@@ -143,7 +167,7 @@
       },
       getPumpData:function(){
         this.pumpData=[]
-        $.ajax.post('/control/getPumpData?stationId=1')
+        $.ajax.post('/control/getPumpData?stationId='+this.selectStationId)
           .then(data => {
             if (null != data) {
               this.pumpCount=data.length
@@ -154,7 +178,7 @@
         })
       },
       getWaterLine: function () {
-        $.ajax.post('/control/getWaterLine?stationId=1')
+        $.ajax.post('/control/getWaterLine?stationId='+this.selectStationId)
           .then(data => {
             let code = data.code;
             if ("200" !== code) {
