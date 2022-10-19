@@ -3,6 +3,12 @@ import store from '@/store'
 const { body } = document
 const WIDTH = 992 // refer to Bootstrap's responsive design
 
+const scale = {
+  width: '1',
+  height: '1',
+}
+
+
 export default {
   watch: {
     $route(route) {

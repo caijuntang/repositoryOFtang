@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css'
+import 'element-ui/lib/theme-chalk/index.css'
 import Element from 'element-ui'
 // 数据字典
 // import dict from './components/Dict'
@@ -15,16 +16,17 @@ import store from './store'
 import router from './router/routers'
 import './assets/icons' // icon
 import './router/index' // permission control
+import dataV from '@jiaminghi/data-view'
 
 Vue.use(checkPer)
 Vue.use(permission)
 // Vue.use(dict)
+Vue.use(dataV)
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size
 })
 
 Vue.config.productionTip = false
-
 new Vue({
   el: '#app',
   router,
