@@ -80,7 +80,7 @@ public class WaterLineService {
 
         boolean isAlarm = false;
         Double alarmLine = alarmService.getAlarmLine(stationId);
-        if (insideLine >= alarmLine) {
+        if (null!=insideLine &&insideLine >= alarmLine) {
             isAlarm = true;
         }
         WaterLine waterLine = waterLineMap.get(stationId);
@@ -96,6 +96,7 @@ public class WaterLineService {
             if(null!=outsideLine){
                 waterLine.setOutsideVal(outsideLine);
             }
+            waterLine.setAlarm(isAlarm);
         }
         waterLineMap.put(stationId,waterLine);
         result.put("code", "200");
@@ -262,6 +263,28 @@ public class WaterLineService {
         Map<Integer, PumpDataModel> pumpDataMap = stationPumpDataMap.get(stationId);
         if(null==pumpDataMap){
             pumpDataMap=new ConcurrentHashMap<>();
+        }else{
+            String va = request.getVa();
+            String vb = request.getVb();
+            String vc = request.getVc();
+            PumpDataModel pumpDataModel = pumpDataMap.get(pumpNo);
+            if(StringUtils.isEmpty(va)||"0.00".equals(va)){
+                if(StringUtils.isEmpty(vb)||"0.00".equals(vb)){
+                    request.setVa(vc);
+                    request.setVb(vc);
+                    va=vc;
+                    vb=vc;
+                }else{
+                   request.setVa(vb);
+                   va=vb;
+                }
+            }
+            if(StringUtils.isEmpty(va)||"0.00".equals(va)){
+                request.setVa(pumpDataModel.getVa());
+            }
+            if(StringUtils.isEmpty(vb)||"0.00".equals(vb)){
+                request.setVb(pumpDataModel.getVb());
+            }
         }
         pumpDataMap.put(pumpNo,request);
         stationPumpDataMap.put(stationId,pumpDataMap);

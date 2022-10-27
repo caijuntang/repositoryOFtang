@@ -80,7 +80,7 @@ public class WaterLineService {
 
         boolean isAlarm = false;
         Double alarmLine = alarmService.getAlarmLine(stationId);
-        if (insideLine >= alarmLine) {
+        if (null!=insideLine &&insideLine >= alarmLine) {
             isAlarm = true;
         }
         WaterLine waterLine = waterLineMap.get(stationId);

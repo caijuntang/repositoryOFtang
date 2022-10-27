@@ -166,11 +166,10 @@
         })
       },
       getPumpData:function(){
-        this.pumpData=[]
         $.ajax.post('/control/getPumpData?stationId='+this.selectStationId)
           .then(data => {
             if (null != data) {
-              this.pumpCount=data.length
+              // this.pumpCount=data.length
               this.pumpData=data
             }
           }).catch(function (reason) {

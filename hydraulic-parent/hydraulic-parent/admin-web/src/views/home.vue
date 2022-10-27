@@ -34,8 +34,9 @@
               </div>
               <!-- 轮播表格部分 -->
               <div class="left_box2">
-                <dv-border-box-11 style="padding-top: 10px" title="泵机电流数据">
-                  <dv-scroll-board :config="dataA_info" class="carousel_list"  oddRowBGC="#fff"/>
+                <dv-border-box-11 title="水位详情" style="text-align: center;padding-top:80px">
+                  <dv-water-level-pond  :config="insideLine" style="width:150px;height:180px;display: inline-block;white-space: pre-wrap;" />
+                  <dv-water-level-pond  :config="outsideLine" style="width:150px;height:180px;display: inline-block;white-space: pre-wrap;" />
                 </dv-border-box-11>
               </div>
               <!-- 轮播表格部分 -->
@@ -50,7 +51,6 @@
               <!-- 视频部分 -->
               <div id="video" style="text-align: center">
                 <dv-border-box-7 style="width:45%;height:45%;display:inline-block">
-
                 </dv-border-box-7>
                 <dv-border-box-7 style="width:45%;height:45%;display:inline-block">
                 </dv-border-box-7>
@@ -58,11 +58,18 @@
               </dv-border-box-7>
                 <dv-border-box-7 style="width:45%;height:45%;display:inline-block">
                 </dv-border-box-7>
-
-
               </div>
               <!-- 视频走马灯 -->
               <div class="line_center">
+                <dv-border-box-10>
+                  <dv-scroll-board :config="report_info" class="carousel_list"  oddRowBGC="#fff"/>
+                </dv-border-box-10>
+              </div>
+            </el-col>
+            <!-- 第三列 -->
+            <el-col :span="6">
+              <!-- 轮播排行榜部分 -->
+              <div class="right_box1">
                 <dv-border-box-10>
                   <div id="">
                     <el-carousel :interval="10000" type="card" >
@@ -72,16 +79,7 @@
                     </el-carousel>
                   </div>
                 </dv-border-box-10>
-              </div>
-            </el-col>
-            <!-- 第三列 -->
-            <el-col :span="6">
-              <!-- 轮播排行榜部分 -->
-              <div class="right_box1">
-                <dv-border-box-11 title="水位详情" style="text-align: center;padding-top:80px">
-                    <dv-water-level-pond  :config="insideLine" style="width:150px;height:180px;display: inline-block;white-space: pre-wrap;" />
-                    <dv-water-level-pond  :config="outsideLine" style="width:150px;height:180px;display: inline-block;white-space: pre-wrap;" />
-                </dv-border-box-11>
+
               </div>
               <!-- 虚线柱状图部分 -->
               <div class="right_box2">
@@ -90,8 +88,10 @@
               </div>
               <!-- 部分 -->
               <div class="right_box3" >
-                <dv-border-box-11  title="消息通知">
+                <dv-border-box-11 style="padding-top: 10px" title="泵机电流数据">
+                  <dv-scroll-board :config="dataA_info" class="carousel_list"  oddRowBGC="#fff"/>
                 </dv-border-box-11>
+
               </div>
             </el-col>
           </el-row>
@@ -145,6 +145,20 @@
             ["3", "0.00", "0.00","0.00"],
             ["4", "0.00", "0.00","0.00"]
           ],
+          evenRowBGC:"#382B47",
+          oddRowBGC: "#1B0840",
+          headerBGC: "#020308"
+        },
+        report_info: {
+          header: ["消息类型", "内容", "时间"],
+          data: [
+            ["水位告警", "内河水位超警戒线（7米），请及时处置！", "2022-12-3 15:30:12"],
+            ["泵机维护", "2号泵机累计运行400个小时请及时维护", "2022-12-3 15:30:12"],
+            ["人员入侵", "高压电房有人员入侵，请及时关注！", "2022-12-3 15:30:12"],
+            ["水位告警", "内河水位超警戒线（7米），请及时处置！","2022-11-5 15:30:12"],
+            ["异常天气", "今日12时有暴雨天气，请及时关注水位变化！","2022-11-20 15:30:12"]
+          ],
+          columnWidth:[100,500,200],
           evenRowBGC:"#382B47",
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
@@ -360,11 +374,14 @@
 
   .el-carousel__item:nth-child(2n) {
     background-color: #d2dbff;
+    width: 75%;
+    height: 96%;
   }
 
   .el-carousel__item:nth-child(2n+1) {
     background-color: #d3dce6;
-    height: 90%;
+    width: 75%;
+    height: 96%;
   }
   //页面样式部分！！！！
   #index {
@@ -435,7 +452,7 @@
     //中间折线图
     .line_center {
       width: 100%;
-      height: 288px;
+      height: 300px;
     }
 
     //左1模块
@@ -478,12 +495,6 @@
       height: 310px;
       width: 100%;
     }
-
-    //左1模块-玫瑰饼图
-    /*#Rose_diagram {*/
-    /*  height: 70%;*/
-    /*  width: 55%;*/
-    /*}*/
 
     //左1模块-圆环图
     .left_box1_rose_right {

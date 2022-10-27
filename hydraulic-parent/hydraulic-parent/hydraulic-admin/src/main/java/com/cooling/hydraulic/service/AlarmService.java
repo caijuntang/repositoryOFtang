@@ -44,30 +44,36 @@ public class AlarmService {
         String reveiversStr = JSON.toJSONString(receivers);
         String frequency = config.getFrequency();
         Integer frequencyInt = 5;
+        Integer status = config.getStatus();
         if (StringUtils.isNotEmpty(frequency)) {
             frequencyInt = Integer.parseInt(frequency);
         }
+        Integer stationId = config.getStationId();
+        double alarmLine = config.getAlarmLine();
         if (null != id) {
             AlarmConfig old = alarmConfigRepository.getOne(id);
             old.setReceivers(reveiversStr);
-            old.setAlarmLine(config.getAlarmLine());
+            old.setAlarmLine(alarmLine);
             old.setName(config.getAlarmName());
             old.setFrequency(frequencyInt);
+            old.setStatus(status);
             alarmConfigRepository.save(old);
         } else {
-            Station station = stationRepository.getOne(config.getStationId());
+            Station station = stationRepository.getOne(stationId);
             AlarmConfig alarmConfig = new AlarmConfig();
             alarmConfig.setName(config.getAlarmName());
-            alarmConfig.setAlarmLine(config.getAlarmLine());
-            alarmConfig.setStatus(config.getStatus());
+            alarmConfig.setAlarmLine(alarmLine);
+            alarmConfig.setStatus(status);
             alarmConfig.setReceivers(reveiversStr);
             alarmConfig.setStation(station);
             alarmConfig.setCreateTime(new Date());
             alarmConfig.setFrequency(frequencyInt);
             alarmConfigRepository.save(alarmConfig);
         }
-        if (config.getStatus() == 1) {
-            alarmLineMap.put(1, config.getAlarmLine());
+        if (status == 1) {
+            alarmLineMap.put(stationId, alarmLine);
+        }else{
+            alarmLineMap.remove(stationId);
         }
         return true;
     }

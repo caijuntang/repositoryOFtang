@@ -47,6 +47,7 @@ public class AlarmService {
         String reveiversStr = JSON.toJSONString(receivers);
         String frequency = config.getFrequency();
         Integer frequencyInt = 5;
+        Integer status = config.getStatus();
         if (StringUtils.isNotEmpty(frequency)) {
             frequencyInt = Integer.parseInt(frequency);
         }
@@ -58,20 +59,21 @@ public class AlarmService {
             old.setAlarmLine(alarmLine);
             old.setName(config.getAlarmName());
             old.setFrequency(frequencyInt);
+            old.setStatus(status);
             alarmConfigRepository.save(old);
         } else {
             Station station = stationRepository.getOne(stationId);
             AlarmConfig alarmConfig = new AlarmConfig();
             alarmConfig.setName(config.getAlarmName());
             alarmConfig.setAlarmLine(alarmLine);
-            alarmConfig.setStatus(config.getStatus());
+            alarmConfig.setStatus(status);
             alarmConfig.setReceivers(reveiversStr);
             alarmConfig.setStation(station);
             alarmConfig.setCreateTime(new Date());
             alarmConfig.setFrequency(frequencyInt);
             alarmConfigRepository.save(alarmConfig);
         }
-        if (config.getStatus() == 1) {
+        if (status == 1) {
             alarmLineMap.put(stationId, alarmLine);
         }else{
             alarmLineMap.remove(stationId);

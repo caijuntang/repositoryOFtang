@@ -33,6 +33,11 @@ public class Station {
     @Column(name="create_time")
     private Date createTime;
 
+    private String nameKey;
+
+    @Column(name="is_default")
+    private int isDefault;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +116,21 @@ public class Station {
 
     public void setAttitude(Float attitude) {
         this.attitude = attitude;
+    }
+
+    public String getNameKey() {
+        return nameKey;
+    }
+
+    public void setNameKey(String nameKey) {
+        this.nameKey = nameKey;
+    }
+
+    public int getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
     }
 }

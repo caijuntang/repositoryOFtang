@@ -63,12 +63,13 @@ public class WXService {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-//                String wcToKen = getWCToKen();
-//                if(StringUtils.hasText(wcToKen)){
-//                    String appId = WCConfig.appId;
-//                    tokenMap.put(appId,wcToKen);
-//                    log.info(appId+"的token更新成功："+wcToKen);
-//                }
+                log.info("=====================token更新定时任务启动====================");
+                String wcToKen = getWCToKen();
+                if(StringUtils.hasText(wcToKen)){
+                    String appId = WCConfig.appId;
+                    tokenMap.put(appId,wcToKen);
+                    log.info(appId+"的token更新成功："+wcToKen);
+                }
             }
         };
         // 计时器
@@ -127,6 +128,7 @@ public class WXService {
             log.error("获取token出错",e);
         }
         if(null==toKenBody){
+            log.error("=========获取的token为空");
             return null;
         }
         AccessToken token = JSON.parseObject(toKenBody, AccessToken.class);

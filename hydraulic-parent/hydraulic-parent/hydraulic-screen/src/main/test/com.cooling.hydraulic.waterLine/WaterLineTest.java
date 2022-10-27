@@ -76,8 +76,8 @@ public class WaterLineTest {
 
     @Test
     public void sendPumpData(){
-        String url = "http://localhost:8090/screen/openApi/reportPumpData";
-//        String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
+//        String url = "http://localhost:8090/screen/openApi/reportPumpData";
+        String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
         PumpDataRequest pumpDataRequest = new PumpDataRequest();
         pumpDataRequest.setStationId(2);
         PumpDataModel m = new PumpDataModel();
@@ -86,10 +86,10 @@ public class WaterLineTest {
 //        m.setVb("5847.4");
 //        m.setVc("0.00");
 
-        m.setPumpNo(2);
-        m.setVa("0.00");
-        m.setVb("0.00");
-        m.setVc("5841.5");
+        m.setPumpNo(4);
+        m.setVa("6033.0");
+        m.setVb("6036.5");
+        m.setVc("6030.7");
 
 //        m.setPumpNo(3);
 //        m.setVa("5885.7");
