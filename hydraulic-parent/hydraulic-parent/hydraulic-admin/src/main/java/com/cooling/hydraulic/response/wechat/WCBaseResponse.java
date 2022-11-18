@@ -1,4 +1,4 @@
-package com.cooling.hydraulic.response;
+package com.cooling.hydraulic.response.wechat;
 
 public class WCBaseResponse {
     private String errcode;

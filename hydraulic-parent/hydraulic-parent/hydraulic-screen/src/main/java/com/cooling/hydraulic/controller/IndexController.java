@@ -2,8 +2,8 @@ package com.cooling.hydraulic.controller;
 
 
 import com.cooling.hydraulic.entity.Station;
-import com.cooling.hydraulic.model.AlarmConfigModel;
-import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.model.AlarmConfigForm;
+import com.cooling.hydraulic.model.PumpDataForm;
 import com.cooling.hydraulic.service.AlarmService;
 import com.cooling.hydraulic.service.StationService;
 import com.cooling.hydraulic.service.WXService;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Controller
-@RequestMapping(path="/control")
+@RequestMapping(path="/index")
 public class IndexController {
 
     @Autowired
@@ -31,10 +31,11 @@ public class IndexController {
     @Autowired
     private WXService wxUserService;
 
-    @RequestMapping("/index")
+    @RequestMapping
     public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
-        return "screen/control/control";
+        return "screen/index/index";
     }
+
 
     @RequestMapping("/getWaterLine")
     @ResponseBody
@@ -45,7 +46,7 @@ public class IndexController {
     @RequestMapping("/getPumpData")
     @ResponseBody
     public Object getPumpData(Integer stationId) {
-        Map<Integer, PumpDataModel> pumpDataMap = waterLineService.getPumpDataMap(stationId);
+        Map<Integer, PumpDataForm> pumpDataMap = waterLineService.getPumpDataMap(stationId);
         return pumpDataMap.values();
     }
 
@@ -68,7 +69,7 @@ public class IndexController {
 
     @RequestMapping("/alarmConfigSave")
     @ResponseBody
-    public Object alarmConfigSave(AlarmConfigModel configModel) {
+    public Object alarmConfigSave(AlarmConfigForm configModel) {
         return alarmService.saveAlarmConfig(configModel);
     }
 

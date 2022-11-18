@@ -11,7 +11,8 @@ function htmlPathResolve(path) {
 }
 
 const jsEntryMap = [
-  { name: 'control', jsPath: jsPathResolve('screen/control/control.js'), entryPath: htmlPathResolve('screen/control/control.html')}
+  { name: 'control', jsPath: jsPathResolve('screen/control/control.js'), entryPath: htmlPathResolve('screen/control/control.html')},
+  { name: 'index', jsPath: jsPathResolve('screen/index/index.js'), entryPath: htmlPathResolve('screen/index/index.html')}
 ]
 
 module.exports = jsEntryMap

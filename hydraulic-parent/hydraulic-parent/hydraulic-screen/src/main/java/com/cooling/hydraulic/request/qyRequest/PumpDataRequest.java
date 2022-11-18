@@ -1,12 +1,12 @@
 package com.cooling.hydraulic.request.qyRequest;
 
-import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.model.PumpDataForm;
 
 public class PumpDataRequest {
 
     private Integer stationId;
 
-    private PumpDataModel pumpData;
+    private PumpDataForm pumpData;
 
     public Integer getStationId() {
         return stationId;
@@ -16,11 +16,11 @@ public class PumpDataRequest {
         this.stationId = stationId;
     }
 
-    public PumpDataModel getPumpData() {
+    public PumpDataForm getPumpData() {
         return pumpData;
     }
 
-    public void setPumpData(PumpDataModel pumpData) {
+    public void setPumpData(PumpDataForm pumpData) {
         this.pumpData = pumpData;
     }
 }

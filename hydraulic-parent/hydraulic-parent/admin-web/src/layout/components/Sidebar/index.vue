@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{'has-logo':showLogo}" v-show="showMenu">
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -10,8 +10,7 @@
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         unique-opened
-        mode="vertical"
-      >
+        mode="vertical">
         <sidebar-item v-for="route in sidebarRouters" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -39,6 +38,9 @@ export default {
         return meta.activeMenu
       }
       return path
+    },
+    showMenu(){
+      return this.$store.state.settings.showMenu
     },
     showLogo() {
       return this.$store.state.settings.sidebarLogo

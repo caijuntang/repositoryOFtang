@@ -6,6 +6,7 @@
 
 <script>
 import screenfull from 'screenfull'
+// import menuSet from "../../layout/components/Sidebar/index"
 
 export default {
   name: 'Screenfull',
@@ -30,6 +31,11 @@ export default {
         return false
       }
       screenfull.toggle()
+      let showMenuFlag=!this.$store.state.settings.showMenu
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'showMenu',
+        value: showMenuFlag
+      })
     },
     change() {
       this.isFullscreen = screenfull.isFullscreen

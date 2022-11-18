@@ -11,23 +11,24 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@jiaminghi/data-view": "2.10.0",
     "all": "0.0.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
+    "codemirror": "^5.49.2",
     "core-js": "^2.5.3",
     "echarts": "^4.1.0",
-    "vue-codemirror-lite": "^1.0.4",
-    "codemirror": "^5.49.2",
     "es6-promise": "^4.2.5",
     "jsencrypt": "^3.0.0-rc.1",
     "moment": "^2.21.0",
+    "node-sass": "^7.0.3",
     "nuo": "^1.0.0",
     "swiper": "^4.4.2",
     "vue": "^2.5.2",
     "vue-bus": "^1.1.0",
+    "vue-codemirror-lite": "^1.0.4",
     "vue-router": "^3.0.1",
-    "whatwg-fetch": "^2.0.3",
-    "vue-amap":"^0.5.10"
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

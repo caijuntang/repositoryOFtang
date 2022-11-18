@@ -2,7 +2,7 @@ package com.cooling.hydraulic.model;
 
 import org.springframework.util.StringUtils;
 
-public class PumpDataModel {
+public class PumpDataForm {
     private Integer pumpNo;
     private String va="0.00";
     private String vb="0.00";

@@ -3,7 +3,7 @@ package com.cooling.hydraulic.service;
 import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.entity.AlarmConfig;
 import com.cooling.hydraulic.entity.Station;
-import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.model.PumpDataForm;
 import com.cooling.hydraulic.model.WXTemplateMsg;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.utils.DateTimeUtil;
@@ -28,7 +28,7 @@ public class WaterLineService {
     private final static Logger log = LoggerFactory.getLogger(WaterLineService.class);
 
     private final Map<Integer, WaterLine> waterLineMap = new ConcurrentHashMap<Integer, WaterLine>();
-    private final Map<Integer, Map<Integer ,PumpDataModel>> stationPumpDataMap = new ConcurrentHashMap<Integer, Map<Integer,PumpDataModel>>();
+    private final Map<Integer, Map<Integer , PumpDataForm>> stationPumpDataMap = new ConcurrentHashMap<Integer, Map<Integer, PumpDataForm>>();
     private final Map<Integer, Long> alarmFrequecyMap = new ConcurrentHashMap<Integer, Long>();
     public static Double insideVal = 0.01;
     public static Double outsideVal = 0.01;
@@ -51,9 +51,9 @@ public class WaterLineService {
         List<Station> allStation = stationService.findAllStation();
         for(Station s:allStation){
             Integer pumpCount = s.getPumpCount();
-            HashMap<Integer, PumpDataModel> map = new HashMap<>();
+            HashMap<Integer, PumpDataForm> map = new HashMap<>();
             for(int i=1;i<=pumpCount;i++){
-                PumpDataModel model = new PumpDataModel();
+                PumpDataForm model = new PumpDataForm();
                 model.setPumpNo(i);
                 map.put(i,model);
             }
@@ -251,7 +251,7 @@ public class WaterLineService {
         return params;
     }
 
-    public Object reportPumpData(Integer stationId, PumpDataModel request) {
+    public Object reportPumpData(Integer stationId, PumpDataForm request) {
         Map<String, String> result = new HashMap<>();
         if (null == request || null == stationId) {
             result.put("code", "999");
@@ -260,14 +260,14 @@ public class WaterLineService {
         }
         Integer pumpNo = request.getPumpNo();
         log.info("站点Id为：" + stationId + "的泵机数据：" + request.toString());
-        Map<Integer, PumpDataModel> pumpDataMap = stationPumpDataMap.get(stationId);
+        Map<Integer, PumpDataForm> pumpDataMap = stationPumpDataMap.get(stationId);
         if(null==pumpDataMap){
             pumpDataMap=new ConcurrentHashMap<>();
         }else{
             String va = request.getVa();
             String vb = request.getVb();
             String vc = request.getVc();
-            PumpDataModel pumpDataModel = pumpDataMap.get(pumpNo);
+            PumpDataForm pumpDataModel = pumpDataMap.get(pumpNo);
             if(StringUtils.isEmpty(va)||"0.00".equals(va)){
                 if(StringUtils.isEmpty(vb)||"0.00".equals(vb)){
                     request.setVa(vc);
@@ -294,13 +294,13 @@ public class WaterLineService {
 
     }
 
-    public Map<Integer, PumpDataModel> getPumpDataMap(Integer stationId) {
+    public Map<Integer, PumpDataForm> getPumpDataMap(Integer stationId) {
      return stationPumpDataMap.get(stationId);
     }
 
-    public PumpDataModel getPumpData(Integer stationId, Integer pumpNo) {
-        Map<Integer, PumpDataModel> pumpDataModelMap = stationPumpDataMap.get(stationId);
-        PumpDataModel pumpDataModel = pumpDataModelMap.get(pumpNo);
+    public PumpDataForm getPumpData(Integer stationId, Integer pumpNo) {
+        Map<Integer, PumpDataForm> pumpDataModelMap = stationPumpDataMap.get(stationId);
+        PumpDataForm pumpDataModel = pumpDataModelMap.get(pumpNo);
         return pumpDataModel;
     }
 }

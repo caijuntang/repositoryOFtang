@@ -1,6 +1,6 @@
 package com.cooling.hydraulic.response;
 
-public class AccessToken extends WCBaseResponse{
+public class AccessToken {
 
     private String accessToken;
     // 凭证有效时间，单位：秒

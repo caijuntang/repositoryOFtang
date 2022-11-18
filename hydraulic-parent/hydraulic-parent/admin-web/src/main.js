@@ -12,7 +12,9 @@ import './assets/styles/element-variables.scss'
 // global css
 import './assets/styles/index.scss'
 import App from './App'
+import screen from './views/screen'
 import store from './store'
+import VueBaiduMap from 'vue2-baidu-map'
 import router from './router/routers'
 import './assets/icons' // icon
 import './router/index' // permission control
@@ -20,6 +22,9 @@ import dataV from '@jiaminghi/data-view'
 
 Vue.use(checkPer)
 Vue.use(permission)
+Vue.use(VueBaiduMap, {
+  ak: 'Mg8b5K05LplE6Cz5IQuoar7tW19kIuMP'
+})
 // Vue.use(dict)
 Vue.use(dataV)
 Vue.use(Element, {
@@ -30,6 +35,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  screen,
   store,
   render: h => h(App)
 })

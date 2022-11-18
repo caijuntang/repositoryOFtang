@@ -1,19 +1,14 @@
 package com.cooling.hydraulic.waterLine;
 
 import com.alibaba.fastjson.JSON;
-import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.model.PumpDataForm;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.request.qyRequest.PumpDataRequest;
-import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
 import org.junit.Test;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +75,7 @@ public class WaterLineTest {
         String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
         PumpDataRequest pumpDataRequest = new PumpDataRequest();
         pumpDataRequest.setStationId(2);
-        PumpDataModel m = new PumpDataModel();
+        PumpDataForm m = new PumpDataForm();
 //        m.setPumpNo(1);
 //        m.setVa("0.00");
 //        m.setVb("5847.4");

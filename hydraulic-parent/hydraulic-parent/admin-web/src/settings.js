@@ -30,7 +30,7 @@ module.exports = {
   /**
    * @description 是否显示logo
    */
-  sidebarLogo: false,
+  sidebarLogo: true,
   /**
    * 是否显示设置的底部信息
    */
@@ -38,9 +38,9 @@ module.exports = {
   /**
    * 底部文字，支持html语法
    */
-  footerTxt: '',
+  footerTxt: '安徽国石智能科技有限公司',
   /**
    * 备案号
    */
-  caseNumber: ''
+  caseNumber: '皖ICP备2022013578号-1'
 }

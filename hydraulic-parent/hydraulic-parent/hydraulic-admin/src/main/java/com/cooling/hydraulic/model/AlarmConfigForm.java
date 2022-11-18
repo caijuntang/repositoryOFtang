@@ -1,14 +1,8 @@
 package com.cooling.hydraulic.model;
 
-import com.cooling.hydraulic.entity.Station;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import java.util.List;
 
-public class AlarmConfigModel {
+public class AlarmConfigForm {
 
     private Integer id;
 

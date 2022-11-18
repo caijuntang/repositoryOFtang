@@ -10,7 +10,8 @@ const state = {
   sidebarLogo: sidebarLogo,
   showFooter: showFooter,
   footerTxt: footerTxt,
-  caseNumber: caseNumber
+  caseNumber: caseNumber,
+  showMenu: true,
 }
 
 const mutations = {

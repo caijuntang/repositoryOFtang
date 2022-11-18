@@ -2,7 +2,7 @@ package com.cooling.hydraulic.entity;
 
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -31,9 +31,12 @@ public class Station {
     private Integer pumpCount;
 
     @Column(name="create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     private String nameKey;
+
+    @Column(name="city_code")
+    private String cityCode;
 
     @Column(name="is_default")
     private int isDefault;
@@ -86,11 +89,11 @@ public class Station {
         this.city = city;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -124,6 +127,14 @@ public class Station {
 
     public void setNameKey(String nameKey) {
         this.nameKey = nameKey;
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
     }
 
     public int getIsDefault() {

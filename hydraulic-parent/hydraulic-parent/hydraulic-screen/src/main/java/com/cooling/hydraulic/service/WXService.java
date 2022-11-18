@@ -64,12 +64,12 @@ public class WXService {
             @Override
             public void run() {
                 log.info("=====================token更新定时任务启动====================");
-                String wcToKen = getWCToKen();
-                if(StringUtils.hasText(wcToKen)){
-                    String appId = WCConfig.appId;
-                    tokenMap.put(appId,wcToKen);
-                    log.info(appId+"的token更新成功："+wcToKen);
-                }
+//                String wcToKen = getWCToKen();
+//                if(StringUtils.hasText(wcToKen)){
+//                    String appId = WCConfig.appId;
+//                    tokenMap.put(appId,wcToKen);
+//                    log.info(appId+"的token更新成功："+wcToKen);
+//                }
             }
         };
         // 计时器

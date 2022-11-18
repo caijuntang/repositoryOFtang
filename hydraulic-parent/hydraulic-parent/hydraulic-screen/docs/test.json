@@ -1,19 +1,84 @@
 {
-  "button": [
-    {
-      "name": "泵站水位详情",
-      "sub_button": [
-        {
-          "type": "click",
-          "name": "敬亭圩泵站",
-          "key": "1"
-        },
-        {
-          "type": "click",
-          "name": "龙窝湖泵站",
-          "key": "2"
-        }
-      ]
-    }
-  ]
+  "status": 0,
+  "result": {
+    "location": {
+      "country": "中国",
+      "province": "安徽省",
+      "city": "宣城市",
+      "name": "宣城",
+      "id": "341800"
+    },
+    "now": {
+      "text": "晴",
+      "temp": 18,
+      "feels_like": 18,
+      "rh": 71,
+      "wind_class": "1级",
+      "wind_dir": "东北风",
+      "uptime": "20221031210000"
+    },
+    "forecasts": [
+      {
+        "text_day": "多云",
+        "text_night": "多云",
+        "high": 22,
+        "low": 11,
+        "wc_day": "3~4级",
+        "wd_day": "东风",
+        "wc_night": "<3级",
+        "wd_night": "东风",
+        "date": "2022-10-31",
+        "week": "星期一"
+      },
+      {
+        "text_day": "多云",
+        "text_night": "多云",
+        "high": 21,
+        "low": 11,
+        "wc_day": "3~4级",
+        "wd_day": "东北风",
+        "wc_night": "3~4级",
+        "wd_night": "东风",
+        "date": "2022-11-01",
+        "week": "星期二"
+      },
+      {
+        "text_day": "多云",
+        "text_night": "晴",
+        "high": 22,
+        "low": 11,
+        "wc_day": "3~4级",
+        "wd_day": "东风",
+        "wc_night": "<3级",
+        "wd_night": "东风",
+        "date": "2022-11-02",
+        "week": "星期三"
+      },
+      {
+        "text_day": "多云",
+        "text_night": "阴",
+        "high": 21,
+        "low": 12,
+        "wc_day": "<3级",
+        "wd_day": "东北风",
+        "wc_night": "3~4级",
+        "wd_night": "东北风",
+        "date": "2022-11-03",
+        "week": "星期四"
+      },
+      {
+        "text_day": "阴",
+        "text_night": "多云",
+        "high": 19,
+        "low": 9,
+        "wc_day": "3~4级",
+        "wd_day": "东北风",
+        "wc_night": "3~4级",
+        "wd_night": "东北风",
+        "date": "2022-11-04",
+        "week": "星期五"
+      }
+    ]
+  },
+  "message": "success"
 }

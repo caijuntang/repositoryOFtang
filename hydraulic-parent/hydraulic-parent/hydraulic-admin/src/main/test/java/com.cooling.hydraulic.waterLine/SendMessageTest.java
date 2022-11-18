@@ -2,7 +2,7 @@ package com.cooling.hydraulic.waterLine;
 
 import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.model.WXTemplateMsg;
-import com.cooling.hydraulic.response.AccessToken;
+import com.cooling.hydraulic.response.wechat.WCAccessToken;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
 import com.cooling.hydraulic.utils.WeChatSendUtil;
@@ -127,7 +127,7 @@ public class SendMessageTest {
     public String getWXToken() {
         try {
             String tokenStr = HttpClientUtil.getMethod("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx9a636b2936416367&secret=74a4936aa3e72a99ba2570a2f5fc282a");
-            AccessToken token = JSON.parseObject(tokenStr, AccessToken.class);
+            WCAccessToken token = JSON.parseObject(tokenStr, WCAccessToken.class);
             return token.getAccessToken();
         } catch (IOException e) {
             e.printStackTrace();

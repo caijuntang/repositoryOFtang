@@ -1,6 +1,6 @@
 package com.cooling.hydraulic.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PumpUpkeepRecord {
 
@@ -8,7 +8,7 @@ public class PumpUpkeepRecord {
 
     private PumpInfo pump;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
     private String remark;
 
@@ -30,11 +30,11 @@ public class PumpUpkeepRecord {
         this.pump = pump;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 

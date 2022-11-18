@@ -9,7 +9,7 @@ import com.cooling.hydraulic.dao.WXUserRepository;
 import com.cooling.hydraulic.entity.WXUser;
 import com.cooling.hydraulic.requestDto.MessageRequest;
 import com.cooling.hydraulic.requestDto.Text;
-import com.cooling.hydraulic.response.AccessToken;
+import com.cooling.hydraulic.response.wechat.WCAccessToken;
 import com.cooling.hydraulic.utils.HttpClientUtil;
 import com.google.common.collect.Maps;
 import me.chanjar.weixin.common.api.WxConsts;
@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -64,12 +63,12 @@ public class WXService {
             @Override
             public void run() {
                 log.info("=====================token更新定时任务启动====================");
-                String wcToKen = getWCToKen();
-                if(StringUtils.hasText(wcToKen)){
-                    String appId = WCConfig.appId;
-                    tokenMap.put(appId,wcToKen);
-                    log.info(appId+"的token更新成功："+wcToKen);
-                }
+//                String wcToKen = getWCToKen();
+//                if(StringUtils.hasText(wcToKen)){
+//                    String appId = WCConfig.appId;
+//                    tokenMap.put(appId,wcToKen);
+//                    log.info(appId+"的token更新成功："+wcToKen);
+//                }
             }
         };
         // 计时器
@@ -131,7 +130,7 @@ public class WXService {
             log.error("=========获取的token为空");
             return null;
         }
-        AccessToken token = JSON.parseObject(toKenBody, AccessToken.class);
+        WCAccessToken token = JSON.parseObject(toKenBody, WCAccessToken.class);
         return token.getAccessToken();
     }
 

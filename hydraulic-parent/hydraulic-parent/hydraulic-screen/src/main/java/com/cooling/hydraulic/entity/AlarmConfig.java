@@ -2,6 +2,7 @@ package com.cooling.hydraulic.entity;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -31,7 +32,7 @@ public class AlarmConfig {
     private String templateId;
 
     @Column(name="create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     public Integer getId() {
         return id;
@@ -97,11 +98,11 @@ public class AlarmConfig {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 }

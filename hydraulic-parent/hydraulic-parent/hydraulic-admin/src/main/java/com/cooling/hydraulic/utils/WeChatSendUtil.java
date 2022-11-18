@@ -4,13 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.config.WCCPConfig;
 import com.cooling.hydraulic.requestDto.Text;
 import com.cooling.hydraulic.requestDto.qyRequest.QYMsgRequest;
-import com.cooling.hydraulic.response.AccessToken;
+import com.cooling.hydraulic.response.wechat.WCAccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Text;
 
 public class WeChatSendUtil {
 
@@ -55,7 +53,7 @@ public class WeChatSendUtil {
         if(null==toKenBody){
             return null;
         }
-        AccessToken token = JSON.parseObject(toKenBody, AccessToken.class);
+        WCAccessToken token = JSON.parseObject(toKenBody, WCAccessToken.class);
         if(!"0".equals(token.getErrcode())){
             return null;
         }

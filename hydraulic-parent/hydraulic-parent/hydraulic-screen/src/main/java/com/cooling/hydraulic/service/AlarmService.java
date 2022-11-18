@@ -5,18 +5,15 @@ import com.cooling.hydraulic.dao.AlarmConfigRepository;
 import com.cooling.hydraulic.dao.StationRepository;
 import com.cooling.hydraulic.entity.AlarmConfig;
 import com.cooling.hydraulic.entity.Station;
-import com.cooling.hydraulic.model.AlarmConfigModel;
+import com.cooling.hydraulic.model.AlarmConfigForm;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -41,7 +38,7 @@ public class AlarmService {
         return alarmConfigRepository.findAlarmConfigByStation(station);
     }
 
-    public boolean saveAlarmConfig(AlarmConfigModel config) {
+    public boolean saveAlarmConfig(AlarmConfigForm config) {
         Integer id = config.getId();
         List<String> receivers = config.getReceivers();
         String reveiversStr = JSON.toJSONString(receivers);
@@ -69,7 +66,7 @@ public class AlarmService {
             alarmConfig.setStatus(status);
             alarmConfig.setReceivers(reveiversStr);
             alarmConfig.setStation(station);
-            alarmConfig.setCreateTime(new Date());
+            alarmConfig.setCreateTime(LocalDateTime.now());
             alarmConfig.setFrequency(frequencyInt);
             alarmConfigRepository.save(alarmConfig);
         }
@@ -97,11 +94,11 @@ public class AlarmService {
         return alarmLine;
     }
 
-    public AlarmConfigModel getAlarmConfig(Integer stationId) {
+    public AlarmConfigForm getAlarmConfig(Integer stationId) {
         Station station = new Station();
         station.setId(stationId);
         AlarmConfig config = alarmConfigRepository.findAlarmConfigByStation(station);
-        AlarmConfigModel model = this.convertToModel(config);
+        AlarmConfigForm model = this.convertToModel(config);
         return model;
     }
 
@@ -122,8 +119,8 @@ public class AlarmService {
         return true;
     }
 
-    private AlarmConfigModel convertToModel(AlarmConfig config) {
-        AlarmConfigModel model = new AlarmConfigModel();
+    private AlarmConfigForm convertToModel(AlarmConfig config) {
+        AlarmConfigForm model = new AlarmConfigForm();
         model.setId(config.getId());
         model.setAlarmLine(config.getAlarmLine());
         model.setStatus(config.getStatus());

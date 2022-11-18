@@ -1,7 +1,7 @@
 package com.cooling.hydraulic.waterLine;
 
 import com.alibaba.fastjson.JSON;
-import com.cooling.hydraulic.model.PumpDataModel;
+import com.cooling.hydraulic.model.PumpDataForm;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.requestDto.qyRequest.PumpDataRequest;
 import com.cooling.hydraulic.utils.HttpClientUtil;
@@ -75,7 +75,7 @@ public class WaterLineTest {
         String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
         PumpDataRequest pumpDataRequest = new PumpDataRequest();
         pumpDataRequest.setStationId(1);
-        PumpDataModel m = new PumpDataModel();
+        PumpDataForm m = new PumpDataForm();
         m.setPumpNo(1);
         m.setVa("5834.1");
         m.setVb("5847.4");

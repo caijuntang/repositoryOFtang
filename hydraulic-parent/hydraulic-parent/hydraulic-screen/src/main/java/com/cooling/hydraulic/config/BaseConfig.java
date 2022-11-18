@@ -20,6 +20,9 @@ public class BaseConfig {
     @Value("${station_name_key:敬亭圩}")
     public static String stationNameKey;
 
+    @Value("${baidu_key:dQGZH8hm7bVFhgqQQsdnsjqyOLXGY928}")
+    public static String baiduKey;
+
     public String getStationNameKey() {
         return stationNameKey;
     }
@@ -30,6 +33,13 @@ public class BaseConfig {
 
     public static final List<String> stationNameList=new ArrayList<>();
 
+    public static String getBaiduKey() {
+        return baiduKey;
+    }
+
+    public static void setBaiduKey(String baiduKey) {
+        BaseConfig.baiduKey = baiduKey;
+    }
 
     @PostConstruct()
     private void init(){
