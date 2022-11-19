@@ -13,25 +13,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Controller
 @RequestMapping(path="/api/control")
 public class ControlController {
 
-    @Autowired
+    @Resource
     private WaterLineService waterLineService;
-    @Autowired
-    private AlarmService alarmService;
-    @Autowired
+    @Resource
     private StationService stationService;
-    @Autowired
+    @Resource
     private WXService wxUserService;
 
-//    @RequestMapping("/index")
-//    public String index(HttpSession session, HttpServletRequest req, HttpServletResponse resp) {
-//        return "screen/control/control";
-//    }
 
     @RequestMapping("/getWaterLine")
     @ResponseBody
@@ -43,7 +38,31 @@ public class ControlController {
     @ResponseBody
     public Object getPumpData(Integer stationId) {
         Map<Integer, PumpDataForm> pumpDataMap = waterLineService.getPumpDataMap(stationId);
-        return pumpDataMap.values();
+        Map<String, List<Object>> resultMap=new HashMap<>();
+
+        List<Object> vResult= new ArrayList<>();
+        List<Object> aRsesult = new ArrayList<>();
+        Set<Map.Entry<Integer, PumpDataForm>> entries = pumpDataMap.entrySet();
+        for(Map.Entry<Integer, PumpDataForm> e:entries){
+            List<String> vList = new ArrayList<>();
+            List<String> aList = new ArrayList<>();
+            Integer key = e.getKey();
+            PumpDataForm p = e.getValue();
+            String kStr = String.valueOf(key);
+            vList.add(kStr);
+            vList.add(p.getVa());
+            vList.add(p.getVb());
+            vList.add(p.getVc());
+            aList.add(kStr);
+            aList.add(p.getAa());
+            aList.add(p.getAb());
+            aList.add(p.getAc());
+            vResult.add(vList);
+            aRsesult.add(aList);
+        }
+        resultMap.put("vol",vResult);
+        resultMap.put("ele",aRsesult);
+        return resultMap;
     }
 
     @RequestMapping("/getPumpCount")
@@ -57,26 +76,7 @@ public class ControlController {
     }
 
 
-    @RequestMapping("/getAlarmConfig")
-    @ResponseBody
-    public Object getAlarmConfig(Integer stationId) {
-        return alarmService.getAlarmConfig(stationId);
-    }
 
-    @RequestMapping("/alarmConfigSave")
-    @ResponseBody
-    public Object alarmConfigSave(AlarmConfigForm form) {
-        return alarmService.saveAlarmConfig(form);
-    }
-
-    @RequestMapping("/updateAlarmStatus")
-    @ResponseBody
-    public Object updateAlarmStatus(Integer id) {
-        if(null==id){
-            return false;
-        }
-        return alarmService.updateAlarmStatus(id);
-    }
 
     @RequestMapping("/getWXReceivers")
     @ResponseBody

@@ -7,7 +7,7 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
-          <screenfull id="screenfull" class="right-menu-item hover-effect" />
+          <!--<screenfull id="screenfull" class="right-menu-item hover-effect" />-->
         </el-tooltip>
       </template>
 
@@ -42,14 +42,13 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
+// import Screenfull from '@/components/Screenfull'
 import Avatar from '@/assets/images/avatar.png'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    Screenfull
+    Hamburger
   },
   data() {
     return {
@@ -164,8 +163,8 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 10px;
         }
 

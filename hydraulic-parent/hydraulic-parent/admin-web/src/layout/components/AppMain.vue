@@ -41,6 +41,12 @@ export default {
   padding-top: 50px;
 }
 
+#el-main-footer{
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+}
+
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */

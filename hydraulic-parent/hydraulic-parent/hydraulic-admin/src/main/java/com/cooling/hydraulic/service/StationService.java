@@ -57,9 +57,7 @@ public class StationService {
         return true;
     }
 
-
-
-     public  List<Station> findAllStation(){
+    public  List<Station> findAllStation(){
         return stationRepository.findAll();
     }
 

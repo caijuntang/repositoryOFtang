@@ -2,7 +2,7 @@ module.exports = {
   /**
    * @description 网站标题
    */
-  title: 'ADMIN',
+  title: '水安泵站管理平台',
   /**
    * @description 是否显示 tagsView
    */
@@ -14,11 +14,11 @@ module.exports = {
   /**
    * @description 记住密码状态下的token在Cookie中存储的天数，默认1天
    */
-  tokenCookieExpires: 1,
+  tokenCookieExpires: 7,
   /**
    * @description 记住密码状态下的密码在Cookie中存储的天数，默认1天s
    */
-  passCookieExpires: 1,
+  passCookieExpires: 7,
   /**
    * @description token key
    */

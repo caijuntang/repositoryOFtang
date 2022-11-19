@@ -17,7 +17,8 @@ import store from './store'
 import VueBaiduMap from 'vue2-baidu-map'
 import router from './router/routers'
 import './assets/icons' // icon
-import './router/index' // permission control
+import './router/index'
+// permission control
 import dataV from '@jiaminghi/data-view'
 
 Vue.use(checkPer)

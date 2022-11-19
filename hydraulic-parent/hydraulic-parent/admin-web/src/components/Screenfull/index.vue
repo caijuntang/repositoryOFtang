@@ -6,7 +6,6 @@
 
 <script>
 import screenfull from 'screenfull'
-// import menuSet from "../../layout/components/Sidebar/index"
 
 export default {
   name: 'Screenfull',

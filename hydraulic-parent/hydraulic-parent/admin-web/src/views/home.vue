@@ -109,11 +109,11 @@
 </template>
 
 <script>
-  import drawMixin from "../utils/drawMixin"; //自适应缩放
   import {parseTime} from "../utils/index.js"; //日期格式转换
   import Screenfull from '@/components/Screenfull';
   import locateIcon from "@/assets/images/locateIcon.png";
   import  EZUIKit from 'ezuikit-js';
+  import {getWaterLine, getWXReceivers, getPumpData, alarmConfigSave, getAlarmConfig} from '@/api/monitor/centerControl'
 
   export default {
     components: {
@@ -246,7 +246,7 @@
       timeFn() {
         this.timing = setInterval(() => {
           //获取当前时分秒
-          this.dateTime = parseTime(new Date(), "YYYY-MM-DD HH:mm:ss");
+          this.dateTime = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}");
           //获取当前周几
           this.dateWeek = this.weekday[new Date().getDay()];
         }, 1000);
