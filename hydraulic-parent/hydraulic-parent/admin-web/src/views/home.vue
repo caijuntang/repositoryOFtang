@@ -17,7 +17,7 @@
                 </dv-decoration-11>
               </el-col>
               <el-col :span="6">
-                <div class="title_time">当前天气：{{currentWeather}}</div>
+                <div class="title_time">未来天气：{{currentWeather}}</div>
                 <screenfull id="screenfull" class="right-menu-item hover-effect" />
                 <dv-decoration-8 :reverse="true" class="title_left" :color="['#008CFF', '#00ADDD']"/>
               </el-col>
