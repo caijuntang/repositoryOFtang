@@ -28,17 +28,4 @@ export function getWXReceivers() {
   })
 }
 
-export function alarmConfigSave(alarmConfig) {
-  return request({
-    url: 'api/control/alarmConfigSave',
-    method: 'post',
-    data: alarmConfig
-  })
-}
-
-export function getAlarmConfig(stationId) {
-  return request({
-    url: 'api/control/getAlarmConfig?stationId=' + stationId,
-    method: 'get'
-  })
-}
+export default { getWaterLine, getPumpCount, getPumpData, getWXReceivers}

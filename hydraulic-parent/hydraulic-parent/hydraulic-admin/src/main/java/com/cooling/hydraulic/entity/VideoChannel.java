@@ -14,7 +14,7 @@ public class VideoChannel {
 
     private String videoName;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="station_id")
     private Station station;
 

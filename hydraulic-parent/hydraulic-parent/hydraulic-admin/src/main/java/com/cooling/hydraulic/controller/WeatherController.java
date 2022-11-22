@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +19,12 @@ import java.util.List;
 @RequestMapping("/api/weather")
 public class WeatherController {
 
-    @Autowired
+    @Resource
     private WeatherService weatherService;
-    @Autowired
-    private StationService stationService;
 
-    @RequestMapping("/getWeatherPre")
+    @RequestMapping("/getWeatherNow")
     @ResponseBody
-    public Object getWeather(Integer stationId) {
+    public Object getWeatherNow(Integer stationId) {
         return weatherService.getWeatherPre(stationId);
     }
 

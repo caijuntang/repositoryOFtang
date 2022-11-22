@@ -7,6 +7,7 @@ import com.cooling.hydraulic.dao.StationRepository;
 import com.cooling.hydraulic.entity.AlarmConfig;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.enums.WeatherTypeEnum;
+import com.cooling.hydraulic.model.PumpDataForm;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.response.weatherResponse.BaiduResp;
 import com.cooling.hydraulic.response.weatherResponse.WeatherForecast;
@@ -20,8 +21,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +40,11 @@ public class WeatherService {
 
     //data_type数据类型有：now/fc/index/alert/fc_hour/all
     private static final String WEATHER_URL="https://api.map.baidu.com/weather/v1/?district_id={city}&data_type={type}&ak={ak}";
+
+    @PostConstruct
+    void init() {
+        reportWaterDetail();
+    }
 
     public BaiduResp getWeather(String cityCode,String type) {
         String resp=null;

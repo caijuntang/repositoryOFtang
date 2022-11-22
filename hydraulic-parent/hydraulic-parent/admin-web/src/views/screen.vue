@@ -454,9 +454,6 @@
     .line_center {
       width: 85%;
       height: 300px;
-/*
-      margin-top: -85px;
-*/
     }
 
     //左1模块

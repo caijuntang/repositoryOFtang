@@ -13,10 +13,11 @@
               </el-col>
               <el-col :span="12">
                 <dv-decoration-11 class="title_center"  :color="['#008CFF', '#00ADDD']">
-                  <div class="title_text">宣城市宣州区敬亭圩排涝站</div>
+                  <div class="title_text">{{defaultStationName}}</div>
                 </dv-decoration-11>
               </el-col>
               <el-col :span="6">
+                <div class="title_time">当前天气：{{currentWeather}}</div>
                 <screenfull id="screenfull" class="right-menu-item hover-effect" />
                 <dv-decoration-8 :reverse="true" class="title_left" :color="['#008CFF', '#00ADDD']"/>
               </el-col>
@@ -28,24 +29,25 @@
                 <div class="left_box1">
                   <dv-border-box-8>
                     <!-- 泵站地图-->
-                    <baidu-map class="map" :dragging="false" :center="location" :zoom="zoom" @ready="handler" >
-                      <bm-marker :position="{lng: locationInfo.lng,lat: locationInfo.lat}" :icon="iconStyle">
-                        <bm-label :content="locationInfo.siteName" :labelStyle="labelStyleObj" :offset="{width: -20, height: -20}"/>
+                    <baidu-map class="map" :dragging="false"  :double-click-zoom="false" :center="location" :zoom="zoom" @ready="handler" >
+                      <bm-marker v-for="(station,index) in stationList" :value="station" :key="index" :position="{lng: station.attitude,lat: station.longitude}" :icon="iconStyle">
+                        <bm-label :content="station.siteName" :labelStyle="labelStyleObj" :offset="{width: -20, height: -20}"/>
                       </bm-marker>
+<!--                      <bm-point-collection :points="points" shape="BMAP_POINT_SHAPE_WATERDROP" size="BMAP_POINT_SIZE_SMALL" @click="clickHandler"></bm-point-collection>-->
                     </baidu-map>
                   </dv-border-box-8>
                 </div>
                 <!-- 水位部分 -->
                 <div class="left_box2">
                   <dv-border-box-11 title="水位详情" :titleWidth=140 style="text-align: center;padding-top:80px">
-                    <dv-water-level-pond  :config="insideLine" style="width:130px;height:150px;display: inline-block;white-space: pre-wrap;" />
-                    <dv-water-level-pond  :config="outsideLine" style="width:130px;height:150px;display: inline-block;white-space: pre-wrap;" />
+                    <dv-water-level-pond  :config="insideLineConfig" style="width:130px;height:150px;display: inline-block;white-space: pre-wrap;" />
+                    <dv-water-level-pond  :config="outsideLineConfig" style="width:130px;height:150px;display: inline-block;white-space: pre-wrap;" />
                   </dv-border-box-11>
                 </div>
                 <!-- 泵机电压数据 -->
                 <div class="left_box3">
                   <dv-border-box-11 style="padding-top: 2px" :titleWidth=140 title="泵机电压">
-                    <dv-scroll-board :config="dataV_info" class="carousel_list"  oddRowBGC="#fff"/>
+                    <dv-scroll-board :config="dataV_config" class="carousel_list"  oddRowBGC="#fff"/>
                   </dv-border-box-11>
                 </div>
               </el-col>
@@ -54,16 +56,16 @@
                 <!-- 视频部分 -->
                 <div id="video" style="text-align: center">
                   <dv-border-box-7 style="width:45%;height:46%;display:inline-block">
-                    <div id="live1" class="videoDiv"></div>
+                    <div id="live0" class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-left:20px">
-                    <div id="live2" class="videoDiv"></div>
+                    <div id="live1" class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-top:20px">
-                    <div id="live3" class="videoDiv"></div>
+                    <div id="live2" class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-left:20px;margin-top:20px">
-                    <div id="live4" class="videoDiv"></div>
+                    <div id="live3" class="videoDiv"></div>
                   </dv-border-box-7>
                 </div>
                 <!-- 预警提示 -->
@@ -90,13 +92,14 @@
                 </div>
                 <!-- 天气 -->
                 <div class="right_box2">
-                  <dv-border-box-11  title="当地天气" :titleWidth=140>
+                  <dv-border-box-11 style="padding-top: 20px" title="当地天气" :titleWidth=140>
+                    <dv-scroll-board :config="weather_config" class="carousel_list_weather"  oddRowBGC="#fff"/>
                   </dv-border-box-11>
                 </div>
                 <!-- 泵机电流数据 -->
                 <div class="right_box3" >
                   <dv-border-box-11 style="padding-top: 2px" title="泵机电流" :titleWidth=140>
-                    <dv-scroll-board :config="dataA_info" class="carousel_list"  oddRowBGC="#fff"/>
+                    <dv-scroll-board :config="dataA_config" class="carousel_list"  oddRowBGC="#fff"/>
                   </dv-border-box-11>
                 </div>
               </el-col>
@@ -113,7 +116,11 @@
   import Screenfull from '@/components/Screenfull';
   import locateIcon from "@/assets/images/locateIcon.png";
   import  EZUIKit from 'ezuikit-js';
-  import {getWaterLine, getWXReceivers, getPumpData, alarmConfigSave, getAlarmConfig} from '@/api/monitor/centerControl'
+  import CenterControlJs from '@/api/monitor/centerControl'
+  import VideoJs from '@/api/monitor/video'
+  import HomeJs from '@/api/home'
+  import AlarmJs from '@/api/monitor/alarm'
+  import StationJs from '@/api/station/station'
 
   export default {
     components: {
@@ -125,32 +132,45 @@
       return {
         //定时器
         timing: null,
+        dataTiming:null,
+        weatherTiming:null,
+        defaultStationId:1,
+        defaultStationName:'宣城市宣州区敬亭圩排涝站',
+        currentWeather:null,
         //loading图
         loading: true,
         //时分秒
         dateTime: null,
         //周几
         dateWeek: null,
-        player1:null,
-        player2:null,
-        player3:null,
-        player4:null,
+        playerList:[],
+        stationList:[],
         //周几
         weekday: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
-        infoWindowShow:false,
         //左侧轮播表格配置项
+        weather_config:{},
+        weather_list:{
+          header: ["日期", "星期", "白天","夜晚"],
+          data: [],
+          columnWidth:[100,80,60,60],
+          evenRowBGC:"#382B47",
+          oddRowBGC: "#1B0840",
+          headerBGC: "#020308"
+        },
+        dataV_config:{},
         dataV_info: {
           header: ["机组", "A相位", "B相位","C相位"],
           data: [
-            ["1", "4505.9", "4589.6","5045.4"],
-            ["2", "4677.3", "4505.9","4986.2"],
-            ["3", "5045.5", "4589.6","4776.8"],
-            ["4", "4986.2", "4505.9","5432.3"]
+            ["1", "0.00", "0.00","0.00"],
+            ["2", "0.00", "0.00","0.00"],
+            ["3", "0.00", "0.00","0.00"],
+            ["4", "0.00", "0.00","0.00"]
           ],
           evenRowBGC:"#382B47",
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
         },
+        dataA_config:{},
         dataA_info: {
           header: ["机组", "A相位", "B相位","C相位"],
           data: [
@@ -178,6 +198,7 @@
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
         },
+        insideLineConfig:{},
         insideLine:{
           data:[7.6],
           shape:'roundRect',
@@ -185,6 +206,7 @@
           waveNum:2,
           formatter:'内河:{value}米'
         },
+        outsideLineConfig:{},
         outsideLine:{
           data:[8.4],
           shape:'roundRect',
@@ -193,6 +215,10 @@
           formatter:'外河:{value}米'
         },
         BMap: null,
+        points:[
+          { lng: '118.3176', lat: '31.2604'},
+          {  lng: '118.7573', lat: '30.9879'}
+        ],
         // 地图显示的中心坐标
         location: {
           lng: '118.3176',
@@ -215,31 +241,40 @@
           }
         },
         labelStyleObj:{
-          // fontColor:'#bfddf9',
-          // fontColor:'white',
-          // fontSize:'3px',
           border:'0px',
           backgroundColor:'#5076ed',
           opacity: 0.6,
         }
       }
     },
-
     mounted() {
       //获取实时时间
       this.timeFn();
       //加载loading图
-      this.cancelLoading();
+      this.cancelLoading()
       //百度地图
-      // this.initVideo()
+      this.initBMap()
+      this.initVideo()
+      this.waterLine()
+      this.pumpData()
+      this.weatherWeek()
+      this.weatherNow()
     },
     beforeDestroy() {
       //离开时删除计时器
-      clearInterval(this.timing);
-      this.player1.stop()
-      this.player2.stop()
-      this.player3.stop()
-      this.player4.stop()
+      clearInterval(this.timing)
+      clearInterval(this.dataTiming)
+      clearInterval(this.weatherTiming)
+      this.playerStop()
+    },
+    watch: {
+      defaultStationId () {
+        this.videoReStart()
+        this.waterLine()
+        this.pumpData()
+        this.weatherNow()
+        this.weatherWeek()
+      }
     },
     methods: {
       //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -250,6 +285,15 @@
           //获取当前周几
           this.dateWeek = this.weekday[new Date().getDay()];
         }, 1000);
+
+        this.dataTiming = setInterval(() => {
+          this.waterLine()
+          this.pumpData()
+        }, 10000);
+
+        this.weatherTiming = setInterval(() => {
+          this.weatherNow()
+        }, 900000);
       },
       //loading图
       cancelLoading() {
@@ -257,76 +301,83 @@
           this.loading = false;
         }, 500);
       },
-      //中国地图
+      //地图
       initBMap() {
-        this.infoWindowShow = true
-        // 创建地址解析器的实例
-        // const geocoder = new BMap.getGeoCoord()
-        // geocoder.getLocation(this.location, rs => {
-        //   详细地址信息如下
-        // this.locationInfo.siteName = rs.address
-        // })
+        StationJs.getStationData().then(res=>{
+          if(null==null){
+            console.log("泵站数查询出错！")
+            return
+          }
+          let defaultStation=res['default']
+          this.defaultStationId=defaultStation.id
+          this.defaultStationName=defaultStation.name
+          this.stationList=res['all']
+        })
       },
       initVideo(){
-        this.player1 = new EZUIKit.EZUIKitPlayer({
-          id: 'live1', // 视频容器ID
-          accessToken: 'at.5d7x50n21082t0bi22glgmrl4h90m86t-8oix5zj9pz-0q569ha-ygwvf1rjn',
-          url: 'ezopen://open.ys7.com/J59438351/1.live',
-          audio:0,
-          height:230
+        let token=''
+        let previewVideo=[]
+        let liveVideo=[]
+        VideoJs.getVideoData(this.defaultStationId).then(res=>{
+          token=res['token']
+          previewVideo=res['preview']
+          liveVideo=res['live']
         })
-        // player1.play()
-        this.player2 = new EZUIKit.EZUIKitPlayer({
-          id: 'live2', // 视频容器ID
-          accessToken: 'at.5d7x50n21082t0bi22glgmrl4h90m86t-8oix5zj9pz-0q569ha-ygwvf1rjn',
-          url: 'ezopen://open.ys7.com/J59438499/1.live',
-          audio:0,
-          height:230
+        let liveLength = liveVideo.length;
+        for(let i=0;i<liveLength;i++){
+          let liveChannel=liveVideo[i]
+          let player='player'+i
+            player=new EZUIKit.EZUIKitPlayer({
+            id: 'live'+i, // 视频容器ID
+            accessToken: token,
+            url: 'ezopen://open.ys7.com/'+liveChannel.serialNo+"/"+liveChannel.channel+".live",
+            audio:0,//声音
+            height:230
+          })
+          this.playerList.push(player)
+        }
+      },
+      videoReStart() {
+        this.playerStop()
+        this.playerList=[]
+        this.initVideo()
+      },
+      waterLine() {
+        CenterControlJs.getWaterLine(this.defaultStationId).then(res=>{
+          this.insideLine.data=[res['insideVal']]
+          this.insideLineConfig=this.insideLine
+          this.outsideLine.data=[res['outsideVal']]
+          this.outsideLineConfig=this.outsideLine
         })
-        // player2.play()
-
-        this.player3 = new EZUIKit.EZUIKitPlayer({
-          id: 'live3', // 视频容器ID
-          accessToken: 'at.5d7x50n21082t0bi22glgmrl4h90m86t-8oix5zj9pz-0q569ha-ygwvf1rjn',
-          url: 'ezopen://open.ys7.com/J59438550/1.live',
-          audio:0,
-          height:230
+      },
+      weatherWeek(){
+        HomeJs.getWeatherWeek(this.defaultStationId).then(res=>{
+          this.weather_list.data=res
+          this.weather_config=this.weather_list
         })
-        // player3.play()
-
-        this.player4 = new EZUIKit.EZUIKitPlayer({
-          id: 'live4', // 视频容器ID
-          accessToken: 'at.5d7x50n21082t0bi22glgmrl4h90m86t-8oix5zj9pz-0q569ha-ygwvf1rjn',
-          url: 'ezopen://open.ys7.com/J59438687/1.live',
-          audio:0,
-          height:230
+      },
+      weatherNow(){
+        HomeJs.getWeatherNow(this.defaultStationId).then(res=>{
+          this.currentWeather=res
         })
-        // player4.play()
-
+      },
+      pumpData() {
+        CenterControlJs.getPumpData(this.defaultStationId).then(res=>{
+          this.dataV_info.data=res['vol']
+          this.dataV_config=this.dataV_info
+          this.dataA_info.data=res['ele']
+          this.dataA_config=this.dataA_info
+        })
+      },
+      playerStop() {
+        let playerSize = this.playerList.length;
+        for(let i=0;i<playerSize;i++){
+          this.playerList[i].stop()
+        }
       },
       handler({ BMap, map }) {
         this.BMap = BMap
-        this.infoWindowShow = true
         map.setMapStyleV2({styleId:'823c414bc80ff3e812451f0f271e6ded'})
-      },
-      getLocationPoint(e) {
-        // 点击地图后显示信息窗体
-        this.infoWindowShow = true
-        this.locationInfo.lng = e.point.lng
-        this.locationInfo.lat = e.point.lat
-        // 创建地址解析器的实例
-        // const geocoder = new BMap.getGeoCoord()
-        // geocoder.getLocation(e.point, rs => {
-        // 详细地址信息如下
-        // this.locationInfo.siteName = rs.address
-        // })
-      },
-      infoWindowClose() {
-        // 关闭信息窗体
-        this.infoWindowShow = false
-      },
-      infoWindowOpen() {
-        this.infoWindowShow = true
       }
     }
   }
@@ -516,6 +567,14 @@
       height: 96%;
       padding: 5px;
     }
+
+    //轮播表格
+    .carousel_list_weather {
+      width: 100%;
+      height: 78%;
+      padding: 38px 16px 20px 16px;
+    }
+
 
     .map {
       width: 100%;

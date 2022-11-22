@@ -23,9 +23,9 @@ public class Station {
 
     private String city;
 
-    private Float longitude;
+    private String longitude;
 
-    private Float attitude;
+    private String attitude;
 
     @Column(name="pump_count")
     private Integer pumpCount;
@@ -105,19 +105,19 @@ public class Station {
         this.pumpCount = pumpCount;
     }
 
-    public Float getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Float longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-    public Float getAttitude() {
+    public String getAttitude() {
         return attitude;
     }
 
-    public void setAttitude(Float attitude) {
+    public void setAttitude(String attitude) {
         this.attitude = attitude;
     }
 

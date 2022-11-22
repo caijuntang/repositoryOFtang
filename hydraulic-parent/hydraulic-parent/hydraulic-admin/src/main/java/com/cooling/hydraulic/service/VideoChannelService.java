@@ -1,26 +1,40 @@
 package com.cooling.hydraulic.service;
 
 
+import com.alibaba.fastjson.JSON;
+import com.cooling.hydraulic.config.BaseConfig;
+import com.cooling.hydraulic.consts.BaseConst;
+import com.cooling.hydraulic.consts.ResponseConst;
 import com.cooling.hydraulic.dao.VideoChannelRepository;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.entity.VideoChannel;
 import com.cooling.hydraulic.model.VideoChannelForm;
+import com.cooling.hydraulic.requestDto.YsRequest;
+import com.cooling.hydraulic.response.YsResponse;
 import com.cooling.hydraulic.utils.DateTimeUtil;
+import com.cooling.hydraulic.utils.HttpClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class VideoChannelService {
 
     private final static Logger log = LoggerFactory.getLogger(VideoChannelService.class);
+    private static final String YS_URL = "https://open.ys7.com/api/lapp/token/get";
+    private static Map<String, String> tokenMap = new ConcurrentHashMap<>();
+
 
     @Resource
     private StationService stationService;
@@ -55,8 +69,10 @@ public class VideoChannelService {
 
 
     public Object findVideoByStationId(Integer stationId){
-        List<VideoChannel> channels = videoChannelRepository.findVideoChannelByStation(stationId);
-        Map<String, List<VideoChannel>> dataMap = new HashMap<String, List<VideoChannel>>();
+        Station station = new Station();
+        station.setId(stationId);
+        List<VideoChannel> channels = videoChannelRepository.findByStationIdAndStatus(stationId,1);
+        Map<String, Object> dataMap = new HashMap<String,Object>();
         List<VideoChannel> liveVideo = new ArrayList<>();
         if(null!=channels&&!channels.isEmpty()){
             for(VideoChannel c:channels){
@@ -66,6 +82,8 @@ public class VideoChannelService {
                 }
             }
         }
+        String token = tokenMap.get(stationId);
+        dataMap.put("token",token);
         dataMap.put("live",liveVideo);
         dataMap.put("preview",channels);
         return dataMap;
@@ -96,6 +114,43 @@ public class VideoChannelService {
         Integer stationId = channel.getStation().getId();
         form.setStationId(stationId);
         return form;
+    }
+
+
+    @Scheduled(cron = "0 0 0 0/3 * ? ")
+    public void getYsTokenSchedule() {
+        log.info("================萤石token更新启动==================");
+        YsRequest ysRequest = new YsRequest(BaseConfig.ysKey, BaseConfig.ysSecret);
+        String param = JSON.toJSONString(ysRequest);
+        String resp = null;
+        try {
+            resp = HttpClientUtil.postMethod(YS_URL, param);
+
+        } catch (IOException e) {
+            log.error("============萤石token获取异常=======", e);
+        }
+        if (null == resp) {
+            log.error("============萤石token获取异常=======");
+        } else {
+            YsResponse ysResponse = JSON.parseObject(resp, YsResponse.class);
+            if (!ResponseConst.SUCCESS.equals(ysResponse.getCode())) {
+                return;
+            }
+            String accessToken = ysResponse.getData().getAccessToken();
+            if (StringUtils.hasText(accessToken)) {
+                tokenMap.put(BaseConfig.ysKey + BaseConst.DASH + BaseConfig.ysSecret, accessToken);
+            }
+        }
+
+    }
+
+    public String getYsToken(String appKey,String appSecret){
+        if(StringUtils.isEmpty(appKey)||StringUtils.isEmpty(appSecret)){
+            return null;
+        }
+        String key=appKey+BaseConst.DASH+appSecret;
+        String token = tokenMap.get(key);
+        return token;
     }
 
 }
