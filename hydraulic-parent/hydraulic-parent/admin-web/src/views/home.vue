@@ -29,9 +29,10 @@
                 <div class="left_box1">
                   <dv-border-box-8>
                     <!-- 泵站地图-->
-                    <baidu-map class="map" :dragging="false"  :double-click-zoom="false" :center="location" :zoom="zoom" @ready="handler" >
-                      <bm-marker v-for="(station,index) in stationList" :value="station" :key="index" :position="{lng: station.attitude,lat: station.longitude}" :icon="iconStyle">
-                        <bm-label :content="station.siteName" :labelStyle="labelStyleObj" :offset="{width: -20, height: -20}"/>
+                    <baidu-map class="map" :dragging="false" :clicking="false"  :double-click-zoom="false" :center="location" :zoom="zoom" @ready="handler" >
+                      <bm-marker v-for="(station,index) in stationList" :value="station" :key="index" :position="{lng: station.longitude,lat: station.attitude}" :icon="iconStyle">
+<!--                      <bm-marker v-for="(station,index) in stationList" :value="station" :key="index" :position="{lng: station.longitude,lat: station.attitude}">-->
+                        <bm-label :content="station.nameKey" :labelStyle="labelStyleObj" :offset="{width: -20, height: -20}" @dblclick="stationChange(station)" />
                       </bm-marker>
 <!--                      <bm-point-collection :points="points" shape="BMAP_POINT_SHAPE_WATERDROP" size="BMAP_POINT_SIZE_SMALL" @click="clickHandler"></bm-point-collection>-->
                     </baidu-map>
@@ -126,7 +127,7 @@
     components: {
       Screenfull
     },
-    name:'screen',
+    name:'home',
     // mixins: [drawMixin],
     data() {
       return {
@@ -152,7 +153,7 @@
         weather_list:{
           header: ["日期", "星期", "白天","夜晚"],
           data: [],
-          columnWidth:[100,80,60,60],
+          columnWidth:[100,70,65,65],
           evenRowBGC:"#382B47",
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
@@ -200,7 +201,7 @@
         },
         insideLineConfig:{},
         insideLine:{
-          data:[7.6],
+          data:[],
           shape:'roundRect',
           waveHeight:20,
           waveNum:2,
@@ -208,31 +209,17 @@
         },
         outsideLineConfig:{},
         outsideLine:{
-          data:[8.4],
+          data:[],
           shape:'roundRect',
           waveHeight:20,
           waveNum:2,
           formatter:'外河:{value}米'
         },
         BMap: null,
-        points:[
-          { lng: '118.3176', lat: '31.2604'},
-          {  lng: '118.7573', lat: '30.9879'}
-        ],
         // 地图显示的中心坐标
-        location: {
-          lng: '118.3176',
-          lat: '31.2604',
-          siteName:'龙窝湖泵站'
-        },
-        // 点击后的当前坐标点位的信息
-        locationInfo: {
-          lng: '118.7573',
-          lat: '30.9879',
-          siteName: '敬亭圩泵站'
-        },
+        location: {},
         // 缩放，15基本上就可以看附近的一些街道了
-        zoom: 8.5,
+        zoom: 8,
         iconStyle:{
           url:locateIcon,
           size:{
@@ -266,6 +253,7 @@
       clearInterval(this.dataTiming)
       clearInterval(this.weatherTiming)
       this.playerStop()
+      this.BMap=null
     },
     watch: {
       defaultStationId () {
@@ -304,13 +292,17 @@
       //地图
       initBMap() {
         StationJs.getStationData().then(res=>{
-          if(null==null){
+          if(null==res){
             console.log("泵站数查询出错！")
             return
           }
           let defaultStation=res['default']
           this.defaultStationId=defaultStation.id
           this.defaultStationName=defaultStation.name
+          this.location={
+            lng: defaultStation.longitude,
+            lat: defaultStation.attitude
+          }
           this.stationList=res['all']
         })
       },
@@ -368,6 +360,14 @@
           this.dataA_info.data=res['ele']
           this.dataA_config=this.dataA_info
         })
+      },
+      stationChange(station) {
+        this.defaultStationId = station.id
+        this.defaultStationName=station.name
+        this.location={
+          lng: station.longitude,
+          lat: station.attitude
+        }
       },
       playerStop() {
         let playerSize = this.playerList.length;
