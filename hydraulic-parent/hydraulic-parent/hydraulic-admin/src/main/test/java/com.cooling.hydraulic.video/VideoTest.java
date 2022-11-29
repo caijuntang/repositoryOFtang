@@ -26,7 +26,11 @@ public class VideoTest {
      */
     @Test
     public void getDviceList() {
-
+        Map<String, String> map = new HashMap<>();
+        map.put("1","1");
+        map.put("2","2");
+        map.put("3","3");
+        System.out.printf(JSON.toJSONString(map));
         System.out.println("==============================");
 
 

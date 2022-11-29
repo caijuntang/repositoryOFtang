@@ -17,7 +17,8 @@
                 </dv-decoration-11>
               </el-col>
               <el-col :span="6">
-                <div class="title_time">未来天气：{{currentWeather}}</div>
+                <div class="title_time">天气：{{currentWeather}}</div>
+                <img class="weather_img" :src="require('@/assets/images/weatherPng/'+weatherImg)"/>
                 <screenfull id="screenfull" class="right-menu-item hover-effect" />
                 <dv-decoration-8 :reverse="true" class="title_left" :color="['#008CFF', '#00ADDD']"/>
               </el-col>
@@ -47,7 +48,7 @@
                 </div>
                 <!-- 泵机电压数据 -->
                 <div class="left_box3">
-                  <dv-border-box-11 style="padding-top: 2px" :titleWidth=140 title="泵机电压">
+                  <dv-border-box-11 style="padding-top: 20px" :titleWidth=140 title="泵机电压">
                     <dv-scroll-board :config="dataV_config" class="carousel_list"  oddRowBGC="#fff"/>
                   </dv-border-box-11>
                 </div>
@@ -99,7 +100,7 @@
                 </div>
                 <!-- 泵机电流数据 -->
                 <div class="right_box3" >
-                  <dv-border-box-11 style="padding-top: 2px" title="泵机电流" :titleWidth=140>
+                  <dv-border-box-11 style="padding-top: 20px" title="泵机电流" :titleWidth=140>
                     <dv-scroll-board :config="dataA_config" class="carousel_list"  oddRowBGC="#fff"/>
                   </dv-border-box-11>
                 </div>
@@ -122,6 +123,7 @@
   import HomeJs from '@/api/home'
   import AlarmJs from '@/api/monitor/alarm'
   import StationJs from '@/api/station/station'
+  import weatherPngMap from '@/utils/weatherPngMap'
 
   export default {
     components: {
@@ -133,6 +135,7 @@
       return {
         //定时器
         timing: null,
+        weatherImg:null,
         dataTiming:null,
         weatherTiming:null,
         defaultStationId:1,
@@ -351,6 +354,7 @@
       weatherNow(){
         HomeJs.getWeatherNow(this.defaultStationId).then(res=>{
           this.currentWeather=res
+          this.weatherImgShow()
         })
       },
       pumpData() {
@@ -374,6 +378,16 @@
         for(let i=0;i<playerSize;i++){
           this.playerList[i].stop()
         }
+      },
+      weatherImgShow(){
+        let preSrc=''
+        let hour = new Date().getHours()
+        if(hour>6){
+          preSrc="night/"
+        }else {
+          preSrc="day/"
+        }
+        this.weatherImg=preSrc+weatherPngMap[this.currentWeather]+".png"
       },
       handler({ BMap, map }) {
         this.BMap = BMap
@@ -437,6 +451,7 @@
 
     //顶部右边装饰效果
     .title_left {
+      margin-top: -15px;
       width: 100%;
       height: 30px;
     }
@@ -557,9 +572,10 @@
 
     //轮播表格
     .carousel_list {
-      width: 94%;
-      height: 94%;
-      padding: 5px;
+      width: 100%;
+      height: 96%;
+      text-align: center;
+      padding: 38px 16px 20px 16px
     }
     //轮播表格
     .carousel_list_line {
@@ -575,6 +591,13 @@
       padding: 38px 16px 20px 16px;
     }
 
+    .weather_img{
+      /*padding-top: 2px;*/
+      margin-left: 10px;
+      margin-bottom: -10px;
+      width: 30px;
+      height: 30px;
+    }
 
     .map {
       width: 100%;

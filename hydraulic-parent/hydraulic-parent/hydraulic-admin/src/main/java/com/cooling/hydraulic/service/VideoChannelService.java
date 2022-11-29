@@ -20,12 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -40,6 +38,13 @@ public class VideoChannelService {
     private StationService stationService;
     @Resource
     private VideoChannelRepository videoChannelRepository;
+
+    @PostConstruct
+    private void init(){
+        this.getYsTokenTask();
+    }
+
+
 
     @Transactional
     public boolean save(VideoChannelForm form){
@@ -82,7 +87,7 @@ public class VideoChannelService {
                 }
             }
         }
-        String token = tokenMap.get(stationId);
+        String token = this.getYsToken(BaseConfig.ysKey,BaseConfig.ysSecret);
         dataMap.put("token",token);
         dataMap.put("live",liveVideo);
         dataMap.put("preview",channels);
@@ -119,6 +124,10 @@ public class VideoChannelService {
 
     @Scheduled(cron = "0 0 0 0/3 * ? ")
     public void getYsTokenSchedule() {
+        this.getYsTokenTask();
+    }
+
+    public void getYsTokenTask() {
         log.info("================萤石token更新启动==================");
         YsRequest ysRequest = new YsRequest(BaseConfig.ysKey, BaseConfig.ysSecret);
         String param = JSON.toJSONString(ysRequest);

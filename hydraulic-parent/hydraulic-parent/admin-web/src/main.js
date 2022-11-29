@@ -12,7 +12,6 @@ import './assets/styles/element-variables.scss'
 // global css
 import './assets/styles/index.scss'
 import App from './App'
-import screen from './views/screen'
 import store from './store'
 import VueBaiduMap from 'vue2-baidu-map'
 import router from './router/routers'
@@ -36,7 +35,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  screen,
   store,
   render: h => h(App)
 })
