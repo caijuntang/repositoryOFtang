@@ -44,7 +44,7 @@ export default {
 #el-main-footer{
   position: absolute;
   bottom: 0;
-  text-align: center;
+  align-content: center;
 }
 
 .hasTagsView {

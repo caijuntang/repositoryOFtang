@@ -9,6 +9,7 @@ import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -101,6 +102,8 @@ public class WaterLineService {
         waterLineMap.put(stationId,waterLine);
         result.put("code", "200");
         result.put("msg", "report success!");
+        //校验水位
+        this.wateLineAlarm();
         return result;
     }
 
@@ -122,7 +125,8 @@ public class WaterLineService {
         return result;
     }
 
-    @Scheduled(cron = "0 0/5 * * * ? ")
+//    @Scheduled(cron = "0 0/5 * * * ? ")
+    @Async
     public void wateLineAlarm() {
         log.info("================水位告警查询启动==================");
         List<AlarmConfig> alarmConfigs = alarmService.findByStatus(1);
@@ -187,7 +191,7 @@ public class WaterLineService {
         }
     }
 
-    @Scheduled(cron = "0 0 8,13 * * ? ")
+    @Scheduled(cron = "0 0 8,13, * * ? ")
     public void reportWaterDetail() {
         log.info("================上下午水位工作预报查询启动==================");
         List<AlarmConfig> alarmConfigs = alarmService.findByStatus(1);

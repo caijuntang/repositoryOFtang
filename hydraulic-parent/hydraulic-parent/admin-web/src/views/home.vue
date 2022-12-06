@@ -57,16 +57,16 @@
               <el-col :span="12" style="text-align: center">
                 <!-- 视频部分 -->
                 <div id="video" style="text-align: center">
-                  <dv-border-box-7 style="width:45%;height:46%;display:inline-block">
+                  <dv-border-box-7 class="pVideoDiv" >
                     <div id="live0" class="videoDiv"></div>
                   </dv-border-box-7>
-                  <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-left:20px">
+                  <dv-border-box-7 class="pVideoDiv" style="margin-left:20px">
                     <div id="live1" class="videoDiv"></div>
                   </dv-border-box-7>
-                  <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-top:20px">
+                  <dv-border-box-7 class="pVideoDiv" style="margin-top:20px">
                     <div id="live2" class="videoDiv"></div>
                   </dv-border-box-7>
-                  <dv-border-box-7 style="width:45%;height:46%;display:inline-block;margin-left:20px;margin-top:20px">
+                  <dv-border-box-7  class="pVideoDiv" style="margin-left:20px">
                     <div id="live3" class="videoDiv"></div>
                   </dv-border-box-7>
                 </div>
@@ -82,10 +82,10 @@
                 <!-- 轮播排行榜部分 -->
                 <div class="right_box1" >
                   <dv-border-box-10>
-                    <div id="">
-                      <el-carousel :interval="10000" type="card" >
-                        <el-carousel-item v-for="item in 6" :key="item">
-                          <h3 class="medium">{{ item }}</h3>
+                    <div>
+                      <el-carousel :interval="10000" type="card" height="200px" @change="pVideoChange">
+                        <el-carousel-item v-for="item in preVideoSize" :key="item" :value="item"   >
+                          <div class="medium" :id="'pplayer'+item" ></div>
                         </el-carousel-item>
                       </el-carousel>
                     </div>
@@ -130,7 +130,6 @@
       Screenfull
     },
     name:'home',
-    // mixins: [drawMixin],
     data() {
       return {
         //定时器
@@ -147,7 +146,11 @@
         dateTime: null,
         //周几
         dateWeek: null,
+        //直播
         playerList:[],
+        //轮播
+        preVideoList:[{id:"pplayer0",src:""}],
+        preVideoSize:0,
         stationList:[],
         //周几
         weekday: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -309,32 +312,51 @@
           this.stationList=res['all']
         })
       },
+      pVideoChange(cur,pre) {
+        this.preVideoList[pre].stop()
+        this.preVideoList[cur].play()
+      },
       initVideo(){
-        let token=''
-        let previewVideo=[]
-        let liveVideo=[]
+        this.preVideoList=[]
+        this.playerList=[]
         VideoJs.getVideoData(this.defaultStationId).then(res=>{
-          token=res['token']
-          previewVideo=res['preview']
-          liveVideo=res['live']
+          let token=res['token']
+          let previewVideo=res['preview']
+          let liveVideo=res['live']
+          let liveLength = liveVideo.length;
+          for(let i=0;i<liveLength;i++){
+            let liveChannel=liveVideo[i]
+            this.playerList.push(
+              new EZUIKit.EZUIKitPlayer({
+                id: 'live'+i, // 视频容器ID
+                accessToken: token,
+                url: 'ezopen://open.ys7.com/'+liveChannel.channel+'/'+liveChannel.serialNo+'.hd.live',
+                audio:0,//声音
+                height:230
+              })
+            )
+          }
+          let pLiveLength = previewVideo.length;
+          this.preVideoSize=pLiveLength
+          for(let i=0;i<pLiveLength;i++){
+            let lc=previewVideo[i]
+            let id='pplayer'+i
+            let src='ezopen://open.ys7.com/'+lc.channel+'/'+lc.serialNo+'.live'
+            this.preVideoList.push(
+              new EZUIKit.EZUIKitPlayer({
+                id: id, // 视频容器ID
+                accessToken: token,
+                url: src,
+                audio:0,//声音
+                height:200,
+                width:200
+              })
+            )
+          }
         })
-        let liveLength = liveVideo.length;
-        for(let i=0;i<liveLength;i++){
-          let liveChannel=liveVideo[i]
-          let player='player'+i
-            player=new EZUIKit.EZUIKitPlayer({
-            id: 'live'+i, // 视频容器ID
-            accessToken: token,
-            url: 'ezopen://open.ys7.com/'+liveChannel.serialNo+"/"+liveChannel.channel+".live",
-            audio:0,//声音
-            height:230
-          })
-          this.playerList.push(player)
-        }
       },
       videoReStart() {
-        this.playerStop()
-        this.playerList=[]
+        // this.playerStop()
         this.initVideo()
       },
       waterLine() {
@@ -374,9 +396,13 @@
         }
       },
       playerStop() {
-        let playerSize = this.playerList.length;
+        let playerSize = this.playerList.length
         for(let i=0;i<playerSize;i++){
           this.playerList[i].stop()
+        }
+        let ppSize = this.preVideoList.length
+        for(let j=0;j<ppSize;j++){
+          this.preVideoList[j].stop()
         }
       },
       weatherImgShow(){
@@ -490,9 +516,16 @@
       width: 100%;
     }
 
+    .pVideoDiv{
+      width:45%;
+      height:46%;
+      display:inline-block;
+      padding:5px 0px 5px 0px
+    }
+
     .videoDiv{
+      /*padding-top: 20px;*/
       vert-align: middle;
-      /*margin-bottom: 50px;*/
     }
 
     //告警提示区域
@@ -508,7 +541,6 @@
       height: 260px;
       width: 100%;
       margin-bottom: 10px;
-      /*position: relative;*/
     }
 
     //左2模块
@@ -528,31 +560,28 @@
     .right_box1 {
       height: 260px;
       width: 100%;
-      /*margin-bottom: 10px;*/
+    }
+
+    .medium {
+      height:200px;
+      width: 200px;
     }
 
     //轮播图
-    .el-carousel__item h3 {
-      color: #475669;
-      font-size: 14px;
-      opacity: 0.75;
-      line-height:100%;
+    .el-carousel__item div {
       margin:0;
     }
 
     .el-carousel__item:nth-child(2n) {
       background-color: #d2dbff;
-      width: 70%;
-      height: 95%;
     }
 
     .el-carousel__item:nth-child(2n+1) {
       background-color: #d3dce6;
-      width: 70%;
-      height: 95%;
     }
 
     .el-carousel__container {
+      margin-top: 20px;
       position: relative;
       height: 240px;
     }
@@ -592,7 +621,6 @@
     }
 
     .weather_img{
-      /*padding-top: 2px;*/
       margin-left: 10px;
       margin-bottom: -10px;
       width: 30px;

@@ -31,6 +31,7 @@ public class VideoChannelService {
 
     private final static Logger log = LoggerFactory.getLogger(VideoChannelService.class);
     private static final String YS_URL = "https://open.ys7.com/api/lapp/token/get";
+    private static final String YS_PARAM = "appKey={appKey}&appSecret={appSecret}";
     private static Map<String, String> tokenMap = new ConcurrentHashMap<>();
 
 
@@ -129,12 +130,12 @@ public class VideoChannelService {
 
     public void getYsTokenTask() {
         log.info("================萤石token更新启动==================");
-        YsRequest ysRequest = new YsRequest(BaseConfig.ysKey, BaseConfig.ysSecret);
-        String param = JSON.toJSONString(ysRequest);
+//        YsRequest ysRequest = new YsRequest(BaseConfig.ysKey, BaseConfig.ysSecret);
+//        String param = JSON.toJSONString(ysRequest);
+        String param = YS_PARAM.replace("{appKey}",BaseConfig.ysKey).replace("{appSecret}",BaseConfig.ysSecret);
         String resp = null;
         try {
             resp = HttpClientUtil.postMethod(YS_URL, param);
-
         } catch (IOException e) {
             log.error("============萤石token获取异常=======", e);
         }
