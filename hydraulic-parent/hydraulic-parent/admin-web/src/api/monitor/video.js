@@ -6,5 +6,12 @@ export function getVideoData(stationId) {
     method: 'get'
   })
 }
+export function saveVideoChannel(data) {
+  return request({
+    url: 'api/video/saveVideoChannel',
+    method: 'post',
+    data
+  })
+}
 
-export default { getVideoData}
+export default { getVideoData,saveVideoChannel}

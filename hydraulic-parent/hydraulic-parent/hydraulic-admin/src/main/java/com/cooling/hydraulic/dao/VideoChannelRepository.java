@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface VideoChannelRepository extends JpaRepository<VideoChannel, Integer>, JpaSpecificationExecutor<VideoChannel> {
 
-    List<VideoChannel> findByStationIdAndStatus(Integer stationId, Integer status);
+    List<VideoChannel> findByStationIdAndStatus(Integer stationId, boolean status);
 
+    VideoChannel findBySerialNoAndChannel(String serialNo, String channel);
 }

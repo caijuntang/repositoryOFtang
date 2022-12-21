@@ -7,15 +7,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 public class BaseDTO implements Serializable {
 
     private String createBy;
 
     private String updateBy;
 
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @Override
     public String toString() {
@@ -48,19 +50,19 @@ public class BaseDTO implements Serializable {
         this.updateBy = updateBy;
     }
 
-    public Timestamp getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 }

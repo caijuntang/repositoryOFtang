@@ -8,9 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 public interface StationRepository extends JpaRepository<Station, Integer>, JpaSpecificationExecutor<Station> {
 
 
-    Station findStationByIsDefault(int defaultFlag);
+    Station findStationByIsDefault(boolean defaultFlag);
 
-    @Query(value = " update sys_station set is_default = 0 where is_default = 1 ",nativeQuery = true)
-    void changeDefalutStation();
+    Station findByName(String name);
+
+    @Query(value = " update sys_station set is_default = false where id  != ?1 ",nativeQuery = true)
+    void changeDefalutStation(Integer stationId);
+
+    @Query(value = " update sys_station set status = 0 where id = ?1 ",nativeQuery = true)
+    void updateStationStatus(Integer stationId);
 
 }

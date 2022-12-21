@@ -1,14 +1,14 @@
 package com.cooling.hydraulic.controller;
 
 
+import com.cooling.hydraulic.entity.AlarmRecord;
 import com.cooling.hydraulic.entity.Station;
-import com.cooling.hydraulic.model.AlarmConfigForm;
 import com.cooling.hydraulic.model.PumpDataForm;
-import com.cooling.hydraulic.service.AlarmService;
+import com.cooling.hydraulic.service.AlarmRecordService;
 import com.cooling.hydraulic.service.StationService;
 import com.cooling.hydraulic.service.WXService;
 import com.cooling.hydraulic.service.WaterLineService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.cooling.hydraulic.utils.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +24,8 @@ public class ControlController {
     private WaterLineService waterLineService;
     @Resource
     private StationService stationService;
+    @Resource
+    private AlarmRecordService alarmRecordService;
     @Resource
     private WXService wxUserService;
 
@@ -63,6 +65,25 @@ public class ControlController {
         resultMap.put("vol",vResult);
         resultMap.put("ele",aRsesult);
         return resultMap;
+    }
+
+
+    @RequestMapping("/getAlarmRecord")
+    @ResponseBody
+    public Object getAlarmRecord(Integer stationId) {
+        List<AlarmRecord> recordList = alarmRecordService.getRecordList(stationId);
+        List<List<Object>> result = new ArrayList<>();
+        int index=1;
+        for(AlarmRecord r:recordList){
+            List<Object> data = new ArrayList<>();
+            data.add(index);
+            data.add(r.getAlarmType().getValue());
+            data.add(r.getContent());
+            data.add(DateUtil.localDateTimeFormatyMdHms(r.getCreateTime()));
+            result.add(data);
+            index++;
+        }
+        return result;
     }
 
     @RequestMapping("/getPumpCount")

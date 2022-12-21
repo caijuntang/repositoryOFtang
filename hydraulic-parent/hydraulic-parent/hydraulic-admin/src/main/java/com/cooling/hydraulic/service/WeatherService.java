@@ -89,6 +89,9 @@ public class WeatherService {
         for (Station s : stationList) {
             String cityCode = s.getCityCode();
             BaiduResp weather = this.getWeather(cityCode, WeatherTypeEnum.All.getValue());
+            if(null==weather){
+                continue;
+            }
             WeatherResult result = weather.getResult();
             if(null==result){
                 continue;

@@ -13,7 +13,7 @@ public class AlarmConfig {
 
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="station_id")
     private Station station;
 
@@ -24,7 +24,8 @@ public class AlarmConfig {
 
     private Integer frequency;
 
-    private Integer status;
+    @Column(columnDefinition = "bit(1) default 0")
+    private Boolean status;
 
     @Column(name="template_id")
     private String templateId;
@@ -88,11 +89,11 @@ public class AlarmConfig {
         this.receivers = receivers;
     }
 
-    public Integer getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

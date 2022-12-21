@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
+    public static final String TIME_NULL  = "时间未知";
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final DateTimeFormatter DATETIME_FORMATTER =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -59,5 +60,17 @@ public class DateTimeUtil {
      */
     public static LocalDateTime string2LocalDateTime(String dateTime) {
         return LocalDateTime.parse(dateTime, DATETIME_FORMATTER);
+    }
+
+    /**
+     * LocalDateTime转字符串
+     * @param dateTime
+     * @return
+     */
+    public static String toDateTimeString(LocalDateTime dateTime) {
+        if(null==dateTime){
+            return TIME_NULL;
+        }
+       return dateTime.format(DATETIME_FORMATTER);
     }
 }

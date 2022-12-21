@@ -15,8 +15,6 @@ public class Station {
 
     private String name;
 
-    private String location;
-
     private String remark;
 
     private String province;
@@ -38,8 +36,15 @@ public class Station {
     @Column(name="city_code")
     private String cityCode;
 
-    @Column(name="is_default")
-    private int isDefault;
+    @Column(name="is_default",columnDefinition = "bit(1) default 0")
+    private Boolean isDefault;
+
+    //status=0 物理逻辑删除
+    private int status=1;
+
+    //是否接入
+    @Column(columnDefinition = "bit(1) default 0")
+    private Boolean enable;
 
     public Integer getId() {
         return id;
@@ -55,14 +60,6 @@ public class Station {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getRemark() {
@@ -137,11 +134,27 @@ public class Station {
         this.cityCode = cityCode;
     }
 
-    public int getIsDefault() {
+    public Boolean getIsDefault() {
         return isDefault;
     }
 
-    public void setIsDefault(int isDefault) {
+    public void setIsDefault(Boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 }

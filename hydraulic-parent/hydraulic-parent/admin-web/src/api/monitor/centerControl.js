@@ -21,6 +21,13 @@ export function getPumpData(stationId) {
   })
 }
 
+export function getRecordList(stationId) {
+  return request({
+    url: 'api/control/getAlarmRecord?stationId=' + stationId,
+    method: 'get'
+  })
+}
+
 export function getWXReceivers() {
   return request({
     url: 'api/control/getWXReceivers',
@@ -28,4 +35,4 @@ export function getWXReceivers() {
   })
 }
 
-export default { getWaterLine, getPumpCount, getPumpData, getWXReceivers}
+export default { getWaterLine, getPumpCount, getPumpData, getWXReceivers,getRecordList}

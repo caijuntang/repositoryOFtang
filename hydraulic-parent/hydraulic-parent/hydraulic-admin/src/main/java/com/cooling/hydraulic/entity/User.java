@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class User extends BaseEntity implements Serializable {
     private Boolean isAdmin = false;
 
     @Column(name = "pwd_reset_time")
-    private Date pwdResetTime;
+    private LocalDateTime pwdResetTime;
 
     @Override
     public boolean equals(Object o) {
@@ -118,11 +119,11 @@ public class User extends BaseEntity implements Serializable {
         isAdmin = admin;
     }
 
-    public Date getPwdResetTime() {
+    public LocalDateTime getPwdResetTime() {
         return pwdResetTime;
     }
 
-    public void setPwdResetTime(Date pwdResetTime) {
+    public void setPwdResetTime(LocalDateTime pwdResetTime) {
         this.pwdResetTime = pwdResetTime;
     }
 }

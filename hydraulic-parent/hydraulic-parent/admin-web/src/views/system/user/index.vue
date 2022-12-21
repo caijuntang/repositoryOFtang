@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+<!--    <el-row :gutter="20">-->
       <!--侧边部门数据-->
       <!--      <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">-->
       <!--        <div class="head-container">-->
@@ -24,7 +24,7 @@
       <!--        />-->
       <!--      </el-col>-->
       <!--用户数据-->
-      <el-col :xs="15" :sm="18" :md="19" :lg="20" :xl="20">
+<!--      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="17">-->
         <!--工具栏-->
         <div class="head-container">
           <div v-if="crud.props.searchToggle">
@@ -33,7 +33,7 @@
               v-model="query.blurry"
               clearable
               size="small"
-              placeholder="输入名称或者邮箱搜索"
+              placeholder="输入名称或者手机号搜索"
               style="width: 200px;"
               class="filter-item"
               @keyup.enter.native="crud.toQuery"
@@ -69,9 +69,9 @@
             <el-form-item label="电话" prop="phone">
               <el-input v-model.number="form.phone"/>
             </el-form-item>
-            <!--            <el-form-item label="昵称" prop="nickName">-->
-            <!--              <el-input v-model="form.nickName" @keydown.native="keydown($event)" />-->
-            <!--            </el-form-item>-->
+<!--            <el-form-item label="昵称" prop="nickName">-->
+<!--              <el-input v-model="form.nickName" @keydown.native="keydown($event)" />-->
+<!--            </el-form-item>-->
             <!--            <el-form-item label="邮箱" prop="email">-->
             <!--              <el-input v-model="form.email" />-->
             <!--            </el-form-item>-->
@@ -113,8 +113,7 @@
                   v-for="item in userStatus"
                   :key="item.id"
                   :label="item.value"
-                >{{ item.label }}
-                </el-radio>
+                >{{item.label}}</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item style="margin-bottom: 0;" label="角色" prop="roles">
@@ -146,7 +145,7 @@
                   @selection-change="crud.selectionChangeHandler">
           <el-table-column :selectable="checkboxT" type="selection" width="55"/>
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名"/>
-          <!--          <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />-->
+<!--                    <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />-->
           <!--          <el-table-column prop="gender" label="性别" />-->
           <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话"/>
           <!--          <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱" />-->
@@ -166,7 +165,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期"/>
+          <el-table-column :show-overflow-tooltip="true" prop="createTime" width="200" label="创建日期"/>
           <el-table-column
             v-if="checkPer(['admin','user:edit','user:del'])"
             label="操作"
@@ -185,8 +184,8 @@
         </el-table>
         <!--分页组件-->
         <pagination/>
-      </el-col>
-    </el-row>
+<!--      </el-col>-->
+<!--    </el-row>-->
   </div>
 </template>
 
@@ -210,7 +209,12 @@
     name: 'User',
     components: {crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
     cruds() {
-      return CRUD({title: '用户', url: 'api/users', crudMethod: {...crudUser}})
+      return CRUD({title: '用户', url: 'api/users', crudMethod: {...crudUser},
+        optShow: {
+          add: true,
+          del:true
+        }
+      })
     },
     mixins: [presenter(), header(), form(defaultForm), crud()],
     // 数据字典
@@ -295,7 +299,6 @@
       [CRUD.HOOK.afterToCU](crud, form) {
         this.getRoles()
         this.getRoleLevel()
-        form.enabled = form.enabled.toString()
       },
       // 新增前将多选的值设置为空
       [CRUD.HOOK.beforeToAdd]() {
@@ -321,6 +324,7 @@
           })
           return false
         }
+        crud.form.roles = userRoles
         return true
       },
       // 改变状态

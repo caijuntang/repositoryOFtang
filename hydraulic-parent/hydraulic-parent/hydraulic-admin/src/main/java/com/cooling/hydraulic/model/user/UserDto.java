@@ -5,6 +5,7 @@ import com.cooling.hydraulic.model.BaseDTO;
 import com.cooling.hydraulic.model.role.RoleSmallDto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class UserDto extends BaseDTO implements Serializable {
     @JSONField(serialize = false)
     private Boolean isAdmin = false;
 
-    private Date pwdResetTime;
+    private LocalDateTime pwdResetTime;
 
     public Long getId() {
         return id;
@@ -138,11 +139,11 @@ public class UserDto extends BaseDTO implements Serializable {
         isAdmin = admin;
     }
 
-    public Date getPwdResetTime() {
+    public LocalDateTime getPwdResetTime() {
         return pwdResetTime;
     }
 
-    public void setPwdResetTime(Date pwdResetTime) {
+    public void setPwdResetTime(LocalDateTime pwdResetTime) {
         this.pwdResetTime = pwdResetTime;
     }
 

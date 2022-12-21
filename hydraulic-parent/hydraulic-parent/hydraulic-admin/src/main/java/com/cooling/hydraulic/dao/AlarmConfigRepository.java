@@ -13,8 +13,8 @@ public interface AlarmConfigRepository  extends JpaRepository<AlarmConfig, Integ
     AlarmConfig findAlarmConfigByStation(Station station);
 
     @Query(value = " update alarm_config set status = ?1 where id = ?2 ",nativeQuery = true)
-    void updateStatusById(int status, Integer id);
+    void updateStatusById(boolean status, Integer id);
 
 
-    List<AlarmConfig> findByStatus(Integer status);
+    List<AlarmConfig> findByStatus(boolean status);
 }

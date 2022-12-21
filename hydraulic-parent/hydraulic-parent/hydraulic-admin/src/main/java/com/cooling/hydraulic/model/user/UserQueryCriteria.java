@@ -1,5 +1,7 @@
 package com.cooling.hydraulic.model.user;
 
+import com.cooling.hydraulic.annotation.Query;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -8,11 +10,13 @@ public class UserQueryCriteria implements Serializable {
 
     private Long id;
 
-
+    @Query(blurry = "username,nickName")
     private String blurry;
 
+    @Query
     private Boolean enabled;
 
+    @Query(type = Query.Type.BETWEEN)
     private List<Timestamp> createTime;
 
     public Long getId() {

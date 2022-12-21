@@ -19,7 +19,7 @@ public class Menu extends BaseEntity implements Serializable {
     private Long id;
 
     @JSONField(serialize = false)
-    @ManyToMany(mappedBy = "menus")
+    @ManyToMany(mappedBy = "menus",fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     private String title;
@@ -164,11 +164,11 @@ public class Menu extends BaseEntity implements Serializable {
         this.subCount = subCount;
     }
 
-    public Boolean getIFrame() {
+    public Boolean getiFrame() {
         return iFrame;
     }
 
-    public void setIFrame(Boolean iFrame) {
+    public void setiFrame(Boolean iFrame) {
         this.iFrame = iFrame;
     }
 }

@@ -1,12 +1,16 @@
 package com.cooling.hydraulic.model.role;
 
+import com.cooling.hydraulic.annotation.Query;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 public class RoleQueryCriteria {
 
+    @Query(blurry = "name,description")
     private String blurry;
 
+    @Query(type = Query.Type.BETWEEN)
     private List<Timestamp> createTime;
 
     public String getBlurry() {

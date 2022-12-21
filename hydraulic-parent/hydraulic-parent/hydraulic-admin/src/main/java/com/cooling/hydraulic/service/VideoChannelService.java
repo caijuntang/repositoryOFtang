@@ -6,15 +6,24 @@ import com.cooling.hydraulic.config.BaseConfig;
 import com.cooling.hydraulic.consts.BaseConst;
 import com.cooling.hydraulic.consts.ResponseConst;
 import com.cooling.hydraulic.dao.VideoChannelRepository;
+import com.cooling.hydraulic.entity.AlarmConfig;
+import com.cooling.hydraulic.entity.Menu;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.entity.VideoChannel;
-import com.cooling.hydraulic.model.VideoChannelForm;
-import com.cooling.hydraulic.requestDto.YsRequest;
+import com.cooling.hydraulic.exception.BadRequestException;
+import com.cooling.hydraulic.exception.EntityExistException;
+import com.cooling.hydraulic.model.alarm.AlarmQueryCriteria;
+import com.cooling.hydraulic.model.video.VideoDto;
+import com.cooling.hydraulic.model.video.VideoQueryCriteria;
 import com.cooling.hydraulic.response.YsResponse;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
+import com.cooling.hydraulic.utils.PageUtil;
+import com.cooling.hydraulic.utils.QueryHelp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +57,7 @@ public class VideoChannelService {
 
 
     @Transactional
-    public boolean save(VideoChannelForm form){
+    public boolean save(VideoDto form){
         if(null==form){
             return false;
         }
@@ -77,13 +86,13 @@ public class VideoChannelService {
     public Object findVideoByStationId(Integer stationId){
         Station station = new Station();
         station.setId(stationId);
-        List<VideoChannel> channels = videoChannelRepository.findByStationIdAndStatus(stationId,1);
+        List<VideoChannel> channels = videoChannelRepository.findByStationIdAndStatus(stationId,true);
         Map<String, Object> dataMap = new HashMap<String,Object>();
         List<VideoChannel> liveVideo = new ArrayList<>();
         if(null!=channels&&!channels.isEmpty()){
             for(VideoChannel c:channels){
-                int isLive = c.getIsLive();
-                if(isLive==1){
+                boolean isLive = c.getIsLive();
+                if(isLive==true){
                     liveVideo.add(c);
                 }
             }
@@ -95,7 +104,7 @@ public class VideoChannelService {
         return dataMap;
     }
 
-    private VideoChannel formToEntity(VideoChannelForm form) {
+    private VideoChannel formToEntity(VideoDto form) {
         VideoChannel channel = new VideoChannel();
         channel.setChannel(form.getChannel());
         channel.setIsLive(form.getIsLive());
@@ -110,15 +119,17 @@ public class VideoChannelService {
     }
 
 
-    private VideoChannelForm entityToForm(VideoChannel channel) {
-        VideoChannelForm form = new VideoChannelForm();
+    private VideoDto toDto(VideoChannel channel) {
+        VideoDto form = new VideoDto();
+        form.setId(channel.getId());
         form.setChannel(channel.getChannel());
         form.setIsLive(channel.getIsLive());
         form.setSerialNo(channel.getSerialNo());
         form.setVideoName(channel.getVideoName());
         form.setStatus(channel.getStatus());
-        Integer stationId = channel.getStation().getId();
-        form.setStationId(stationId);
+        Station station=channel.getStation();
+        form.setStationId(station.getId());
+        form.setStationName(station.getName());
         return form;
     }
 
@@ -163,4 +174,40 @@ public class VideoChannelService {
         return token;
     }
 
+    public Object queryAll(VideoQueryCriteria criteria, Pageable pageable) {
+        Page<VideoChannel> page = videoChannelRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+        return PageUtil.toPage(page.map(this::toDto));
+    }
+
+    @Transactional
+    public void create(VideoDto resources) {
+        String channel = resources.getChannel();
+        String serialNo = resources.getSerialNo();
+        if(StringUtils.isEmpty(channel)||StringUtils.isEmpty(serialNo)){
+            throw new BadRequestException("序列号或通道参数缺失");
+        }
+        VideoChannel entity = videoChannelRepository.findBySerialNoAndChannel(serialNo, channel);
+        if(null!=entity){
+            throw new EntityExistException(VideoChannel.class,"serialNo+channel",serialNo+"-"+channel);
+        }
+        VideoChannel videoChannel = this.formToEntity(resources);
+        videoChannelRepository.save(videoChannel);
+    }
+
+    @Transactional
+    public void update(VideoDto resources) {
+        Integer id = resources.getId();
+        if(null==id){
+            return;
+        }
+        VideoChannel old = videoChannelRepository.getOne(id);
+        old.setSerialNo(resources.getSerialNo());
+        old.setChannel(resources.getChannel());
+        old.setIsLive(resources.getIsLive());
+        old.setStatus(resources.getStatus());
+        videoChannelRepository.save(old);
+    }
+
+    public void delete(Set<Integer> ids) {
+    }
 }

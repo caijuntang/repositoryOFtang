@@ -6,6 +6,7 @@ import Vue from 'vue'
  * CRUD配置
  * @param {*} options <br>
  * @return crud instance.
+ * @example
  * 要使用多crud时，请在关联crud的组件处使用crud-tag进行标记，如：<jobForm :job-status="dict.job_status" crud-tag="job" />
  */
 function CRUD(options) {
@@ -486,7 +487,14 @@ function CRUD(options) {
       }
     },
     findVM(type) {
-      return crud.vms.find(vm => vm && vm.type === type).vm
+      try {
+        var vm1 = crud.vms.find(vm => vm && typeof vm !== 'undefined' && vm.type === type).vm
+        return vm1
+      } catch (e) {
+        console.log(e)
+      }
+
+      // return crud.vms.find(vm => vm && typeof vm !== 'undefined' && vm.type === type).vm
     },
     notify(title, type = CRUD.NOTIFICATION_TYPE.INFO) {
       crud.vms[0].vm.$notify({

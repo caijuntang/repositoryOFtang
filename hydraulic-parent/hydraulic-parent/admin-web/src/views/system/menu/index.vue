@@ -58,7 +58,7 @@
           <el-input v-model="form.title" placeholder="按钮名称" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-show="form.type.toString() !== '0'" label="权限标识" prop="permission">
-          <el-input v-model="form.permission" :disabled="form.iFrame.toString() === 'true'" placeholder="权限标识" style="width: 178px;" />
+          <el-input v-model="form.permission" :disabled="form.iFrame" placeholder="权限标识" style="width: 178px;" />
         </el-form-item>
         <el-form-item v-if="form.type.toString() !== '2'" label="路由地址" prop="path">
           <el-input v-model="form.path" placeholder="路由地址" style="width: 178px;" />
@@ -66,10 +66,10 @@
         <el-form-item label="菜单排序" prop="menuSort">
           <el-input-number v-model.number="form.menuSort" :min="0" :max="999" controls-position="right" style="width: 178px;" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件名称" prop="componentName">
+        <el-form-item v-show="form.iFrame !== true && form.type.toString() === '1'" label="组件名称" prop="componentName">
           <el-input v-model="form.componentName" style="width: 178px;" placeholder="匹配组件内Name字段" />
         </el-form-item>
-        <el-form-item v-show="form.iFrame.toString() !== 'true' && form.type.toString() === '1'" label="组件路径" prop="component">
+        <el-form-item v-show="form.iFrame !== true && form.type.toString() === '1'" label="组件路径" prop="component">
           <el-input v-model="form.component" style="width: 178px;" placeholder="组件路径" />
         </el-form-item>
         <el-form-item label="上级类目" prop="pid">
@@ -94,11 +94,11 @@
       :load="getMenus"
       :data="crud.data"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      row-key="id"
-      @select="crud.selectChange"
-      @select-all="crud.selectAllChange"
-      @selection-change="crud.selectionChangeHandler"
-    >
+      row-key="id">
+<!--      @select="crud.selectChange"-->
+<!--      @select-all="crud.selectAllChange"-->
+<!--      @selection-change="crud.selectionChangeHandler"-->
+<!--    >-->
       <el-table-column type="selection" width="55" />
       <el-table-column :show-overflow-tooltip="true" label="菜单标题" width="125px" prop="title" />
       <el-table-column prop="icon" label="图标" align="center" width="60px">
@@ -163,7 +163,11 @@ export default {
   name: 'Menu',
   components: { IconSelect, crudOperation, rrOperation, udOperation, DateRangePicker ,Treeselect},
   cruds() {
-    return CRUD({ title: '菜单', url: 'api/menus/', crudMethod: { ...crudMenu }})
+    return CRUD({ title: '菜单', url: 'api/menus/', crudMethod: { ...crudMenu },
+      optShow: {
+        add: true,
+      }
+    })
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   data() {
@@ -192,9 +196,21 @@ export default {
         if (form.pid === null) {
           form.pid = 0
         }
+        this.getSupDepts(form.id)
       } else {
         this.menus.push({ id: 0, label: '顶级类目', children: null })
       }
+    },
+    getSupDepts(id) {
+      crudMenu.getMenuSuperior(id).then(res => {
+        const children = res.map(function(obj) {
+          if (!obj.leaf && !obj.children) {
+            obj.children = null
+          }
+          return obj
+        })
+        this.menus = [{ id: 0, label: '顶级类目', children: children }]
+      })
     },
     getMenus(tree, treeNode, resolve) {
       const params = { pid: tree.id }

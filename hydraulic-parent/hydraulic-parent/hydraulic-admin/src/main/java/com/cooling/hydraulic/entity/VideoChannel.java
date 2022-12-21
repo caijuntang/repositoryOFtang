@@ -1,6 +1,8 @@
 package com.cooling.hydraulic.entity;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,9 +25,11 @@ public class VideoChannel {
     //通道 单通道默认为1 多通道需填写
     private String channel="1";
 
-    private int isLive;
+    @Column(columnDefinition = "bit(1) default 0")
+    private Boolean isLive;
 
-    private int status;
+    @Column(columnDefinition = "bit(1) default 0")
+    private Boolean status;
 
     private LocalDateTime createTime;
 
@@ -70,19 +74,19 @@ public class VideoChannel {
         this.channel = channel;
     }
 
-    public int getIsLive() {
+    public Boolean getIsLive() {
         return isLive;
     }
 
-    public void setIsLive(int isLive) {
+    public void setIsLive(Boolean isLive) {
         this.isLive = isLive;
     }
 
-    public int getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

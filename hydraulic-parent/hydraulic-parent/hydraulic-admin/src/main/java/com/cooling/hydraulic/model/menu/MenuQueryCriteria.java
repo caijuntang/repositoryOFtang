@@ -1,16 +1,23 @@
 package com.cooling.hydraulic.model.menu;
 
+import com.cooling.hydraulic.annotation.Query;
+
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MenuQueryCriteria {
 
+    @Query(blurry = "title,component,permission")
     private String blurry;
 
-    private List<Timestamp> createTime;
+    @Query(type = Query.Type.BETWEEN)
+    private List<LocalDateTime> createTime;
 
+    @Query(type = Query.Type.IS_NULL, propName = "pid")
     private Boolean pidIsNull;
 
+    @Query
     private Long pid;
 
     public String getBlurry() {
@@ -21,11 +28,11 @@ public class MenuQueryCriteria {
         this.blurry = blurry;
     }
 
-    public List<Timestamp> getCreateTime() {
+    public List<LocalDateTime> getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(List<Timestamp> createTime) {
+    public void setCreateTime(List<LocalDateTime> createTime) {
         this.createTime = createTime;
     }
 

@@ -93,7 +93,7 @@ public class MenuService {
         if(resources.getPid().equals(0L)){
             resources.setPid(null);
         }
-        if(resources.getIFrame()){
+        if(resources.getiFrame()){
             String http = "http://", https = "https://";
             if (!(resources.getPath().toLowerCase().startsWith(http)||resources.getPath().toLowerCase().startsWith(https))) {
                 throw new BadRequestException("外链必须以http://或者https://开头");
@@ -114,7 +114,7 @@ public class MenuService {
         Menu menu = menuRepository.findById(resources.getId()).orElseGet(Menu::new);
         ValidationUtil.isNull(menu.getId(),"Permission","id",resources.getId());
 
-        if(resources.getIFrame()){
+        if(resources.getiFrame()){
             String http = "http://", https = "https://";
             if (!(resources.getPath().toLowerCase().startsWith(http)||resources.getPath().toLowerCase().startsWith(https))) {
                 throw new BadRequestException("外链必须以http://或者https://开头");
@@ -144,7 +144,7 @@ public class MenuService {
         menu.setComponent(resources.getComponent());
         menu.setPath(resources.getPath());
         menu.setIcon(resources.getIcon());
-        menu.setIFrame(resources.getIFrame());
+        menu.setiFrame(resources.getiFrame());
         menu.setPid(resources.getPid());
         menu.setMenuSort(resources.getMenuSort());
         menu.setCache(resources.getCache());
@@ -347,7 +347,7 @@ public class MenuService {
         menu.setHidden( dto.getHidden() );
         menu.setPid( dto.getPid() );
         menu.setSubCount( dto.getSubCount() );
-        menu.setIFrame( dto.getIFrame() );
+        menu.setiFrame( dto.getIFrame() );
 
         return menu;
     }
@@ -370,7 +370,7 @@ public class MenuService {
         menuDto.setComponent( entity.getComponent() );
         menuDto.setPid( entity.getPid() );
         menuDto.setSubCount( entity.getSubCount() );
-        menuDto.setIFrame( entity.getIFrame() );
+        menuDto.setIFrame( entity.getiFrame() );
         menuDto.setCache( entity.getCache() );
         menuDto.setHidden( entity.getHidden() );
         menuDto.setComponentName( entity.getComponentName() );

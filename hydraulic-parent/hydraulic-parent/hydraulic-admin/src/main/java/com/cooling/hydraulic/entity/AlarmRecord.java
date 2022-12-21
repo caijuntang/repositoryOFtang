@@ -1,21 +1,40 @@
 package com.cooling.hydraulic.entity;
 
 
+import com.cooling.hydraulic.enums.AlarmTypeEnum;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="alarm_record")
 public class AlarmRecord {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="station_id")
     private Station station;
 
-    //报警状态 1：正在报警 0：已解除
+    @Column(name="alarm_type")
+    private AlarmTypeEnum alarmType;
+
+    //报警状态 1：未解除 0：已解除
+    @Column(columnDefinition = "bit(1) default 1")
     private int status;
 
     //报警内容
     private String content;
 
+    @Column(name="create_time")
     private LocalDateTime createTime;
+
+    @Column(name="fix_time")
+    private LocalDateTime fixTime;
+
+    private String remark;
 
 
     public Integer getId() {
@@ -56,5 +75,29 @@ public class AlarmRecord {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public AlarmTypeEnum getAlarmType() {
+        return alarmType;
+    }
+
+    public void setAlarmType(AlarmTypeEnum alarmType) {
+        this.alarmType = alarmType;
+    }
+
+    public LocalDateTime getFixTime() {
+        return fixTime;
+    }
+
+    public void setFixTime(LocalDateTime fixTime) {
+        this.fixTime = fixTime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

@@ -6,6 +6,7 @@ import 'nprogress/nprogress.css'// progress bar style
 import { getToken } from '@/utils/auth' // getToken from cookie
 import { buildMenus } from '@/api/system/menu'
 import { filterAsyncRouter } from '@/store/modules/permission'
+import Router from 'vue-router'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
@@ -23,7 +24,7 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     } else {
       loadMenus(next, to)
-      const getters = store.getters;
+      const getters = store.getters
       if (getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(() => { // 拉取user_info
           // 动态路由，拉取菜单

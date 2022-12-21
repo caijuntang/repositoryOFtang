@@ -113,22 +113,20 @@
   </dv-full-screen-container>
 </template>
 
+
 <script>
-  import {parseTime} from "../utils/index.js"; //日期格式转换
-  import Screenfull from '@/components/Screenfull';
-  import locateIcon from "@/assets/images/locateIcon.png";
-  import  EZUIKit from 'ezuikit-js';
+  import {parseTime} from "@/utils/index" //日期格式转换
+  import Screenfull from '@/components/Screenfull'
+  import locateIcon from "@/assets/images/locateIcon.png"
+  import  EZUIKit from 'ezuikit-js'
   import CenterControlJs from '@/api/monitor/centerControl'
   import VideoJs from '@/api/monitor/video'
   import HomeJs from '@/api/home'
-  import AlarmJs from '@/api/monitor/alarm'
-  import StationJs from '@/api/station/station'
+  import StationJs from '@/api/monitor/station'
   import weatherPngMap from '@/utils/weatherPngMap'
 
   export default {
-    components: {
-      Screenfull
-    },
+    components: {Screenfull},
     name:'home',
     data() {
       return {
@@ -149,7 +147,7 @@
         //直播
         playerList:[],
         //轮播
-        preVideoList:[{id:"pplayer0",src:""}],
+        preVideoList:[],
         preVideoSize:0,
         stationList:[],
         //周几
@@ -190,17 +188,18 @@
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
         },
+        report_config:{},
         report_info: {
-          header: ["消息类型", "内容", "时间"],
+          header: ["序号","消息类型", "内容", "时间"],
           data: [
-            ["水位告警", "内河水位超警戒线（7米），请及时处置！", "2022-12-3 15:30:12"],
-            ["泵机维护", "2号泵机累计运行400个小时请及时维护", "2022-12-3 15:30:12"],
-            ["人员入侵", "高压电房有人员入侵，请及时关注！", "2022-12-3 15:30:12"],
-            ["水位告警", "内河水位超警戒线（7米），请及时处置！","2022-11-5 15:30:12"],
-            ["异常天气", "今日12时有暴雨天气，请及时关注水位变化！","2022-11-20 15:30:12"],
-            ["异常天气", "今日12时有暴雨天气，请及时关注水位变化！","2022-11-20 15:30:12"]
+            [1,"水位告警", "告警内容示例1", "2022-12-3 15:30:12"],
+            [2,"泵机维护", "告警内容示例2", "2022-12-3 15:30:12"],
+            [3,"人员入侵", "告警内容示例3", "2022-12-3 15:30:12"],
+            [4,"水位告警", "告警内容示例4","2022-11-5 15:30:12"],
+            [5,"异常天气", "告警内容示例5","2022-11-20 15:30:12"],
+            [6,"异常天气", "告警内容示例6","2022-11-20 15:30:12"]
           ],
-          columnWidth:[100,500,200],
+          columnWidth:[100,100,400,200],
           evenRowBGC:"#382B47",
           oddRowBGC: "#1B0840",
           headerBGC: "#020308"
@@ -252,13 +251,14 @@
       this.pumpData()
       this.weatherWeek()
       this.weatherNow()
+      this.getAlarmRecord()
     },
     beforeDestroy() {
       //离开时删除计时器
       clearInterval(this.timing)
       clearInterval(this.dataTiming)
       clearInterval(this.weatherTiming)
-      this.playerStop()
+      this.playerDestroy()
       this.BMap=null
     },
     watch: {
@@ -268,32 +268,34 @@
         this.pumpData()
         this.weatherNow()
         this.weatherWeek()
+        this.getAlarmRecord()
       }
     },
     methods: {
       //右上角当前日期时间显示：每一秒更新一次最新时间
-      timeFn() {
-        this.timing = setInterval(() => {
+      timeFn:()=>{
+        const that =_this
+        that.timing = setInterval(() => {
           //获取当前时分秒
-          this.dateTime = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}");
+          that.dateTime = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}");
           //获取当前周几
-          this.dateWeek = this.weekday[new Date().getDay()];
-        }, 1000);
+          that.dateWeek = this.weekday[new Date().getDay()];
+        }, 1000)
 
-        this.dataTiming = setInterval(() => {
-          this.waterLine()
-          this.pumpData()
-        }, 10000);
+        that.dataTiming = setInterval(() => {
+          that.waterLine()
+          that.pumpData()
+        }, 15000)
 
-        this.weatherTiming = setInterval(() => {
-          this.weatherNow()
-        }, 900000);
+        that.weatherTiming = setInterval(() => {
+            that.weatherNow()
+        }, 900000)
       },
       //loading图
-      cancelLoading() {
+      cancelLoading:()=> {
         setTimeout(() => {
-          this.loading = false;
-        }, 500);
+          this.loading = false
+        }, 500)
       },
       //地图
       initBMap() {
@@ -313,6 +315,8 @@
         })
       },
       pVideoChange(cur,pre) {
+        console.log(this.preVideoList[pre])
+        console.log(this.preVideoList[cur])
         this.preVideoList[pre].stop()
         this.preVideoList[cur].play()
       },
@@ -324,39 +328,39 @@
           let previewVideo=res['preview']
           let liveVideo=res['live']
           let liveLength = liveVideo.length;
-          for(let i=0;i<liveLength;i++){
+          for(var i=0;i<liveLength;i++){
             let liveChannel=liveVideo[i]
-            this.playerList.push(
-              new EZUIKit.EZUIKitPlayer({
-                id: 'live'+i, // 视频容器ID
-                accessToken: token,
-                url: 'ezopen://open.ys7.com/'+liveChannel.channel+'/'+liveChannel.serialNo+'.hd.live',
-                audio:0,//声音
-                height:230
-              })
-            )
+            var player=new EZUIKit.EZUIKitPlayer({
+              id: 'live'+i, // 视频容器ID
+              accessToken: token,
+              url: 'ezopen://open.ys7.com/'+liveChannel.serialNo+'/'+liveChannel.channel+'.hd.live',
+              audio:0,//声音
+              height:230
+            })
+            this.playerList.push(player)
           }
           let pLiveLength = previewVideo.length;
           this.preVideoSize=pLiveLength
-          for(let i=0;i<pLiveLength;i++){
-            let lc=previewVideo[i]
-            let id='pplayer'+i
-            let src='ezopen://open.ys7.com/'+lc.channel+'/'+lc.serialNo+'.live'
-            this.preVideoList.push(
-              new EZUIKit.EZUIKitPlayer({
-                id: id, // 视频容器ID
-                accessToken: token,
-                url: src,
-                audio:0,//声音
-                height:200,
-                width:200
-              })
-            )
+          for(var j=0;j<pLiveLength;j++){
+            let lc=previewVideo[j]
+            let sufIndex=j+1
+            var player=new EZUIKit.EZUIKitPlayer({
+              id: 'pplayer'+sufIndex, // 视频容器ID
+              accessToken: token,
+              url: 'ezopen://open.ys7.com/'+lc.serialNo+'/'+lc.channel+'.live',
+              audio:0,//声音
+              height:200,
+              width:200
+            })
+            player.stop()
+            this.preVideoList.push(player)
           }
         })
+        console.log(this.playerList)
+        console.log(this.preVideoList)
       },
       videoReStart() {
-        // this.playerStop()
+        this.playerDestroy()
         this.initVideo()
       },
       waterLine() {
@@ -387,6 +391,14 @@
           this.dataA_config=this.dataA_info
         })
       },
+      getAlarmRecord() {
+        CenterControlJs.getRecordList(this.defaultStationId).then(res=>{
+          if(res||res.length>1){
+            this.report_info.data=res
+          }
+          this.report_config=this.report_info
+        })
+      },
       stationChange(station) {
         this.defaultStationId = station.id
         this.defaultStationName=station.name
@@ -403,6 +415,20 @@
         let ppSize = this.preVideoList.length
         for(let j=0;j<ppSize;j++){
           this.preVideoList[j].stop()
+        }
+      },
+      playerDestroy() {
+        var playerSize = this.playerList.length
+        for(var i=0;i<playerSize;i++){
+          this.playerList[i].stop().then((data)=>{
+            this.playerList[i].destroy
+          })
+        }
+        var ppSize = this.preVideoList.length
+        for(var j=0;j<ppSize;j++){
+          this.preVideoList[j].stop().then((data)=>{
+            this.preVideoList[j].destroy()
+          })
         }
       },
       weatherImgShow(){

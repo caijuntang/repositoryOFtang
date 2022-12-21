@@ -84,18 +84,23 @@ public class SpringSecurityAdapterCustom extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 静态资源等等
                 .antMatchers(
-                        HttpMethod.GET,
-                        "/*.html",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js"
+//                        "**/*.html",
+//                        "*.html.gz",
+//                        "**/*.html",
+//                        "**/*.html.gz",
+//                        "**/*.css",
+//                        "**/*.css.gz",
+//                        "**/*.js",
+//                        "**/*.js.gz",
+//                        "/dist/static/**",
+                        "/dist/**"
                 ).permitAll()
                 // swagger 文档
                 .antMatchers("/swagger-ui.html","/swagger-resources/**","/webjars/**","/*/api-docs","/avatar/**","/file/**","/druid/**").permitAll()
                 // 放行OPTIONS请求
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 自定义匿名访问所有url放行：允许匿名和带Token访问
-                .antMatchers("/auth/login","/auth/logout","openApi/**").permitAll()
+                .antMatchers("/auth/login","/auth/logout","/openApi/**","/index").permitAll()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 .and().apply(securityConfigurerAdapter());
