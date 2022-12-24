@@ -55,8 +55,7 @@
           <div slot="header" class="clearfix">
             <span class="role-span">角色列表</span>
           </div>
-          <el-table ref="table" v-loading="crud.loading" highlight-current-row style="width: 100%;" :data="crud.data">
-<!--                    @selection-change="crud.selectionChangeHandler" @current-change="handleCurrentChange">-->
+          <el-table ref="table" v-loading="crud.loading" highlight-current-row style="width: 100%;" :data="crud.data" @selection-change="crud.selectionChangeHandler" @current-change="handleCurrentChange">
             <el-table-column :selectable="checkboxT" type="selection" width="55" />
             <el-table-column prop="name" label="名称" />
             <el-table-column prop="level" label="角色级别" />

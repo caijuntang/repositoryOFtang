@@ -100,7 +100,7 @@ public class SpringSecurityAdapterCustom extends WebSecurityConfigurerAdapter {
                 // 放行OPTIONS请求
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 自定义匿名访问所有url放行：允许匿名和带Token访问
-                .antMatchers("/auth/login","/auth/logout","/openApi/**","/index").permitAll()
+                .antMatchers("/auth/login","/auth/logout","/openApi/**","/index","/wx/*").permitAll()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 .and().apply(securityConfigurerAdapter());

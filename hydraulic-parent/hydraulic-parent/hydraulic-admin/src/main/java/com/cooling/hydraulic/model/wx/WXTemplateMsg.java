@@ -1,4 +1,4 @@
-package com.cooling.hydraulic.model;
+package com.cooling.hydraulic.model.wx;
 
 import java.util.TreeMap;
 

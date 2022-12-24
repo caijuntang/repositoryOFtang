@@ -6,11 +6,18 @@ import com.cooling.hydraulic.component.NullHandler;
 import com.cooling.hydraulic.component.TextMsgHandler;
 import com.cooling.hydraulic.config.WCConfig;
 import com.cooling.hydraulic.dao.WXUserRepository;
+import com.cooling.hydraulic.entity.Station;
+import com.cooling.hydraulic.entity.VideoChannel;
 import com.cooling.hydraulic.entity.WXUser;
+import com.cooling.hydraulic.model.wx.WxUserQueryCriteria;
 import com.cooling.hydraulic.requestDto.MessageRequest;
 import com.cooling.hydraulic.requestDto.Text;
-import com.cooling.hydraulic.response.wechat.WCAccessToken;
+import com.cooling.hydraulic.requestDto.wechat.UserList;
+import com.cooling.hydraulic.requestDto.wechat.UserOpenId;
+import com.cooling.hydraulic.response.wechat.*;
 import com.cooling.hydraulic.utils.HttpClientUtil;
+import com.cooling.hydraulic.utils.PageUtil;
+import com.cooling.hydraulic.utils.QueryHelp;
 import com.google.common.collect.Maps;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
@@ -21,15 +28,16 @@ import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
@@ -43,6 +51,8 @@ public class WXService {
 
     //公众号
     private static final String WCSENDMSG_URL="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={token}";
+    private static final String WCUSERLIST_URL="https://api.weixin.qq.com/cgi-bin/user/get?access_token={token}";
+    private static final String WCUSERDETAIL_URL="https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token={token}";
     private static final String WCSENDTEMPLATEMSG_URL="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={token}";
     private static final String WCTOKEN_URL="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}";
 
@@ -63,12 +73,12 @@ public class WXService {
             @Override
             public void run() {
                 log.info("=====================token更新定时任务启动====================");
-//                String wcToKen = getWCToKen();
-//                if(StringUtils.hasText(wcToKen)){
-//                    String appId = WCConfig.appId;
-//                    tokenMap.put(appId,wcToKen);
-//                    log.info(appId+"的token更新成功："+wcToKen);
-//                }
+                String wcToKen = getWCToKen();
+                if(StringUtils.hasText(wcToKen)){
+                    String appId = WCConfig.appId;
+                    tokenMap.put(appId,wcToKen);
+                    log.info(appId+"的token更新成功："+wcToKen);
+                }
             }
         };
         // 计时器
@@ -162,4 +172,88 @@ public class WXService {
         return newRouter;
     }
 
+    public Object queryAll(WxUserQueryCriteria criteria, Pageable pageable) {
+        Page<WXUser> page = wxUserRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+        return PageUtil.toPage(page);
+    }
+
+    @Transactional
+    public void update(WXUser resources) {
+        Integer id = resources.getId();
+        if(null==id){
+            return;
+        }
+        WXUser old = wxUserRepository.getOne(id);
+        old.setRealName(resources.getRealName());
+        old.setNickName(resources.getNickName());
+        old.setRemark(resources.getRemark());
+        wxUserRepository.save(old);
+    }
+
+    @Transactional
+    public void delete(Set<Integer> ids) {
+        List<WXUser> users = new ArrayList<>();
+        for(Integer id :ids){
+            WXUser user = new WXUser();
+            user.setId(id);
+            users.add(user);
+        }
+        wxUserRepository.deleteAll(users);
+    }
+
+    public void syncWxuser() {
+        String wcToKen = tokenMap.get(WCConfig.appId);
+        try {
+            String userListresp = HttpClientUtil.getMethod(WCUSERLIST_URL.replace("{token}",wcToKen));
+            WCUserList userList = JSON.parseObject(userListresp, WCUserList.class);
+            if(null==userList){
+                return;
+            }
+            UserData data = userList.getData();
+            if(null==data){
+                return;
+            }
+            List<String> openidList = data.getOpenid();
+            if(openidList.isEmpty()){
+                return;
+            }
+            List<String> existOpenId = wxUserRepository.findOpenId();
+            //批量请求参数
+            UserList userQeq = new UserList();
+            List<UserOpenId> userOpenIds = new ArrayList<>();
+            for(String openid :openidList){
+                if(existOpenId.contains(openid)){
+                    continue;
+                }
+                UserOpenId userOpenId = new UserOpenId(openid);
+                userOpenIds.add(userOpenId);
+            }
+
+            userQeq.setUser_list(userOpenIds);
+            String userDetailRequest = JSON.toJSONString(userQeq);
+
+            String userDetailResp = HttpClientUtil.postMethod(WCUSERDETAIL_URL.replace("{token}",wcToKen),userDetailRequest);
+            UserDetailList userDetailList = JSON.parseObject(userDetailResp, UserDetailList.class);
+            List<UserDetail> userInfoList = userDetailList.getUser_info_list();
+            saveLocalUser(userInfoList);
+        } catch (IOException e) {
+            log.error("公众号用户同步错误出错",e);
+        }
+
+    }
+
+    @Transactional
+    public void saveLocalUser(List<UserDetail> userInfoList) {
+        if(null==userInfoList||userInfoList.isEmpty()){
+            return;
+        }
+        List<WXUser> wxUserList = new ArrayList<>();
+        for(UserDetail u:userInfoList){
+            WXUser wxUser = new WXUser();
+            wxUser.setOpenid(u.getOpenid());
+            wxUser.setNickName(u.getRemark());
+            wxUserList.add(wxUser);
+        }
+        wxUserRepository.saveAll(wxUserList);
+    }
 }

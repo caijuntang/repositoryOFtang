@@ -1,7 +1,7 @@
 package com.cooling.hydraulic.waterLine;
 
 import com.alibaba.fastjson.JSON;
-import com.cooling.hydraulic.model.WXTemplateMsg;
+import com.cooling.hydraulic.model.wx.WXTemplateMsg;
 import com.cooling.hydraulic.response.wechat.WCAccessToken;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.HttpClientUtil;
@@ -113,7 +113,7 @@ public class SendMessageTest {
         String token = getWXToken();
         String url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token;
         try {
-            String param = "{ \"button\":[{ \"type\":\"click\",\"name\":\"敬亭圩泵站水位详情\", \"key\":\"1\" }]}";
+            String param = "{ \"button\":[{\"name\":\"水位详情\",\"sub_button\":[{ \"type\":\"click\",\"name\":\"敬亭圩泵站\", \"key\":\"1\" },{ \"type\":\"click\",\"name\":\"龙窝湖泵站\", \"key\":\"2\" }]}]}";
             String resp = HttpClientUtil.postMethod(url, param);
             System.out.println(resp);
             //{"total":2,"count":2,"data":{"openid":["odynm5qCoBRwqNRkZRv2EJeDn_JE","odynm5sGxHh5-DA3JJorKzTez9P0"]},"next_openid":"odynm5sGxHh5-DA3JJorKzTez9P0"}

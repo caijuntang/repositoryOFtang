@@ -2,7 +2,7 @@ package com.cooling.hydraulic.waterLine;
 
 import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.model.PumpDataForm;
-import com.cooling.hydraulic.model.WaterLine;
+import com.cooling.hydraulic.model.alarm.WaterLine;
 import com.cooling.hydraulic.requestDto.qyRequest.PumpDataRequest;
 import com.cooling.hydraulic.utils.HttpClientUtil;
 import org.junit.Test;

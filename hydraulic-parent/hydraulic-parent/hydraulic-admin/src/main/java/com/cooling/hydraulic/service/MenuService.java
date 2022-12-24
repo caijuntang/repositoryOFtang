@@ -57,7 +57,7 @@ public class MenuService {
                 }
             }
         }
-        List<Menu> menuList = menuRepository.findAll( sort);
+        List<Menu> menuList = menuRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), sort);
         return menuList.stream().map(this::toDto).collect(Collectors.toList());
     }
 

@@ -108,9 +108,6 @@
 
 <script>
   import crudStation from '@/api/monitor/station'
-  import Treeselect from '@riophae/vue-treeselect'
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
   import CRUD, { presenter, header, form, crud } from '@crud/crud'
   import cityMap from '@/utils/cityMap'
   import rrOperation from '@crud/RR.operation'
@@ -122,7 +119,7 @@
   const defaultForm = { id: null, name: null, nameKey: null, province: null, pumpCount:null,city: null, attitude: null, longitude: null, enable:false ,cityCode:null,isDefault:false}
   export default {
     name: 'Station',
-    components: {crudOperation, rrOperation, udOperation , pagination ,Treeselect},
+    components: {crudOperation, rrOperation, udOperation , pagination},
     cruds() {
       return CRUD({ title: '泵站', url: 'api/station/', crudMethod: { ...crudStation },
         optShow: {
