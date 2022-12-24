@@ -4,7 +4,7 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <el-select v-model="query.stationId" placeholder="全部站点" class="filter-item" :clearable="true">
+        <el-select v-model="query.stationId" placeholder="全部站点" class="filter-item" :clearable=true>
           <el-option
             v-for="item in stations"
             :key="item.id"
@@ -23,8 +23,8 @@
         <el-form-item label="监控点" prop="videoName">
           <el-input v-model="form.videoName" placeholder="请填写监控点" style="width: 200px;" />
         </el-form-item>
-        <el-form-item  label="泵站名称" prop="name">
-          <el-select v-model="form.station" placeholder="请选择站点" style="width: 200px;">
+        <el-form-item  label="泵站名称" prop="stationId">
+          <el-select v-model="form.stationId" placeholder="请选择站点" style="width: 200px;">
             <el-option
               v-for="item in stations"
               :key="item.id"
@@ -34,13 +34,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="序列号" prop="serialNo">
-          <el-input v-model="form.serialNo" placeholder="请填写序列号" style="width: 120px;" />
+          <el-input v-model="form.serialNo" placeholder="请填写序列号" style="width: 120px;" :clearable=true />
         </el-form-item>
         <el-form-item label="通道" prop="channel">
-          <el-input v-model="form.channel" placeholder="请填写通道" style="width: 120px;" />
+          <el-input v-model="form.channel" placeholder="请填写通道" style="width: 120px;" :clearable=true />
         </el-form-item>
         <el-form-item label="主屏播放" prop="isDefault" style="width: 140px;">
-          <el-switch v-model="form.isDefault"></el-switch>
+          <el-switch v-model="form.isLive"></el-switch>
         </el-form-item>
         <el-form-item label="是否接入" prop="status" style="width: 140px;">
           <el-switch v-model="form.status"></el-switch>
@@ -58,29 +58,23 @@
       :data="crud.data"
       row-key="id">
       <el-table-column prop="videoName" label="监控点" align="center" width="100px" />
-      <el-table-column prop="stationName" label="站点" align="center" width="200px" />
-      <el-table-column prop="serialNo" label="序列号" align="center" width="100px" />
-      <el-table-column prop="channel" label="通道" align="center" width="100px" />
-      <el-table-column prop="isLive" label="主屏播放" align="center" width="100px" >
+      <el-table-column prop="stationName" label="站点" align="center" width="250px" />
+      <el-table-column prop="serialNo" label="序列号" align="center" width="150px" />
+      <el-table-column prop="channel" label="通道" align="center" width="150px" />
+      <el-table-column prop="isLive" label="主屏播放" align="center" width="150px" >
         <template slot-scope="scope">
           <span v-if="scope.row.isLive">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="是否接入" align="center" width="100px" >
+      <el-table-column prop="status" label="是否接入" align="center" width="150px" >
         <template slot-scope="scope">
           <span v-if="scope.row.status">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="isDefault" label="是否默认" align="center" width="100px" >
-        <template slot-scope="scope">
-          <span v-if="scope.row.isDefault">是</span>
-          <span v-else>否</span>
-        </template>
-      </el-table-column>
       <el-table-column prop="createTime" label="创建日期" align="center"  width="160px" />
-      <el-table-column v-if="checkPer(['admin','station:edit','station:del'])" label="操作" width="130px" align="center" fixed="right">
+      <el-table-column v-if="checkPer(['admin','video:edit','video:del'])" label="操作" width="130px" align="center" fixed="right">
         <template slot-scope="scope">
           <udOperation
             :data="scope.row"
@@ -105,9 +99,9 @@
 
 
   // crud交由presenter持有
-  const defaultForm = { id: null, name: null, station: null, serialNo: null, channel: null, isDefault: null, status: false }
+  const defaultForm = { id: null, videoName: null, stationId: null, serialNo: null, channel: null, isLive: null, status: false }
   export default {
-    name: 'WaterLine',
+    name: 'Video',
     components: {crudOperation, rrOperation, udOperation,pagination},
     cruds() {
       return CRUD({ title: '视频', url: 'api/video/', crudMethod: { ...crudVideo },
@@ -128,30 +122,34 @@
           del: ['admin', 'video:del']
         },
         rules: {
-          name: [
-            { required: true, message: '请输入监控点', trigger: 'blur' }
+          videoName: [
+            {required: true, message: '请输入监控点', trigger: 'blur'}
+          ],
+          stationId: [
+            {required: true, message: '请选择站点', trigger: 'blur'}
           ],
           serialNo: [
-            { required: true, message: '请输入序列号', trigger: 'blur' }
+            {required: true, message: '请输入序列号', trigger: 'blur'}
+          ],
+          channel: [
+            {required: true, message: '请输入通道号', trigger: 'blur'}
           ]
         }
       }
     },
     methods: {
       // 新增与编辑前做的操作
-      [CRUD.HOOK.afterToCU](crud, form) {
-        if (form.id != null) {
-        } else {
-        }
-      },
+      // [CRUD.HOOK.afterToCU](crud, form) {
+      //
+      // },
+      // 提交前做的操作
+      // [CRUD.HOOK.afterValidateCU](crud) {
+      //   return true
+      // },
       getStationAll(){
         StationJs.getStationData().then(res=>{
           this.stations=res['all']
         })
-      },
-      // 选中图标
-      selected(name) {
-        this.form.icon = name
       }
     },
     mounted() {

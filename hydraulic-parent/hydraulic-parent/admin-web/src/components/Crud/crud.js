@@ -492,6 +492,7 @@ function CRUD(options) {
         return vm1
       } catch (e) {
         console.log(e)
+        return undefined
       }
 
       // return crud.vms.find(vm => vm && typeof vm !== 'undefined' && vm.type === type).vm
@@ -680,14 +681,14 @@ function presenter(crud) {
       parseTime
     },
     created() {
-      for (const k in this.$crud) {
+      for (var k in this.$crud) {
         if (this.$crud[k].queryOnPresenterCreated) {
           this.$crud[k].toQuery()
         }
       }
     },
     destroyed() {
-      for (const k in this.$crud) {
+      for (var k in this.$crud) {
         this.$crud[k].unregisterVM('presenter', this)
       }
     },

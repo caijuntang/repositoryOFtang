@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.cooling.hydraulic.entity.AlarmConfig;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.model.PumpDataForm;
-import com.cooling.hydraulic.model.WXTemplateMsg;
 import com.cooling.hydraulic.model.WaterLine;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -99,7 +97,7 @@ public class WaterLineService {
         result.put("code", "200");
         result.put("msg", "report success!");
         //校验水位
-        alarmService.wateLineAlarm();
+        alarmService.wateLineAlarm(stationId);
         return result;
     }
 

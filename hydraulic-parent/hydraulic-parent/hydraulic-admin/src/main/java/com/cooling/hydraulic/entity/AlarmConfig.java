@@ -13,7 +13,7 @@ public class AlarmConfig {
 
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name="station_id")
     private Station station;
 

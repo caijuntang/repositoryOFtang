@@ -58,22 +58,22 @@
                 <!-- 视频部分 -->
                 <div id="video" style="text-align: center">
                   <dv-border-box-7 class="pVideoDiv" >
-                    <div id="live0" class="videoDiv"></div>
+                    <div id="live0" autoplay controls class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7 class="pVideoDiv" style="margin-left:20px">
-                    <div id="live1" class="videoDiv"></div>
+                    <div id="live1" autoplay controls class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7 class="pVideoDiv" style="margin-top:20px">
-                    <div id="live2" class="videoDiv"></div>
+                    <div id="live2" autoplay controls class="videoDiv"></div>
                   </dv-border-box-7>
                   <dv-border-box-7  class="pVideoDiv" style="margin-left:20px">
-                    <div id="live3" class="videoDiv"></div>
+                    <div id="live3" autoplay controls class="videoDiv"></div>
                   </dv-border-box-7>
                 </div>
                 <!-- 预警提示 -->
                 <div class="line_center"  >
                     <dv-border-box-10>
-                      <dv-scroll-board :config="report_info" class="carousel_list_line"  oddRowBGC="#fff"/>
+                      <dv-scroll-board :config="report_config" class="carousel_list_line"  oddRowBGC="#fff"/>
                     </dv-border-box-10>
                 </div>
               </el-col>
@@ -85,7 +85,7 @@
                     <div>
                       <el-carousel :interval="10000" type="card" height="200px" @change="pVideoChange">
                         <el-carousel-item v-for="item in preVideoSize" :key="item" :value="item"   >
-                          <div class="medium" :id="'pplayer'+item" ></div>
+                          <div class="medium" controls :id="'pplayer'+item" ></div>
                         </el-carousel-item>
                       </el-carousel>
                     </div>
@@ -154,72 +154,11 @@
         weekday: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
         //左侧轮播表格配置项
         weather_config:{},
-        weather_list:{
-          header: ["日期", "星期", "白天","夜晚"],
-          data: [],
-          columnWidth:[100,70,65,65],
-          evenRowBGC:"#382B47",
-          oddRowBGC: "#1B0840",
-          headerBGC: "#020308"
-        },
         dataV_config:{},
-        dataV_info: {
-          header: ["机组", "A相位", "B相位","C相位"],
-          data: [
-            ["1", "0.00", "0.00","0.00"],
-            ["2", "0.00", "0.00","0.00"],
-            ["3", "0.00", "0.00","0.00"],
-            ["4", "0.00", "0.00","0.00"]
-          ],
-          evenRowBGC:"#382B47",
-          oddRowBGC: "#1B0840",
-          headerBGC: "#020308"
-        },
         dataA_config:{},
-        dataA_info: {
-          header: ["机组", "A相位", "B相位","C相位"],
-          data: [
-            ["1", "0.00", "0.00","0.00"],
-            ["2", "0.00", "0.00","0.00"],
-            ["3", "0.00", "0.00","0.00"],
-            ["4", "0.00", "0.00","0.00"]
-          ],
-          evenRowBGC:"#382B47",
-          oddRowBGC: "#1B0840",
-          headerBGC: "#020308"
-        },
         report_config:{},
-        report_info: {
-          header: ["序号","消息类型", "内容", "时间"],
-          data: [
-            [1,"水位告警", "告警内容示例1", "2022-12-3 15:30:12"],
-            [2,"泵机维护", "告警内容示例2", "2022-12-3 15:30:12"],
-            [3,"人员入侵", "告警内容示例3", "2022-12-3 15:30:12"],
-            [4,"水位告警", "告警内容示例4","2022-11-5 15:30:12"],
-            [5,"异常天气", "告警内容示例5","2022-11-20 15:30:12"],
-            [6,"异常天气", "告警内容示例6","2022-11-20 15:30:12"]
-          ],
-          columnWidth:[100,100,400,200],
-          evenRowBGC:"#382B47",
-          oddRowBGC: "#1B0840",
-          headerBGC: "#020308"
-        },
         insideLineConfig:{},
-        insideLine:{
-          data:[],
-          shape:'roundRect',
-          waveHeight:20,
-          waveNum:2,
-          formatter:'内河:{value}米'
-        },
         outsideLineConfig:{},
-        outsideLine:{
-          data:[],
-          shape:'roundRect',
-          waveHeight:20,
-          waveNum:2,
-          formatter:'外河:{value}米'
-        },
         BMap: null,
         // 地图显示的中心坐标
         location: {},
@@ -246,12 +185,12 @@
       this.cancelLoading()
       //百度地图
       this.initBMap()
-      this.initVideo()
       this.waterLine()
       this.pumpData()
       this.weatherWeek()
       this.weatherNow()
       this.getAlarmRecord()
+      this.initVideo()
     },
     beforeDestroy() {
       //离开时删除计时器
@@ -262,19 +201,21 @@
       this.BMap=null
     },
     watch: {
-      defaultStationId () {
-        this.videoReStart()
-        this.waterLine()
-        this.pumpData()
-        this.weatherNow()
-        this.weatherWeek()
-        this.getAlarmRecord()
+      defaultStationId: {
+        handler(){
+          this.waterLine()
+          this.pumpData()
+          this.weatherNow()
+          this.weatherWeek()
+          this.getAlarmRecord()
+          this.videoReStart()
+        }
       }
     },
     methods: {
       //右上角当前日期时间显示：每一秒更新一次最新时间
-      timeFn:()=>{
-        const that =_this
+      timeFn() {
+        const that =this
         that.timing = setInterval(() => {
           //获取当前时分秒
           that.dateTime = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}");
@@ -285,6 +226,7 @@
         that.dataTiming = setInterval(() => {
           that.waterLine()
           that.pumpData()
+          that.getAlarmRecord()
         }, 15000)
 
         that.weatherTiming = setInterval(() => {
@@ -292,111 +234,155 @@
         }, 900000)
       },
       //loading图
-      cancelLoading:()=> {
+      cancelLoading() {
+        const that =this
         setTimeout(() => {
-          this.loading = false
+          that.loading = false
         }, 500)
       },
       //地图
       initBMap() {
         StationJs.getStationData().then(res=>{
+          const _that=this
           if(null==res){
             console.log("泵站数查询出错！")
             return
           }
           let defaultStation=res['default']
-          this.defaultStationId=defaultStation.id
-          this.defaultStationName=defaultStation.name
-          this.location={
+          _that.defaultStationId=defaultStation.id
+          _that.defaultStationName=defaultStation.name
+          _that.location={
             lng: defaultStation.longitude,
             lat: defaultStation.attitude
           }
-          this.stationList=res['all']
+          _that.stationList=res['all']
         })
       },
       pVideoChange(cur,pre) {
-        console.log(this.preVideoList[pre])
-        console.log(this.preVideoList[cur])
-        this.preVideoList[pre].stop()
-        this.preVideoList[cur].play()
+        if(this.preVideoList.length==this.preVideoSize){
+          this.preVideoList[pre].stop()
+          this.preVideoList[cur].play()
+        }
       },
       initVideo(){
-        this.preVideoList=[]
-        this.playerList=[]
-        VideoJs.getVideoData(this.defaultStationId).then(res=>{
+        const that = this
+        that.preVideoList=[]
+        that.playerList=[]
+        VideoJs.getVideoData(that.defaultStationId).then(res=>{
           let token=res['token']
           let previewVideo=res['preview']
           let liveVideo=res['live']
           let liveLength = liveVideo.length;
           for(var i=0;i<liveLength;i++){
             let liveChannel=liveVideo[i]
-            var player=new EZUIKit.EZUIKitPlayer({
-              id: 'live'+i, // 视频容器ID
-              accessToken: token,
-              url: 'ezopen://open.ys7.com/'+liveChannel.serialNo+'/'+liveChannel.channel+'.hd.live',
-              audio:0,//声音
-              height:230
-            })
-            this.playerList.push(player)
+            try{
+              let player=new EZUIKit.EZUIKitPlayer({
+                id: 'live'+i, // 视频容器ID
+                accessToken: token,
+                url: 'ezopen://open.ys7.com/'+liveChannel.serialNo+'/'+liveChannel.channel+'.hd.live',
+                audio:0,//声音
+                height:230
+              })
+              that.playerList.push(player)
+            } catch (e) {
+              console.log(e)
+            }
           }
           let pLiveLength = previewVideo.length;
           this.preVideoSize=pLiveLength
           for(var j=0;j<pLiveLength;j++){
             let lc=previewVideo[j]
             let sufIndex=j+1
-            var player=new EZUIKit.EZUIKitPlayer({
-              id: 'pplayer'+sufIndex, // 视频容器ID
-              accessToken: token,
-              url: 'ezopen://open.ys7.com/'+lc.serialNo+'/'+lc.channel+'.live',
-              audio:0,//声音
-              height:200,
-              width:200
-            })
-            player.stop()
-            this.preVideoList.push(player)
+            try{
+              let player=new EZUIKit.EZUIKitPlayer({
+                id: 'pplayer'+sufIndex, // 视频容器ID
+                accessToken: token,
+                url: 'ezopen://open.ys7.com/'+lc.serialNo+'/'+lc.channel+'.live',
+                audio:0,//声音
+                height:200,
+                width:200
+              })
+              that.preVideoList.push(player)
+            } catch (e) {
+              console.log(e)
+            }
           }
+          that.$forceUpdate()
         })
-        console.log(this.playerList)
-        console.log(this.preVideoList)
       },
       videoReStart() {
         this.playerDestroy()
         this.initVideo()
       },
       waterLine() {
-        CenterControlJs.getWaterLine(this.defaultStationId).then(res=>{
-          this.insideLine.data=[res['insideVal']]
-          this.insideLineConfig=this.insideLine
-          this.outsideLine.data=[res['outsideVal']]
-          this.outsideLineConfig=this.outsideLine
+        const that=this
+        CenterControlJs.getWaterLine(that.defaultStationId).then(res=>{
+          that.insideLineConfig= {
+            data: [res['insideVal']],
+            shape: 'roundRect',
+            waveHeight: 20,
+            waveNum: 2,
+            formatter: '内河:{value}米'
+          }
+          that.outsideLineConfig={
+            data:[res['outsideVal']],
+            shape:'roundRect',
+            waveHeight:20,
+            waveNum:2,
+            formatter:'外河:{value}米'
+          }
         })
       },
       weatherWeek(){
-        HomeJs.getWeatherWeek(this.defaultStationId).then(res=>{
-          this.weather_list.data=res
-          this.weather_config=this.weather_list
+        const that=this
+        HomeJs.getWeatherWeek(that.defaultStationId).then(res=>{
+          that.weather_config={
+            header: ["日期", "星期", "白天","夜晚"],
+            data: res,
+            columnWidth:[100,70,65,65],
+            evenRowBGC:"#382B47",
+            oddRowBGC: "#1B0840",
+            headerBGC: "#020308"
+          }
         })
       },
-      weatherNow(){
-        HomeJs.getWeatherNow(this.defaultStationId).then(res=>{
-          this.currentWeather=res
-          this.weatherImgShow()
+      weatherNow() {
+        const that=this
+        HomeJs.getWeatherNow(that.defaultStationId).then(res=>{
+          that.currentWeather=res
+          that.weatherImgShow()
         })
       },
       pumpData() {
-        CenterControlJs.getPumpData(this.defaultStationId).then(res=>{
-          this.dataV_info.data=res['vol']
-          this.dataV_config=this.dataV_info
-          this.dataA_info.data=res['ele']
-          this.dataA_config=this.dataA_info
+        const that=this
+        CenterControlJs.getPumpData(that.defaultStationId).then(res=>{
+          that.dataV_config={
+            header: ["机组", "A相位", "B相位","C相位"],
+            data: res['vol'],
+            evenRowBGC:"#382B47",
+            oddRowBGC: "#1B0840",
+            headerBGC: "#020308"
+          }
+          that.dataA_config={
+            header: ["机组", "A相位", "B相位","C相位"],
+            data: res['ele'],
+            evenRowBGC:"#382B47",
+            oddRowBGC: "#1B0840",
+            headerBGC: "#020308"
+          }
         })
       },
       getAlarmRecord() {
-        CenterControlJs.getRecordList(this.defaultStationId).then(res=>{
-          if(res||res.length>1){
-            this.report_info.data=res
+        const that=this
+        CenterControlJs.getRecordList(that.defaultStationId).then(res=>{
+          that.report_config={
+            header: ["序号","消息类型", "内容", "时间"],
+            data: res,
+            columnWidth:[100,100,400,200],
+            evenRowBGC:"#382B47",
+            oddRowBGC: "#1B0840",
+            headerBGC: "#020308"
           }
-          this.report_config=this.report_info
         })
       },
       stationChange(station) {
@@ -418,17 +404,26 @@
         }
       },
       playerDestroy() {
-        var playerSize = this.playerList.length
+        const that=this
+        var playerSize = that.playerList.length
         for(var i=0;i<playerSize;i++){
-          this.playerList[i].stop().then((data)=>{
-            this.playerList[i].destroy
-          })
+          try {
+            that.playerList[i].stop().then((data)=>{
+              // that.playerList[i].destroy
+            })
+          } catch (e) {
+            console.log(e)
+          }
         }
-        var ppSize = this.preVideoList.length
+        var ppSize = that.preVideoList.length
         for(var j=0;j<ppSize;j++){
-          this.preVideoList[j].stop().then((data)=>{
-            this.preVideoList[j].destroy()
-          })
+          try{
+            that.preVideoList[j].stop().then((data)=>{
+              // that.preVideoList[j].destroy()
+            })
+          } catch (e) {
+            console.log(e)
+          }
         }
       },
       weatherImgShow(){

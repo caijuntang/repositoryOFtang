@@ -18,15 +18,15 @@ public class WaterLineTest {
 
     @Test
     public void reportWaterLine() {
-//        String url = "http://localhost:8090/screen/openApi/reportWaterLine";
-        String url = "http://39.107.91.15:8090/screen/openApi/reportWaterLine";
+        String url = "http://localhost:8080/admin/openApi/reportWaterLine";
+//        String url = "http://39.107.91.15:8080/admin/openApi/reportWaterLine";
         WaterLine waterLine = new WaterLine(6.41,1.98,6.35,false);
         String param = JSON.toJSONString(waterLine);
         System.out.println(param);
 //        String reqStr="{\"indsideVal\":3.28,\"outsideVal\":5.58,\"fpreVal\":3.33}";
         try {
 //            String response = HttpClientUtils.postMethod(url, param);
-            String response= HttpClientUtil.getMethod(url+"?insideVal=6.42&outsideVal=1.98&foreVal=6.38&stationId=1",10000,10000);
+            String response= HttpClientUtil.getMethod(url+"?insideVal=10.88&outsideVal=1.98&foreVal=6.38&stationId=2",10000,10000);
             System.out.println("=======================================");
             System.out.printf(response);
         } catch (IOException e) {
@@ -71,8 +71,8 @@ public class WaterLineTest {
 
     @Test
     public void sendPumpData(){
-//        String url = "http://localhost:8090/screen/openApi/reportPumpData";
-        String url = "http://39.107.91.15:8090/screen/openApi/reportPumpData";
+//        String url = "http://localhost:8080/admin/openApi/reportPumpData";
+        String url = "http://39.107.91.15:8080/admin/openApi/reportPumpData";
         PumpDataRequest pumpDataRequest = new PumpDataRequest();
         pumpDataRequest.setStationId(1);
         PumpDataForm m = new PumpDataForm();

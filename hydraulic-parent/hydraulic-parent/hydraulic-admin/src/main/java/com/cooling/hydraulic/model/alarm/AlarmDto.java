@@ -23,6 +23,8 @@ public class AlarmDto {
 
     private int frequency;
 
+    private String templateId;
+
     private LocalDateTime createTime;
 
     public Integer getId() {
@@ -99,5 +101,13 @@ public class AlarmDto {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
     }
 }

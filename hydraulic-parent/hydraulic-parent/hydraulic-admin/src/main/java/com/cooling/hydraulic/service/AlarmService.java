@@ -30,10 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -156,6 +153,7 @@ public class AlarmService {
         model.setStationName(station.getName());
         model.setFrequency(config.getFrequency());
         model.setCreateTime(config.getCreateTime());
+        model.setTemplateId(config.getTemplateId());
         String receivers = config.getReceivers();
         List<String> receiverList = JSON.parseObject(receivers, List.class);
         model.setReceivers(receiverList);
@@ -163,74 +161,74 @@ public class AlarmService {
     }
 
     @Async
-    public void wateLineAlarm() {
+    public void wateLineAlarm(Integer stationId) {
         log.info("================水位告警查询启动==================");
-        List<AlarmConfig> alarmConfigs = this.findByStatus(true);
         long curTime = System.currentTimeMillis() / 1000;
-        if (null != alarmConfigs) {
-            for (AlarmConfig config : alarmConfigs) {
-                Station station = config.getStation();
-                Integer stationId = station.getId();
-                WaterLine waterLine = waterLineService.getWaterLineObject(stationId);
-                if (null == waterLine) {
-                    continue;
-                }
-                String receivers = config.getReceivers();
-                if (org.springframework.util.StringUtils.isEmpty(receivers)) {
-                    continue;
-                }
-                Integer configId = config.getId();
-                Long lastTime = alarmFrequecyMap.get(configId);
-                if (null != lastTime) {
-                    int frequecy = config.getFrequency() * 60;
-                    if (curTime - lastTime.longValue() < frequecy) {
-                        continue;
-                    }
-                }
-                Double insideVal = waterLine.getInsideVal();
-                //未超警戒水位
-                Double alarmLine = config.getAlarmLine();
-                if (insideVal.compareTo(alarmLine) < 0) {
-                    continue;
-                }
-                String stationName = station.getName();
-                //发送消息
-                String templateId = config.getTemplateId();
-                String content = waterLineAlarmContent.replace("{insideLine}", waterLine.getInsideVal().toString())
-                        .replace("{alarmLine}", alarmLine.toString());
-                //消息模版
-                TreeMap<String, TreeMap<String, String>> params = new TreeMap<>();
-                //根据具体模板参数组装
-                params.put("keyword1", this.item(stationName + "水位告警", "#000000"));
-                params.put("keyword2", this.item(DateTimeUtil.getNowDateTimeString(), "#000000"));
-                params.put("keyword3", this.item(content, "#000000"));
-                String remark = waterLineDetail.replace("{outsideLine}", waterLine.getOutsideVal().toString())
-                        .replace("{insideLine}", insideVal.toString())
-                        .replace("{foreLine}", waterLine.getForeVal().toString());
-                params.put("remark", this.item(remark, "#000000"));
-                List<String> receiverList = JSON.parseObject(receivers, List.class);
-                try {
-                    for (String receiver : receiverList) {
-                        WXTemplateMsg msg = new WXTemplateMsg();
-                        msg.setTemplate_id(templateId);
-                        msg.setTouser(receiver);
-                        msg.setData(params);
-                        String msgContent = JSON.toJSONString(msg);
-                        String resp = wxService.sendWCTemlateMsg(msgContent);
-                        log.info("消息发送成功：" + resp);
-                    }
-                    //设置告警频率
-                    alarmFrequecyMap.put(configId, curTime);
-                } catch (Exception e) {
-                    log.error("告警通知发送失败！", e);
-                }
-                //保存告警记录
-                AlarmRecord record = new AlarmRecord();
-                record.setStation(station);
-                record.setAlarmType(AlarmTypeEnum.WATERLINE);
-                record.setContent(content);
-                alarmRecordService.create(record);
+        Station station = stationRepository.getOne(stationId);
+        if(null==station){
+            return;
+        }
+        AlarmConfig config = alarmConfigRepository.findAlarmConfigByStationAndStatus(station, true);
+        if (null != config) {
+            WaterLine waterLine = waterLineService.getWaterLineObject(stationId);
+            if (null == waterLine) {
+                return;
             }
+            String receivers = config.getReceivers();
+            if (org.springframework.util.StringUtils.isEmpty(receivers)) {
+                return;
+            }
+            Integer configId = config.getId();
+            Long lastTime = alarmFrequecyMap.get(configId);
+            if (null != lastTime) {
+                int frequecy = config.getFrequency() * 60;
+                if (curTime - lastTime.longValue() < frequecy) {
+                    return;
+                }
+            }
+            Double insideVal = waterLine.getInsideVal();
+            //未超警戒水位
+            Double alarmLine = config.getAlarmLine();
+            if (insideVal.compareTo(alarmLine) < 0) {
+                return;
+            }
+            String stationName = station.getName();
+            //发送消息
+            String templateId = config.getTemplateId();
+            String content = waterLineAlarmContent.replace("{insideLine}", waterLine.getInsideVal().toString())
+                    .replace("{alarmLine}", alarmLine.toString());
+            //消息模版
+            TreeMap<String, TreeMap<String, String>> params = new TreeMap<>();
+            //根据具体模板参数组装
+            params.put("keyword1", this.item(stationName + "水位告警", "#000000"));
+            params.put("keyword2", this.item(DateTimeUtil.getNowDateTimeString(), "#000000"));
+            params.put("keyword3", this.item(content, "#000000"));
+            String remark = waterLineDetail.replace("{outsideLine}", waterLine.getOutsideVal().toString())
+                    .replace("{insideLine}", insideVal.toString())
+                    .replace("{foreLine}", waterLine.getForeVal().toString());
+            params.put("remark", this.item(remark, "#000000"));
+            List<String> receiverList = JSON.parseObject(receivers, List.class);
+            try {
+                for (String receiver : receiverList) {
+                    WXTemplateMsg msg = new WXTemplateMsg();
+                    msg.setTemplate_id(templateId);
+                    msg.setTouser(receiver);
+                    msg.setData(params);
+                    String msgContent = JSON.toJSONString(msg);
+                    String resp = wxService.sendWCTemlateMsg(msgContent);
+                    log.info("消息发送成功：" + resp);
+                }
+                //设置告警频率
+                alarmFrequecyMap.put(configId, curTime);
+            } catch (Exception e) {
+                log.error("告警通知发送失败！", e);
+            }
+            //保存告警记录
+            AlarmRecord record = new AlarmRecord();
+            record.setStation(station);
+            record.setAlarmType(AlarmTypeEnum.WATERLINE);
+            record.setContent(content);
+            alarmRecordService.create(record);
         }
     }
 
@@ -246,13 +244,14 @@ public class AlarmService {
         return PageUtil.toPage(page.map(this::toDto));
     }
 
-    @Transactional
-    public void create(AlarmDto resources) {
+    @Transactional(rollbackFor = Exception.class)
+    public void create(AlarmDto resources){
         Integer stationId = resources.getStationId();
         Station station = new Station();
         station.setId(stationId);
-        if(alarmConfigRepository.findAlarmConfigByStation(station) != null){
-            throw new EntityExistException(Menu.class,"name",resources.getName());
+        AlarmConfig existConfig= alarmConfigRepository.findAlarmConfigByStation(station);
+        if(existConfig != null){
+            throw new EntityExistException(AlarmConfig.class,"name",resources.getName());
         }
         Double alarmLine = resources.getAlarmLine();
         if(null== alarmLine){
@@ -267,6 +266,7 @@ public class AlarmService {
         String reveiversStr = JSON.toJSONString(receivers);
         alarmConfig.setReceivers(reveiversStr);
         alarmConfig.setStation(station);
+        alarmConfig.setTemplateId(resources.getTemplateId());
         alarmConfig.setCreateTime(LocalDateTime.now());
         alarmConfig.setFrequency(resources.getFrequency());
         alarmConfigRepository.save(alarmConfig);
@@ -277,7 +277,7 @@ public class AlarmService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(AlarmDto config) {
         Integer id = config.getId();
         if(null==id){
@@ -303,9 +303,15 @@ public class AlarmService {
         }
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<Integer> ids) {
+        List<AlarmConfig> configs = new ArrayList<>();
         for (Integer id : ids) {
-            alarmConfigRepository.deleteById(id);
+            AlarmConfig alarmConfig = new AlarmConfig();
+            alarmConfig.setId(id);
+            configs.add(alarmConfig);
         }
+        alarmConfigRepository.deleteAll(configs);
     }
 }

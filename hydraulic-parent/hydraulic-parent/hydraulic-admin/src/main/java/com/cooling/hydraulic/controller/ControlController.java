@@ -73,15 +73,28 @@ public class ControlController {
     public Object getAlarmRecord(Integer stationId) {
         List<AlarmRecord> recordList = alarmRecordService.getRecordList(stationId);
         List<List<Object>> result = new ArrayList<>();
-        int index=1;
-        for(AlarmRecord r:recordList){
+        int index=0;
+        int size = recordList.size();
+        while (index<size){
             List<Object> data = new ArrayList<>();
-            data.add(index);
-            data.add(r.getAlarmType().getValue());
+            AlarmRecord r = recordList.get(index);
+            data.add(index+1);
+            data.add(r.getAlarmType().getName());
             data.add(r.getContent());
             data.add(DateUtil.localDateTimeFormatyMdHms(r.getCreateTime()));
             result.add(data);
             index++;
+        }
+        if(size<5){
+            while(size<=5) {
+                List<Object> extr = new ArrayList<>();
+                extr.add(size+1);
+                extr.add("");
+                extr.add("");
+                extr.add("");
+                result.add(extr);
+                size++;
+            }
         }
         return result;
     }

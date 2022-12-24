@@ -7,11 +7,11 @@ public class AlarmRecordQueryCriteria {
     @Query(blurry = "content",type = Query.Type.INNER_LIKE)
     private String blurry;
 
-    @Query
-    private AlarmTypeEnum type;
+    @Query(propName = "alarmType")
+    private Integer type;
 
     @Query
-    private Boolean status;
+    private Integer status;
 
     @Query(propName = "id",joinName = "station")
     private Integer stationId;
@@ -25,19 +25,19 @@ public class AlarmRecordQueryCriteria {
         this.blurry = blurry;
     }
 
-    public AlarmTypeEnum getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(AlarmTypeEnum type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

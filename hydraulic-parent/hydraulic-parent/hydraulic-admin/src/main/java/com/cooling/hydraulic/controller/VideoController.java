@@ -35,7 +35,7 @@ public class VideoController {
 
     @GetMapping
 //    @PreAuthorize("@el.check('video:list')")
-    public ResponseEntity<Object> queryMenu(VideoQueryCriteria criteria, Pageable pageable) throws Exception {
+    public ResponseEntity<Object> video(VideoQueryCriteria criteria, Pageable pageable) throws Exception {
         return new ResponseEntity<>(videoChannelService.queryAll(criteria, pageable), HttpStatus.OK);
     }
 

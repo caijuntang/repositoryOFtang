@@ -10,10 +10,11 @@ public class AlarmRecordDto {
 
     private Integer stationId;
 
+    private String stationName;
 
-    private AlarmTypeEnum alarmType;
+    private String alarmTypeName;
 
-    private Boolean status;
+    private int status;
 
     private String content;
 
@@ -39,19 +40,27 @@ public class AlarmRecordDto {
         this.stationId = stationId;
     }
 
-    public AlarmTypeEnum getAlarmType() {
-        return alarmType;
+    public String getStationName() {
+        return stationName;
     }
 
-    public void setAlarmType(AlarmTypeEnum alarmType) {
-        this.alarmType = alarmType;
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
     }
 
-    public Boolean getStatus() {
+    public String getAlarmTypeName() {
+        return alarmTypeName;
+    }
+
+    public void setAlarmTypeName(String alarmTypeName) {
+        this.alarmTypeName = alarmTypeName;
+    }
+
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

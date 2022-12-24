@@ -5,7 +5,7 @@ public enum AlarmTypeEnum {
     WATERLINE("waterLine", "水位告警"),
 
     /* 通过邮箱修改密码 */
-    PUMPFIX("pumpFix", "水泵维护提醒");
+    PUMP("pump", "泵机告警");
 
     private final String value;
     private final String name;
@@ -19,4 +19,7 @@ public enum AlarmTypeEnum {
         return value;
     }
 
+    public String getName() {
+        return name;
+    }
 }

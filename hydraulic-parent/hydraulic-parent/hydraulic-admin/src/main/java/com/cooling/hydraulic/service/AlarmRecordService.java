@@ -2,11 +2,13 @@ package com.cooling.hydraulic.service;
 
 import com.cooling.hydraulic.dao.AlarmRecordRepository;
 import com.cooling.hydraulic.entity.AlarmRecord;
+import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.exception.BadRequestException;
 import com.cooling.hydraulic.exception.EntityNotFoundException;
 import com.cooling.hydraulic.model.alarm.AlarmDto;
 import com.cooling.hydraulic.model.alarm.AlarmRecordDto;
 import com.cooling.hydraulic.model.alarm.AlarmRecordQueryCriteria;
+import com.cooling.hydraulic.model.station.StationDto;
 import com.cooling.hydraulic.utils.DateTimeUtil;
 import com.cooling.hydraulic.utils.DateUtil;
 import com.cooling.hydraulic.utils.PageUtil;
@@ -28,10 +30,25 @@ public class AlarmRecordService {
 
     public Object queryAll(AlarmRecordQueryCriteria criteria, Pageable pageable) {
         Page<AlarmRecord> page = alarmRecordRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
-        return PageUtil.toPage(page);
+        return PageUtil.toPage(page.map(this::toDto));
     }
 
-    @Transactional
+    private AlarmRecordDto toDto(AlarmRecord record){
+        AlarmRecordDto form = new AlarmRecordDto();
+        form.setId(record.getId());
+        Station station = record.getStation();
+        form.setStationName(station.getName());
+        form.setStationId(station.getId());
+        form.setContent(record.getContent());
+        form.setAlarmTypeName(record.getAlarmType().getName());
+        form.setFixTime(record.getFixTime());
+        form.setStatus(record.getStatus());
+        form.setRemark(station.getRemark());
+        form.setCreateTime(record.getCreateTime());
+        return form;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void updateStatus(AlarmRecordDto resources) {
         Integer id = resources.getId();
         if(null==id){
@@ -47,7 +64,7 @@ public class AlarmRecordService {
         alarmRecordRepository.save(record);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(AlarmRecord resources) {
         resources.setCreateTime(DateTimeUtil.getNowDateTime());
         resources.setStatus(1);

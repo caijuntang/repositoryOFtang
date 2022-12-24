@@ -1,14 +1,11 @@
 package com.cooling.hydraulic.service;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import com.cooling.hydraulic.dao.StationRepository;
 import com.cooling.hydraulic.entity.Menu;
-import com.cooling.hydraulic.entity.Role;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.exception.BadRequestException;
 import com.cooling.hydraulic.exception.EntityExistException;
-import com.cooling.hydraulic.model.menu.MenuDto;
 import com.cooling.hydraulic.model.station.StationDto;
 import com.cooling.hydraulic.model.station.StationQueryCriteria;
 import com.cooling.hydraulic.utils.DateTimeUtil;
@@ -19,17 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.transaction.Transactional;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -39,7 +31,7 @@ public class StationService {
     @Resource
     private StationRepository stationRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(Station form){
         if(null==form){
             throw new BadRequestException("更新对象为空");
@@ -54,8 +46,9 @@ public class StationService {
             oldStation.setLongitude(form.getLongitude());
             boolean isDefault = form.getIsDefault();
             if(isDefault==true){
-                stationRepository.changeDefalutStation(id);
+                stationRepository.changeDefalutStation();
             }
+            oldStation.setEnable(form.getEnable());
             oldStation.setIsDefault(isDefault);
             oldStation.setNameKey(form.getNameKey());
             oldStation.setCityCode(form.getCityCode());
@@ -69,7 +62,7 @@ public class StationService {
     }
 
     public  List<Station> findAllStation(){
-        return stationRepository.findAll();
+        return stationRepository.findAllByEnableAndStatus(true,1);
     }
 
     public Station getOne(Integer stationId) {
@@ -77,7 +70,7 @@ public class StationService {
     }
 
     public Station getDefaultStation(){
-        return stationRepository.findStationByIsDefault(true);
+        return stationRepository.findStationByIsDefaultAndEnableAndStatus(true,true,1);
     }
 
     private Station formConvertToEntity(StationDto form){
@@ -122,7 +115,7 @@ public class StationService {
         return PageUtil.toPage(page.map(this::toDto));
     }
 
-   @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(Station resources) {
         if(stationRepository.findByName(resources.getName()) != null){
             throw new EntityExistException(Menu.class,"name",resources.getName());
@@ -130,10 +123,15 @@ public class StationService {
         if(StringUtils.isBlank(resources.getCityCode())||StringUtils.isBlank(resources.getAttitude())||StringUtils.isBlank(resources.getLongitude())){
             throw new BadRequestException("城市编码或经纬度参数缺失");
         }
+        boolean isDefault = resources.getIsDefault();
+        if(isDefault==true){
+            stationRepository.changeDefalutStation();
+        }
        stationRepository.save(resources);
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<Integer> stationIdSet) {
         for (Integer s : stationIdSet) {
             stationRepository.updateStationStatus(s);

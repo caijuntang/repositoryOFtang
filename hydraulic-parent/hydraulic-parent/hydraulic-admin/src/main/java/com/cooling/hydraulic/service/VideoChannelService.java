@@ -6,13 +6,10 @@ import com.cooling.hydraulic.config.BaseConfig;
 import com.cooling.hydraulic.consts.BaseConst;
 import com.cooling.hydraulic.consts.ResponseConst;
 import com.cooling.hydraulic.dao.VideoChannelRepository;
-import com.cooling.hydraulic.entity.AlarmConfig;
-import com.cooling.hydraulic.entity.Menu;
 import com.cooling.hydraulic.entity.Station;
 import com.cooling.hydraulic.entity.VideoChannel;
 import com.cooling.hydraulic.exception.BadRequestException;
 import com.cooling.hydraulic.exception.EntityExistException;
-import com.cooling.hydraulic.model.alarm.AlarmQueryCriteria;
 import com.cooling.hydraulic.model.video.VideoDto;
 import com.cooling.hydraulic.model.video.VideoQueryCriteria;
 import com.cooling.hydraulic.response.YsResponse;
@@ -89,18 +86,25 @@ public class VideoChannelService {
         List<VideoChannel> channels = videoChannelRepository.findByStationIdAndStatus(stationId,true);
         Map<String, Object> dataMap = new HashMap<String,Object>();
         List<VideoChannel> liveVideo = new ArrayList<>();
+        List<VideoChannel> preVideo = new ArrayList<>();
         if(null!=channels&&!channels.isEmpty()){
             for(VideoChannel c:channels){
                 boolean isLive = c.getIsLive();
                 if(isLive==true){
                     liveVideo.add(c);
+                }else{
+                    preVideo.add(c);
                 }
             }
         }
         String token = this.getYsToken(BaseConfig.ysKey,BaseConfig.ysSecret);
         dataMap.put("token",token);
         dataMap.put("live",liveVideo);
-        dataMap.put("preview",channels);
+        if(preVideo.size()==0){
+            dataMap.put("preview",liveVideo);
+        }else{
+            dataMap.put("preview",preVideo);
+        }
         return dataMap;
     }
 
@@ -130,6 +134,7 @@ public class VideoChannelService {
         Station station=channel.getStation();
         form.setStationId(station.getId());
         form.setStationName(station.getName());
+        form.setCreateTime(channel.getCreateTime());
         return form;
     }
 
@@ -179,7 +184,7 @@ public class VideoChannelService {
         return PageUtil.toPage(page.map(this::toDto));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(VideoDto resources) {
         String channel = resources.getChannel();
         String serialNo = resources.getSerialNo();
@@ -194,20 +199,32 @@ public class VideoChannelService {
         videoChannelRepository.save(videoChannel);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(VideoDto resources) {
         Integer id = resources.getId();
         if(null==id){
             return;
         }
         VideoChannel old = videoChannelRepository.getOne(id);
+        old.setVideoName(resources.getVideoName());
         old.setSerialNo(resources.getSerialNo());
         old.setChannel(resources.getChannel());
         old.setIsLive(resources.getIsLive());
         old.setStatus(resources.getStatus());
+        Integer stationId = resources.getStationId();
+        Station station = stationService.getOne(stationId);
+        old.setStation(station);
         videoChannelRepository.save(old);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<Integer> ids) {
+        List<VideoChannel> channels = new ArrayList<>();
+        for(Integer id :ids){
+            VideoChannel videoChannel = new VideoChannel();
+            videoChannel.setId(id);
+            channels.add(videoChannel);
+        }
+        videoChannelRepository.deleteAll(channels);
     }
 }

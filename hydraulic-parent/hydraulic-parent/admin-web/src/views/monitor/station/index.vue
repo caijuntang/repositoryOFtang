@@ -38,6 +38,9 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="泵机数" prop="pumpCount" style="display: inline-block;width: 280px">
+          <el-input v-model="form.pumpCount" placeholder="请填写机组数量" style="width: 140px;" />
+        </el-form-item>
         <el-form-item label="是否接入" prop="enable" style="display: inline-block;width: 280px">
           <el-switch v-model="form.enable"></el-switch>
         </el-form-item>
@@ -45,13 +48,13 @@
           <el-switch v-model="form.isDefault"></el-switch>
         </el-form-item>
         <el-form-item label="纬度" prop="attitude" style="display: inline-block;width: 280px">
-          <el-input v-model="form.attitude" placeholder="请填写纬度信息" style="width: 100px;" />
+          <el-input v-model="form.attitude" placeholder="请填写纬度信息" style="width: 140px;" />
         </el-form-item>
         <el-form-item  label="经度" prop="longitude" style="display: inline-block;width: 280px">
-          <el-input v-model="form.longitude" placeholder="请填写经度信息" style="width: 100px;" />
+          <el-input v-model="form.longitude" placeholder="请填写经度信息" style="width: 140px;" />
         </el-form-item>
         <el-form-item  label="城市编码" prop="cityCode">
-          <el-input v-model="form.cityCode" placeholder="请填写泵站所在城市编码" style="width: 100px;" />
+          <el-input v-model="form.cityCode" placeholder="请填写泵站所在城市编码" style="width: 180px;" />
         </el-form-item>
         <el-form-item  label="备注" prop="remark">
           <el-input type="textarea" v-model="form.remark" placeholder="要点备注" style="width: 300px;" />
@@ -69,6 +72,7 @@
       :data="crud.data"
       row-key="id">
       <el-table-column prop="name" label="名称" align="center" width="200px" />
+      <el-table-column prop="pumpCount" label="泵机数" align="center" width="80px" />
       <el-table-column prop="nameKey" label="简称" align="center" width="100px" />
       <el-table-column prop="province" label="省份" align="center" width="100px" />
       <el-table-column prop="city" label="城市" align="center" width="100px" />
@@ -93,7 +97,7 @@
           <udOperation
             :data="scope.row"
             :permission="permission"
-            msg="确定删除吗,如果存在下级节点则一并删除，此操作不能撤销！"
+            msg="确定删除吗，此操作不能撤销！"
           />
         </template>
       </el-table-column>
@@ -115,7 +119,7 @@
   import pagination from '@crud/Pagination'
 
   // crud交由presenter持有
-  const defaultForm = { id: null, name: null, nameKey: null, province: null, city: null, attitude: null, longitude: null, enable:false ,cityCode:null,isDefault:false}
+  const defaultForm = { id: null, name: null, nameKey: null, province: null, pumpCount:null,city: null, attitude: null, longitude: null, enable:false ,cityCode:null,isDefault:false}
   export default {
     name: 'Station',
     components: {crudOperation, rrOperation, udOperation , pagination ,Treeselect},
@@ -139,8 +143,11 @@
           del: ['admin', 'station:del']
         },
         rules: {
-          title: [
-            { required: true, message: '请输入标题', trigger: 'blur' }
+          name: [
+            { required: true, message: '请输入泵站名称', trigger: 'blur' }
+          ],
+          pumpCount: [
+            { required: true, message: '请输入泵机数', trigger: 'blur' }
           ],
           longitude: [
             { required: true, message: '请输入经度', trigger: 'blur' }
@@ -165,13 +172,7 @@
       },
       provinceChange(item){
         this.cities=cityMap[item]
-      },
-      // 选中图标
-      selected(name) {
-        this.form.icon = name
       }
-    },
-    mounted() {
     }
   }
 </script>

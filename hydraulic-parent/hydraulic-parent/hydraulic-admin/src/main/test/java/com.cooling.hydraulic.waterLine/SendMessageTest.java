@@ -71,7 +71,7 @@ public class SendMessageTest {
 
     @Test
     public void sengWXEvent() {
-        String url = "http://localhost:8090/screen/wx/handleWxEvent";
+        String url = "http://localhost:8080/admin/wx/handleWxEvent";
 //        String actionRequest = "<xml><ToUserName><![CDATA[gh_a26585648753]]></ToUserName>" +
 //                "<FromUserName><![CDATA[odynm5qCoBRwqNRkZRv2EJeDn_JE]]></FromUserName>" +
 //                "<CreateTime>1661741520</CreateTime>" +

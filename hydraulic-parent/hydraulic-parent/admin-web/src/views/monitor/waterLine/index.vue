@@ -4,7 +4,7 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <el-select v-model="query.stationId" placeholder="全部站点" class="filter-item" :clearable="true">
+        <el-select v-model="query.stationId" placeholder="全部站点" class="filter-item" :clearable=true>
           <el-option
             v-for="item in stations"
             :key="item.id"
@@ -12,7 +12,7 @@
             :value="item.id">
           </el-option>
         </el-select>
-        <el-input v-model="query.blurry" clearable size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.blurry" :clearable=true size="small" placeholder="模糊搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation />
       </div>
       <crudOperation :permission="permission" />
@@ -21,10 +21,10 @@
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="660px">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
         <el-form-item label="告警名称" prop="alarmName">
-          <el-input v-model="form.name" placeholder="请填写告警名称" style="width: 200px;" />
+          <el-input v-model="form.name" placeholder="请填写告警名称" style="width: 200px;"  :clearable=true />
         </el-form-item>
         <el-form-item  label="泵站名称" prop="name">
-          <el-select v-model="form.stationId" clear placeholder="请选择站点" style="width: 200px;">
+          <el-select v-model="form.stationId" :clearable=true placeholder="请选择站点" style="width: 200px;">
             <el-option
               v-for="item in stations"
               :key="item.id"
@@ -34,16 +34,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="消息模版" prop="templateId" >
-          <el-input v-model="form.templateId" placeholder="请输入告消息模版ID" style="width: 200px;" />
+          <el-input v-model="form.templateId" placeholder="请输入告消息模版ID" style="width: 500px;" :clearable=true />
         </el-form-item>
         <el-form-item label="告警水位" prop="alarmLine" style="width: 300px;">
-          <el-input v-model="form.alarmLine" placeholder="请设置告警水位" style="width: 60px;"/> 米
+          <el-input v-model="form.alarmLine" placeholder="请设置告警水位" style="width: 100px;"/> 米
         </el-form-item>
         <el-form-item label="是否接入" prop="status" style="width: 280px;">
           <el-switch v-model="form.status"></el-switch>
         </el-form-item>
         <el-form-item  label="告警频次" prop="frequency" style="width: 280px;">
-          <el-select v-model="form.frequency" placeholder="请选择告警频次" style="width: 60px;" >
+          <el-select v-model="form.frequency" placeholder="请选择告警频次" style="width: 100px;" >
             <el-option
               v-for="item in frequencyList"
               :key="item"
@@ -53,7 +53,7 @@
           </el-select> 分钟
         </el-form-item>
         <el-form-item  label="通知人" prop="receivers" >
-          <el-select v-model="form.receivers" multiple placeholder="请选择通知人" style="width: 500px;">
+          <el-select v-model="form.receivers" :multiple=true placeholder="请选择通知人" style="width: 500px;">
             <el-option
               v-for="item in receiverList"
               :key="item.id"
@@ -74,19 +74,20 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="name" label="名称" align="center" width="160px" />
-      <el-table-column prop="stationName" label="站点" align="center" width="200px" />
+      <el-table-column prop="name" label="名称" align="center" width="200px" />
+      <el-table-column prop="stationName" label="站点" align="center" width="240px" />
       <el-table-column prop="alarmLine" label="告警水位" align="center" width="100px">
         <template slot-scope="scope">
           <span>{{scope.row.alarmLine}} 米</span>
         </template>
       </el-table-column>
-      <el-table-column prop="frequency" label="告警频次" align="center" width="120px">
+      <el-table-column prop="frequency" label="告警频次" align="center" width="100px">
         <template slot-scope="scope">
           <span>{{scope.row.frequency}} 分钟/次</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="是否开启" align="center" width="120px" >
+      <el-table-column prop="templateId" label="模版Id" align="center" width="300px" />
+      <el-table-column prop="status" label="是否开启" align="center" width="100px" >
         <template slot-scope="scope">
           <span v-if="scope.row.status">是</span>
           <span v-else>否</span>
@@ -155,10 +156,14 @@
     },
     methods: {
       // 新增与编辑前做的操作
-      [CRUD.HOOK.afterToCU](crud, form) {
-        if (form.id == null) {
-        }
-      },
+      // 初始化编辑时候的角色与岗位
+      // [CRUD.HOOK.beforeToEdit](crud, form) {
+      //
+      // },
+      // 提交前做的操作
+      // [CRUD.HOOK.afterValidateCU](crud) {
+      //   return true
+      // },
       getStationAll(){
         StationJs.getStationData().then(res=>{
           this.stations=res['all']
@@ -168,10 +173,6 @@
         controlJs.getWXReceivers().then(res=>{
           this.receiverList=res
         })
-      },
-      // 选中图标
-      selected(name) {
-        this.form.icon = name
       }
     },
     mounted() {
