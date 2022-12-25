@@ -100,7 +100,7 @@
 <!--      @selection-change="crud.selectionChangeHandler"-->
 <!--    >-->
 <!--      <el-table-column type="selection" width="55" />-->
-      <el-table-column :show-overflow-tooltip="true" label="菜单标题" width="125px" prop="title" />
+      <el-table-column :show-overflow-tooltip="true" label="菜单标题" width="160px" prop="title" />
       <el-table-column prop="icon" label="图标" align="center" width="60px">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.icon ? scope.row.icon : ''" />
@@ -131,7 +131,7 @@
           <span v-else>是</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建日期" width="135px" />
+      <el-table-column prop="createTime" label="创建日期" width="150px" />
       <el-table-column v-if="checkPer(['admin','menu:edit','menu:del'])" label="操作" width="130px" align="center" fixed="right">
         <template slot-scope="scope">
           <udOperation

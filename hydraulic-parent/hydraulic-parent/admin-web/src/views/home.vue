@@ -3,7 +3,7 @@
     <div id="index" ref="appRef">
       <div class="bg">
         <dv-loading v-show="loading">Loading...</dv-loading>
-        <div class="host-body">
+        <div>
           <div>
             <!-- 顶部title部分 -->
             <el-row>
@@ -130,6 +130,7 @@
     name:'home',
     data() {
       return {
+        height: document.documentElement.clientHeight - 180 + 'px;',
         //定时器
         timing: null,
         weatherImg:null,
@@ -190,7 +191,7 @@
       this.weatherWeek()
       this.weatherNow()
       this.getAlarmRecord()
-      this.initVideo()
+      // this.initVideo()
     },
     beforeDestroy() {
       //离开时删除计时器
@@ -208,7 +209,7 @@
           this.weatherNow()
           this.weatherWeek()
           this.getAlarmRecord()
-          this.videoReStart()
+          // this.videoReStart()
         }
       }
     },
@@ -501,18 +502,21 @@
       margin-top: -15px;
       width: 100%;
       height: 30px;
+      /*height: 3.5%;*/
     }
 
     //顶部左边装饰效果
     .title_right {
       width: 100%;
       height: 30px;
+      /*height: 3.5%;*/
     }
 
     //顶部中间装饰效果
     .title_center {
       width: 100%;
       height: 50px;
+      /*height: 6%;*/
     }
 
     //顶部中间文字数据可视化系统
@@ -532,8 +536,10 @@
       font-size: 12px;
     }
 
+    //第二列中间部分
     #video {
       height: 530px;
+      /*height: 63%;*/
       width: 100%;
     }
 
@@ -553,6 +559,7 @@
     .line_center {
       width: 95%;
       height: 270px;
+      /*height: 32%;*/
       margin-top: 10px;
       margin-left: 20px;
     }
@@ -560,6 +567,7 @@
     //左1模块
     .left_box1 {
       height: 260px;
+      /*height: 31%;*/
       width: 100%;
       margin-bottom: 10px;
     }
@@ -567,6 +575,7 @@
     //左2模块
     .left_box2 {
       height: 250px;
+      /*height: 30%;*/
       width: 100%;
       margin-bottom: 10px;
     }
@@ -574,12 +583,14 @@
     //左3模块
     .left_box3 {
       height: 280px;
+      /*height: 334%;*/
       width: 100%;
     }
 
     //右1模块
     .right_box1 {
       height: 260px;
+      /*height: 31%;*/
       width: 100%;
     }
 
@@ -610,6 +621,7 @@
     //右2模块
     .right_box2 {
       height: 250px;
+      /*height: 30%;*/
       width: 100%;
       margin-bottom: 10px;
     }
@@ -617,6 +629,7 @@
     //右3模块
     .right_box3 {
       height: 280px;
+      /*height: 34%;*/
       width: 100%;
     }
 

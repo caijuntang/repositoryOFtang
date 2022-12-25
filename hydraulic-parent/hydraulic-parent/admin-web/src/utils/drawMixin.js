@@ -6,8 +6,8 @@ const scale = {
   height: '1'
 }
 // * 设计稿尺寸（px）
-const baseWidth = 1980
-const baseHeight = 1040
+const baseWidth = document.documentElement.clientWidth
+const baseHeight = document.documentElement.clientHeight
 // * 需保持的比例（默认1.77778）
 const baseProportion = parseFloat((baseWidth / baseHeight).toFixed(5))
 

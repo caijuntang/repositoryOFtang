@@ -74,20 +74,20 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="name" label="名称" align="center" width="200px" />
-      <el-table-column prop="stationName" label="站点" align="center" width="240px" />
-      <el-table-column prop="alarmLine" label="告警水位" align="center" width="100px">
+      <el-table-column prop="name" label="名称" align="center" width="240px" />
+      <el-table-column prop="stationName" label="站点" align="center" width="300px" />
+      <el-table-column prop="alarmLine" label="告警水位" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.alarmLine}} 米</span>
         </template>
       </el-table-column>
-      <el-table-column prop="frequency" label="告警频次" align="center" width="100px">
+      <el-table-column prop="frequency" label="告警频次" align="center" >
         <template slot-scope="scope">
           <span>{{scope.row.frequency}} 分钟/次</span>
         </template>
       </el-table-column>
-      <el-table-column prop="templateId" label="模版Id" align="center" width="300px" />
-      <el-table-column prop="status" label="是否开启" align="center" width="100px" >
+      <el-table-column prop="templateId" label="模版Id" align="center" width="400px" />
+      <el-table-column prop="status" label="是否开启" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.status">是</span>
           <span v-else>否</span>

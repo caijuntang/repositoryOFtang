@@ -71,27 +71,27 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="name" label="名称" align="center" width="200px" />
-      <el-table-column prop="pumpCount" label="泵机数" align="center" width="80px" />
-      <el-table-column prop="nameKey" label="简称" align="center" width="100px" />
-      <el-table-column prop="province" label="省份" align="center" width="100px" />
-      <el-table-column prop="city" label="城市" align="center" width="100px" />
-      <el-table-column prop="attitude" label="纬度" align="center" width="80px" />
-      <el-table-column prop="longitude" label="经度" align="center" width="80px" />
-      <el-table-column prop="cityCode" label="城市编码" align="center" width="80px" />
-      <el-table-column prop="enable" label="是否接入" align="center" width="80px" >
+      <el-table-column prop="name" label="名称" align="center" width="300px" />
+      <el-table-column prop="pumpCount" label="泵机数" align="center" />
+      <el-table-column prop="nameKey" label="简称" align="center"/>
+      <el-table-column prop="province" label="省份" align="center"/>
+      <el-table-column prop="city" label="城市" align="center"  />
+      <el-table-column prop="attitude" label="纬度" align="center"/>
+      <el-table-column prop="longitude" label="经度" align="center" />
+      <el-table-column prop="cityCode" label="城市编码" align="center"/>
+      <el-table-column prop="enable" label="是否接入" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.enable">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="isDefault" label="默认展示" align="center" width="80px" >
+      <el-table-column prop="isDefault" label="默认展示" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.isDefault">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建日期" align="center" width="160px" />
+      <el-table-column prop="createTime" label="创建日期" align="center" width="300px" />
       <el-table-column v-if="checkPer(['admin','station:edit','station:del'])" label="操作" width="130px" align="center" fixed="right">
         <template slot-scope="scope">
           <udOperation

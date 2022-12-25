@@ -5,9 +5,9 @@ export function login(un, pwd, uid) {
     url: 'auth/login',
     method: 'post',
     data: {
-      username:un,
-      password:pwd,
-      uuid:uid
+      username: un,
+      password: pwd,
+      uuid: uid
     }
   })
 }

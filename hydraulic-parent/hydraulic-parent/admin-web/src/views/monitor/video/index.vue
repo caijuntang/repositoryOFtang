@@ -57,23 +57,23 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="videoName" label="监控点" align="center" width="100px" />
-      <el-table-column prop="stationName" label="站点" align="center" width="250px" />
-      <el-table-column prop="serialNo" label="序列号" align="center" width="150px" />
-      <el-table-column prop="channel" label="通道" align="center" width="150px" />
-      <el-table-column prop="isLive" label="主屏播放" align="center" width="150px" >
+      <el-table-column prop="videoName" label="监控点" align="center"  />
+      <el-table-column prop="stationName" label="站点" align="center" width="300px" />
+      <el-table-column prop="serialNo" label="序列号" align="center"  />
+      <el-table-column prop="channel" label="通道" align="center"  />
+      <el-table-column prop="isLive" label="主屏播放" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.isLive">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="是否接入" align="center" width="150px" >
+      <el-table-column prop="status" label="是否接入" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.status">是</span>
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建日期" align="center"  width="160px" />
+      <el-table-column prop="createTime" label="创建日期" align="center"  width="300px" />
       <el-table-column v-if="checkPer(['admin','video:edit','video:del'])" label="操作" width="130px" align="center" fixed="right">
         <template slot-scope="scope">
           <udOperation

@@ -32,4 +32,4 @@ export function edit(data) {
   })
 }
 
-export default {add,del,edit,getStationData}
+export default { add, del, edit, getStationData }

@@ -70,17 +70,17 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="alarmTypeName" label="告警类型" align="center" width="100px" />
-      <el-table-column prop="stationName" label="泵站" align="center" width="200px" />
-      <el-table-column prop="content" label="内容" align="center" width="300px" />
-      <el-table-column prop="createTime" label="告警时间" align="center" width="200px" />
-      <el-table-column prop="status" label="是否解除" align="center" width="100px" >
+      <el-table-column prop="alarmTypeName" label="告警类型" align="center" width="300px" />
+      <el-table-column prop="stationName" label="泵站" align="center" width="300px" />
+      <el-table-column prop="content" label="内容" align="center"/>
+      <el-table-column prop="createTime" label="告警时间" align="center" width="240px" />
+      <el-table-column prop="status" label="是否解除" align="center" >
         <template slot-scope="scope">
           <span v-if="scope.row.status==1">否</span>
           <span v-else>是</span>
         </template>
       </el-table-column>
-      <el-table-column prop="fixTime" label="解除时间" align="center" width="200px" >
+      <el-table-column prop="fixTime" label="解除时间" align="center" width="260px" >
         <template slot-scope="scope">
           <span v-if="scope.row.fixTime==null">{{"--"}}</span>
           <span v-else>{{scope.row.fixTime}}</span>

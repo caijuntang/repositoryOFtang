@@ -47,9 +47,9 @@
       v-loading="crud.loading"
       :data="crud.data"
       row-key="id">
-      <el-table-column prop="nickName" label="昵称" align="center" width="260px" />
+      <el-table-column prop="nickName" label="昵称" align="center" />
       <el-table-column prop="openid" label="openid" align="center" width="340px" />
-      <el-table-column prop="realName" label="真实姓名" align="center" width="260px" />
+      <el-table-column prop="realName" label="真实姓名" align="center" />
       <el-table-column prop="remark" label="备注" align="center" width="300px" />
       <el-table-column v-if="checkPer(['admin','wxUser:edit','wxUser:del'])" label="操作" width="130px" align="center" fixed="right">
         <template slot-scope="scope">
